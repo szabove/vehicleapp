@@ -17,6 +17,9 @@ namespace VehicleApp.DAL
         {
             dbModelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             //dbModelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+
+            //Configuring for : VehicleMake has many VehicleModels and will delete them on deletion
+            dbModelBuilder.Entity<VehicleMake>().HasMany(x => x.VehicleModels).WithRequired(x => x.VehicleMake).WillCascadeOnDelete(true);
         }
     }
 }
