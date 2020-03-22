@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace VehicleApp.DAL
+{
+    public class VehicleContext : DbContext
+    {
+        public DbSet<VehicleModel> VehicleModel { get; set; }
+        public DbSet<VehicleMake> VehicleMake { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder dbModelBuilder)
+        {
+            dbModelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+            //dbModelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+        }
+    }
+}
