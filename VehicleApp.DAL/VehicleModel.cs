@@ -10,6 +10,15 @@ namespace VehicleApp.DAL
 {
     public class VehicleModel
     {
+
+        public VehicleModel()
+        {
+            if (VehicleModelId == Guid.Empty)
+            {
+                VehicleModelId = Guid.NewGuid();
+            }
+        }
+
         [Key]
         public Guid VehicleModelId { get; set; }
         [Required]
