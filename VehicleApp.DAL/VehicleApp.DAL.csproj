@@ -59,6 +59,14 @@
     <Compile Include="Migrations\202003171419012_RemovingPluralization.designer.cs">
       <DependentUpon>202003171419012_RemovingPluralization.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003241523401_NavigationPropertyVehicleModelsMarkedAsVirtual.cs" />
+    <Compile Include="Migrations\202003241523401_NavigationPropertyVehicleModelsMarkedAsVirtual.designer.cs">
+      <DependentUpon>202003241523401_NavigationPropertyVehicleModelsMarkedAsVirtual.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003241525224_GuidFix.cs" />
+    <Compile Include="Migrations\202003241525224_GuidFix.designer.cs">
+      <DependentUpon>202003241525224_GuidFix.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VehicleContext.cs" />
@@ -75,6 +83,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003171419012_RemovingPluralization.resx">
       <DependentUpon>202003171419012_RemovingPluralization.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003241523401_NavigationPropertyVehicleModelsMarkedAsVirtual.resx">
+      <DependentUpon>202003241523401_NavigationPropertyVehicleModelsMarkedAsVirtual.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003241525224_GuidFix.resx">
+      <DependentUpon>202003241525224_GuidFix.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
