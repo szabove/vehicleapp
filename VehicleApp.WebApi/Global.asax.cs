@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using VehicleApp.WebApi.AutoMapperConfiguration;
 
 namespace VehicleApp.WebApi
 {
@@ -13,6 +14,9 @@ namespace VehicleApp.WebApi
     {
         protected void Application_Start()
         {
+
+            MappingConfiguration.IncludeAllMappingProfiles();
+
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -21,3 +25,4 @@ namespace VehicleApp.WebApi
         }
     }
 }
+ 
