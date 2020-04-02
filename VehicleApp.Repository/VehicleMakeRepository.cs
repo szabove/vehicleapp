@@ -1,8 +1,12 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VehicleApp.DAL;
+using VehicleApp.Model;
 using VehicleApp.Model.Common;
 using VehicleApp.Repository.Common;
 
@@ -10,34 +14,45 @@ namespace VehicleApp.Repository
 {
     public class VehicleMakeRepository : IVehicleMakeRepository
     {
-        public Task<int> Add(IVehicleMake vehicleMake)
+        VehicleContext _dbContext;
+        IMapper _mapper;
+        public VehicleMakeRepository(VehicleContext dbContext, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        public Task<int> Delete(IVehicleMake vehicleMake)
+        public async Task<int> Add(IVehicleMakeDomainModel vehicleMake)
         {
-            throw new NotImplementedException();
+            _dbContext.VehicleMake.Add(_mapper.Map<IVehicleMakeDomainModel, VehicleMake>(vehicleMake));
+            return await _dbContext.SaveChangesAsync();
         }
 
-        public Task<IVehicleMake> Get(Guid id)
+        public async Task<int> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            var item = await Get(id);//_dbContext.VehicleMake.Single(v => v.VehicleMakelId == id);
+            _dbContext.VehicleMake.Remove(_mapper.Map<IVehicleMakeDomainModel, VehicleMake>(item));
+            return await _dbContext.SaveChangesAsync();
+
         }
 
-        public Task<IEnumerable<IVehicleMake>> GetAll()
+        public async Task<IVehicleMakeDomainModel> Get(Guid id)
         {
-            throw new NotImplementedException();
+            var vehicleMake = await _dbContext.VehicleMake.FindAsync(id);
+            return _mapper.Map<VehicleMake, IVehicleMakeDomainModel>(vehicleMake);
         }
 
-        public Task<List<IVehicleMake>> GetAllModelsFromMaker(IVehicleMake vehicleMake)
+        public async Task<ICollection<IVehicleMakeDomainModel>> GetAll()
         {
-            throw new NotImplementedException();
+            var vehicleMakes = await _dbContext.VehicleMake.ToListAsync();
+            return _mapper.Map<ICollection<VehicleMake>, ICollection<IVehicleMakeDomainModel>>(vehicleMakes);
         }
 
-        public Task<int> Update(IVehicleMake vehicleMake)
+        public async Task<int> Update(IVehicleMakeDomainModel vehicleMake)
         {
-            throw new NotImplementedException();
+            var _vehicleMake = await Get(vehicleMake.VehicleMakeId);
+            _dbContext.Entry(_vehicleMake).CurrentValues.SetValues(_mapper.Map<IVehicleMakeDomainModel, VehicleMake>(vehicleMake));
+            return await _dbContext.SaveChangesAsync();
         }
     }
 }
