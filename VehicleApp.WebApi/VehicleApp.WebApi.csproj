@@ -275,13 +275,17 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VehicleApp.DAL\VehicleApp.DAL.csproj">
-      <Project>{3A7CA7D6-D1CC-41C5-A93A-49CD5F08F39A}</Project>
-      <Name>VehicleApp.DAL</Name>
+    <ProjectReference Include="..\VehicleApp.Model.Common\VehicleApp.Model.Common.csproj">
+      <Project>{0EC571FC-B1B3-4D39-914B-0483475FB4DE}</Project>
+      <Name>VehicleApp.Model.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\VehicleApp.Model\VehicleApp.Model.csproj">
       <Project>{24A8EB5D-4576-4628-8006-A02675B36F36}</Project>
       <Name>VehicleApp.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VehicleApp.Services.Common\VehicleApp.Services.Common.csproj">
+      <Project>{3be1e25a-a0cc-4bdb-beb9-2bacf7f702a6}</Project>
+      <Name>VehicleApp.Services.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
