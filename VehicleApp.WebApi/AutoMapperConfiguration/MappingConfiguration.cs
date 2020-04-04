@@ -15,6 +15,10 @@ namespace VehicleApp.WebApi.AutoMapperConfiguration
                     typeof(VehicleApp.WebApi.AutoMapperConfiguration.RestToDomainModelMapping)
                 })
             );
+
+            config.AssertConfigurationIsValid();
+
+            config.CreateMapper();
         }
     }
 }
