@@ -9,10 +9,10 @@ namespace VehicleApp.Repository.Common
 {
     public interface IVehicleMakeRepository
     {
-        Task<IVehicleMakeDomainModel> Get(Guid id);
-        Task<ICollection<IVehicleMakeDomainModel>> GetAll();
-        Task<int> Add(IVehicleMakeDomainModel vehicleMake);
-        Task<int> Update(IVehicleMakeDomainModel vehicleMake);
+        Task<IVehicleMake> Get(Guid id);
+        Task<ICollection<IVehicleMake>> GetAll();
+        Task<int> Add(IVehicleMake vehicleMake);
+        Task<int> Update(IVehicleMake vehicleMake);
         Task<int> Delete(Guid id);
     }
 }

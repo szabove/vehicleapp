@@ -13,13 +13,13 @@ namespace VehicleApp.WebApi.AutoMapperConfiguration
     {
         public RestToDomainModelMapping()
         {
-            CreateMap<VehicleMakeDomainModel, VehicleMakeViewModel>().ReverseMap();
-            CreateMap<VehicleMakeDomainModel, IVehicleMakeDomainModel>().ReverseMap();
-            CreateMap<IVehicleMakeDomainModel, VehicleMakeViewModel>().ReverseMap();
+            CreateMap<VehicleMake, VehicleMakeViewModel>().ReverseMap();
+            CreateMap<VehicleMake, IVehicleMake>().ReverseMap();
+            CreateMap<IVehicleMake, VehicleMakeViewModel>().ReverseMap();
 
-            CreateMap<VehicleModelDomainModel, VehicleModelViewModel>().ReverseMap();
-            CreateMap<VehicleModelDomainModel, IVehicleModelDomainModel>().ReverseMap();
-            CreateMap<IVehicleModelDomainModel, VehicleModelViewModel>().ReverseMap();
+            CreateMap<VehicleModel, VehicleModelViewModel>().ReverseMap();
+            CreateMap<VehicleModel, IVehicleModel>().ReverseMap();
+            CreateMap<IVehicleModel, VehicleModelViewModel>().ReverseMap();
         }
     }
 }

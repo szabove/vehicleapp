@@ -9,10 +9,10 @@ namespace VehicleApp.Services.Common
 {
     public interface IVehicleModelService
     {
-        Task<ICollection<IVehicleModelDomainModel>> GetAll();
-        Task<IVehicleModelDomainModel> Get(Guid vehicleModelID);
-        Task<int> Add(IVehicleModelDomainModel vehicleModel);
-        Task<int> Update(IVehicleModelDomainModel vehicleModel);
+        Task<ICollection<IVehicleModel>> GetAll();
+        Task<IVehicleModel> Get(Guid vehicleModelID);
+        Task<int> Add(IVehicleModel vehicleModel);
+        Task<int> Update(IVehicleModel vehicleModel);
         Task<int> Delete(Guid vehicleModelID);
     }
 }

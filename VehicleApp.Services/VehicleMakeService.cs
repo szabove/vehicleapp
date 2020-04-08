@@ -23,7 +23,7 @@ namespace VehicleApp.Services
             _modelRepository = modelRepository;
         }
 
-        public async Task<int> Add(IVehicleMakeDomainModel vehicleMake)
+        public async Task<int> Add(IVehicleMake vehicleMake)
         {
             return await _makeRepository.Add(vehicleMake);
         }
@@ -33,7 +33,7 @@ namespace VehicleApp.Services
             return await _makeRepository.Delete(vehicleMakeID);
         }
 
-        public async Task<IVehicleMakeDomainModel> Get(Guid vehicleMakeID)
+        public async Task<IVehicleMake> Get(Guid vehicleMakeID)
         {
             var make = await _makeRepository.Get(vehicleMakeID);
             var models = await _modelRepository.GetAllModelsFromMake(make.VehicleMakeId);
@@ -41,12 +41,12 @@ namespace VehicleApp.Services
             return make;
         }
 
-        public async Task<ICollection<IVehicleMakeDomainModel>> GetAll()
+        public async Task<ICollection<IVehicleMake>> GetAll()
         {
             return await _makeRepository.GetAll();
         }
 
-        public async Task<int> Update(IVehicleMakeDomainModel vehicleMake)
+        public async Task<int> Update(IVehicleMake vehicleMake)
         {
             return await _makeRepository.Update(vehicleMake);
         }

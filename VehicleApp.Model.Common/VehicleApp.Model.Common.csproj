@@ -54,8 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IVehicleMakeDomainModel.cs" />
-    <Compile Include="IVehicleModelDomainModel.cs" />
+    <Compile Include="IVehicleMake.cs" />
+    <Compile Include="IVehicleModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

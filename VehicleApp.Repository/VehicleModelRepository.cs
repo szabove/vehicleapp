@@ -23,42 +23,42 @@ namespace VehicleApp.Repository
             _mapper = mapper;
         }
 
-        public async Task<int> Add(IVehicleModelDomainModel vehicleModel)
+        public async Task<int> Add(IVehicleModel vehicleModel)
         {
-            _dbContext.VehicleModel.Add(_mapper.Map<IVehicleModelDomainModel, VehicleModel>(vehicleModel));
+            _dbContext.VehicleModel.Add(_mapper.Map<IVehicleModel, VehicleModelEntity>(vehicleModel));
             return await _dbContext.SaveChangesAsync();
         }
 
         public async Task<int> Delete(Guid vehicleModelID)
         {
             var item = await Get(vehicleModelID);
-            _dbContext.VehicleModel.Remove(_mapper.Map<IVehicleModelDomainModel, VehicleModel>(item));
+            _dbContext.VehicleModel.Remove(_mapper.Map<IVehicleModel, VehicleModelEntity>(item));
             return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IVehicleModelDomainModel> Get(Guid vehicleModelID)
+        public async Task<IVehicleModel> Get(Guid vehicleModelID)
         {
             var vehicleModel = await _dbContext.VehicleModel.FindAsync(vehicleModelID);
-            return _mapper.Map<VehicleModel, IVehicleModelDomainModel>(vehicleModel);
+            return _mapper.Map<VehicleModelEntity, IVehicleModel>(vehicleModel);
         }
 
-        public async Task<ICollection<IVehicleModelDomainModel>> GetAll()
+        public async Task<ICollection<IVehicleModel>> GetAll()
         {
             var vehicleModels = await _dbContext.VehicleModel.ToListAsync();
-            return _mapper.Map<ICollection<VehicleModel>, ICollection<IVehicleModelDomainModel>>(vehicleModels);
+            return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
         }
 
-        public async Task<ICollection<IVehicleModelDomainModel>> GetAllModelsFromMake(Guid vehicleMakeID)
+        public async Task<ICollection<IVehicleModel>> GetAllModelsFromMake(Guid vehicleMakeID)
         {
             var vehicleModels = await _dbContext.VehicleModel.Where(v => v.VehicleMake.VehicleMakelId == vehicleMakeID).ToListAsync();
-            var mappedVehicleModels = _mapper.Map<List<VehicleModel>, ICollection<IVehicleMakeDomainModel>>(vehicleModels);
-            return (ICollection<IVehicleModelDomainModel>)mappedVehicleModels;
+            var mappedVehicleModels = _mapper.Map<List<VehicleModelEntity>, ICollection<IVehicleMake>>(vehicleModels);
+            return (ICollection<IVehicleModel>)mappedVehicleModels;
         }
 
-        public async Task<int> Update(IVehicleModelDomainModel vehicleModel)
+        public async Task<int> Update(IVehicleModel vehicleModel)
         {
             var _vehicleModel = await Get(vehicleModel.VehicleModelId);
-            _dbContext.Entry(_vehicleModel).CurrentValues.SetValues(_mapper.Map<IVehicleModelDomainModel, VehicleModel>(vehicleModel));
+            _dbContext.Entry(_vehicleModel).CurrentValues.SetValues(_mapper.Map<IVehicleModel, VehicleModelEntity>(vehicleModel));
             return await _dbContext.SaveChangesAsync();
         }
     }

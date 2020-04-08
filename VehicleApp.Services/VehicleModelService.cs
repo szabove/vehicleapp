@@ -18,7 +18,7 @@ namespace VehicleApp.Services
             _vehicleModelRepository = vehicleModelRepository;
         }
 
-        public async Task<int> Add(IVehicleModelDomainModel vehicleModel)
+        public async Task<int> Add(IVehicleModel vehicleModel)
         {
             return await _vehicleModelRepository.Add(vehicleModel);
         }
@@ -28,17 +28,17 @@ namespace VehicleApp.Services
             return await _vehicleModelRepository.Delete(vehicleModelID);
         }
 
-        public async Task<IVehicleModelDomainModel> Get(Guid vehicleModelID)
+        public async Task<IVehicleModel> Get(Guid vehicleModelID)
         {
             return await _vehicleModelRepository.Get(vehicleModelID);
         }
 
-        public async Task<ICollection<IVehicleModelDomainModel>> GetAll()
+        public async Task<ICollection<IVehicleModel>> GetAll()
         {
             return await _vehicleModelRepository.GetAll();
         }
 
-        public async Task<int> Update(IVehicleModelDomainModel vehicleModel)
+        public async Task<int> Update(IVehicleModel vehicleModel)
         {
             return await _vehicleModelRepository.Update(vehicleModel);
         }

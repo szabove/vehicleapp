@@ -10,12 +10,12 @@ namespace VehicleApp.Repository.Common
 {
     public interface IVehicleModelRepository
     {
-        Task<IVehicleModelDomainModel> Get(Guid vehicleModelID);
-        Task<ICollection<IVehicleModelDomainModel>> GetAll();
-        Task<int> Add(IVehicleModelDomainModel vehicleModel);
-        Task<int> Update(IVehicleModelDomainModel vehicleModel);
+        Task<IVehicleModel> Get(Guid vehicleModelID);
+        Task<ICollection<IVehicleModel>> GetAll();
+        Task<int> Add(IVehicleModel vehicleModel);
+        Task<int> Update(IVehicleModel vehicleModel);
         Task<int> Delete(Guid vehicleModelID);
-        Task<ICollection<IVehicleModelDomainModel>> GetAllModelsFromMake(Guid vehicleMakeID);
+        Task<ICollection<IVehicleModel>> GetAllModelsFromMake(Guid vehicleMakeID);
 
     }
 }
