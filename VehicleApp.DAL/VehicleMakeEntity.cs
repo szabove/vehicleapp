@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace VehicleApp.DAL
 {
-    public class VehicleMake
+    [Table("VehicleMake")]
+    public class VehicleMakeEntity
     {
-        public VehicleMake()
+        public VehicleMakeEntity()
         {
-            this.VehicleModels = new HashSet<VehicleModel>();
+            this.VehicleModels = new HashSet<VehicleModelEntity>();
             if (VehicleMakelId == Guid.Empty)
             {
                 VehicleMakelId = Guid.NewGuid();
@@ -24,6 +25,6 @@ namespace VehicleApp.DAL
         [Required]
         public string Name { get; set; }
         public string Abrv { get; set; }
-        public virtual ICollection<VehicleModel> VehicleModels { get; set; }
+        public virtual ICollection<VehicleModelEntity> VehicleModels { get; set; }
     }
 }

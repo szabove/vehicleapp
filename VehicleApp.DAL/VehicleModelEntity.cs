@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace VehicleApp.DAL
 {
-    public class VehicleModel
+    [Table("VehicleModel")]
+    public class VehicleModelEntity
     {
-
-        public VehicleModel()
+        
+        public VehicleModelEntity()
         {
             if (VehicleModelId == Guid.Empty)
             {
@@ -24,6 +25,6 @@ namespace VehicleApp.DAL
         [Required]
         public string Name { get; set; }
         public string Abrv { get; set; }
-        public virtual VehicleMake VehicleMake { get; set; }
+        public virtual VehicleMakeEntity VehicleMake { get; set; }
     }
 }

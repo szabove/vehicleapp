@@ -7,11 +7,11 @@ using VehicleApp.Model.Common;
 
 namespace VehicleApp.Model
 {
-    public class VehicleMakeDomainModel : IVehicleMakeDomainModel
+    public class VehicleMake : IVehicleMake
     {
         public Guid VehicleMakeId { get; set; }
         public string Name { get; set; }
         public string Abrv { get; set; }
-        public ICollection<IVehicleModelDomainModel> VehicleModel { get; set; }
+        public ICollection<IVehicleModel> VehicleModel { get; set; }
     }
 }

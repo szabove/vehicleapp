@@ -7,12 +7,12 @@ using VehicleApp.Model.Common;
 
 namespace VehicleApp.Model
 {
-    public class VehicleModelDomainModel : IVehicleModelDomainModel
+    public class VehicleModel : IVehicleModel
     {
         public Guid VehicleMakeId { get; set; }
         public Guid VehicleModelId { get; set; }
         public string Name { get; set; }
         public string Abrv { get; set; }
-        public IVehicleMakeDomainModel VehicleMake { get; set; }
+        public IVehicleMake VehicleMake { get; set; }
     }
 }

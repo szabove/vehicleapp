@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace VehicleApp.Model.Common
 {
-    public interface IVehicleMakeDomainModel
+    public interface IVehicleModel
     {
         Guid VehicleMakeId { get; set; }
-        string Name{ get; set; }
+        Guid VehicleModelId { get; set; }
+        string Name { get; set; }
         string Abrv { get; set; }
-        ICollection<IVehicleModelDomainModel> VehicleModel { get; set; }
+        IVehicleMake VehicleMake { get; set; }
     }
 }
