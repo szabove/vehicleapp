@@ -10,8 +10,8 @@ namespace VehicleApp.DAL
 {
     public class VehicleContext : DbContext
     {
-        public DbSet<VehicleModel> VehicleModel { get; set; }
-        public DbSet<VehicleMake> VehicleMake { get; set; }
+        public DbSet<VehicleModelEntity> VehicleModel { get; set; }
+        public DbSet<VehicleMakeEntity> VehicleMake { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder dbModelBuilder)
         {
@@ -19,7 +19,7 @@ namespace VehicleApp.DAL
             //dbModelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
 
             //Configuring for : VehicleMake has many VehicleModels and will delete them on deletion
-            dbModelBuilder.Entity<VehicleMake>().HasMany(x => x.VehicleModels).WithRequired(x => x.VehicleMake).WillCascadeOnDelete(true);
+            dbModelBuilder.Entity<VehicleMakeEntity>().HasMany(x => x.VehicleModels).WithRequired(x => x.VehicleMake).WillCascadeOnDelete(true);
         }
     }
 }
