@@ -22,36 +22,49 @@ namespace VehicleApp.Repository
             _mapper = mapper;
         }
 
-        public async Task<int> Add(IVehicleMakeDomainModel vehicleMake)
+        public async Task<int> Add(IVehicleMake vehicleMake)
         {
-            _dbContext.VehicleMake.Add(_mapper.Map<IVehicleMakeDomainModel, VehicleMake>(vehicleMake));
+            _dbContext.VehicleMake.Add(_mapper.Map<IVehicleMake, VehicleMakeEntity>(vehicleMake));
             return await _dbContext.SaveChangesAsync();
         }
 
         public async Task<int> Delete(Guid id)
         {
-            var item = await Get(id);//_dbContext.VehicleMake.Single(v => v.VehicleMakelId == id);
-            _dbContext.VehicleMake.Remove(_mapper.Map<IVehicleMakeDomainModel, VehicleMake>(item));
+            if (id == null)
+            {
+                return 0;
+            }
+            var item = await Get(id);
+            if (item == null)
+            {
+                return 0;
+            }
+
+            _dbContext.VehicleMake.Remove(_mapper.Map<IVehicleMake, VehicleMakeEntity>(item));
             return await _dbContext.SaveChangesAsync();
 
         }
 
-        public async Task<IVehicleMakeDomainModel> Get(Guid id)
+        public async Task<IVehicleMake> Get(Guid id)
         {
             var vehicleMake = await _dbContext.VehicleMake.FindAsync(id);
-            return _mapper.Map<VehicleMake, IVehicleMakeDomainModel>(vehicleMake);
+            return _mapper.Map<VehicleMakeEntity, IVehicleMake>(vehicleMake);
         }
 
-        public async Task<ICollection<IVehicleMakeDomainModel>> GetAll()
+        public async Task<ICollection<IVehicleMake>> GetAll()
         {
             var vehicleMakes = await _dbContext.VehicleMake.ToListAsync();
-            return _mapper.Map<ICollection<VehicleMake>, ICollection<IVehicleMakeDomainModel>>(vehicleMakes);
+            return _mapper.Map<ICollection<VehicleMakeEntity>, ICollection<IVehicleMake>>(vehicleMakes);
         }
 
-        public async Task<int> Update(IVehicleMakeDomainModel vehicleMake)
+        public async Task<int> Update(IVehicleMake vehicleMake)
         {
             var _vehicleMake = await Get(vehicleMake.VehicleMakeId);
-            _dbContext.Entry(_vehicleMake).CurrentValues.SetValues(_mapper.Map<IVehicleMakeDomainModel, VehicleMake>(vehicleMake));
+            if (_vehicleMake == null)
+            {
+                return 0;
+            }
+            _dbContext.Entry(_vehicleMake).CurrentValues.SetValues(_mapper.Map<IVehicleMake, VehicleMakeEntity>(vehicleMake));
             return await _dbContext.SaveChangesAsync();
         }
     }
