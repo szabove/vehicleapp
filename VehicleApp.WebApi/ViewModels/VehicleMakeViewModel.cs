@@ -10,6 +10,6 @@ namespace VehicleApp.WebApi.ViewModels
         public Guid VehicleMakeId { get; set; }
         public string Name { get; set; }
         public string Abrv { get; set; }
-        public ICollection<VehicleModelViewModel> VehicleModel { get; set; }
+        public ICollection<VehicleModelViewModel> VehicleModels { get; set; }
     }
 }

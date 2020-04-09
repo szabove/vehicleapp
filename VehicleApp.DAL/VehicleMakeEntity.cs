@@ -14,14 +14,14 @@ namespace VehicleApp.DAL
         public VehicleMakeEntity()
         {
             this.VehicleModels = new HashSet<VehicleModelEntity>();
-            if (VehicleMakelId == Guid.Empty)
+            if (VehicleMakeId == Guid.Empty)
             {
-                VehicleMakelId = Guid.NewGuid();
+                VehicleMakeId = Guid.NewGuid();
             }
         }
 
         [Key]
-        public Guid VehicleMakelId { get; set; }
+        public Guid VehicleMakeId { get; set; }
         [Required]
         public string Name { get; set; }
         public string Abrv { get; set; }

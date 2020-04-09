@@ -11,6 +11,6 @@ namespace VehicleApp.Model.Common
         Guid VehicleMakeId { get; set; }
         string Name{ get; set; }
         string Abrv { get; set; }
-        ICollection<IVehicleModel> VehicleModel { get; set; }
+        ICollection<IVehicleModel> VehicleModels { get; set; }
     }
 }
