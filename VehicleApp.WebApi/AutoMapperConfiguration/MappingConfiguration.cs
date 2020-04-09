@@ -12,13 +12,15 @@ namespace VehicleApp.WebApi.AutoMapperConfiguration
         {
             var config = new MapperConfiguration(cfg =>
                 cfg.AddMaps(new[] {
-                    typeof(VehicleApp.WebApi.AutoMapperConfiguration.RestToDomainModelMapping)
+                    typeof(VehicleApp.WebApi.AutoMapperConfiguration.RestToDomainModelMapping),
+                    typeof(VehicleApp.Repository.AutoMapperConfiguration.DomainToEntityModelMapping)
                 })
             );
-
+            
             config.AssertConfigurationIsValid();
 
             config.CreateMapper();
+
         }
     }
 }

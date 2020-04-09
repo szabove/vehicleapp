@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoMapperConfiguration\DomainToEntityModelMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VehicleMakeRepository.cs" />
     <Compile Include="VehicleModelRepository.cs" />
@@ -86,11 +87,16 @@
       <Project>{0EC571FC-B1B3-4D39-914B-0483475FB4DE}</Project>
       <Name>VehicleApp.Model.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VehicleApp.Model\VehicleApp.Model.csproj">
+      <Project>{24A8EB5D-4576-4628-8006-A02675B36F36}</Project>
+      <Name>VehicleApp.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VehicleApp.Repository.Common\VehicleApp.Repository.Common.csproj">
       <Project>{0ACA7415-87B7-4F1C-B763-C6CFF755545E}</Project>
       <Name>VehicleApp.Repository.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

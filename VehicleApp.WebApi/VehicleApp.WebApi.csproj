@@ -283,6 +283,10 @@
       <Project>{24A8EB5D-4576-4628-8006-A02675B36F36}</Project>
       <Name>VehicleApp.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VehicleApp.Repository\VehicleApp.Repository.csproj">
+      <Project>{87c1e62e-f6fd-4f9d-ad24-2f6e914c8a01}</Project>
+      <Name>VehicleApp.Repository</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VehicleApp.Services.Common\VehicleApp.Services.Common.csproj">
       <Project>{3be1e25a-a0cc-4bdb-beb9-2bacf7f702a6}</Project>
       <Name>VehicleApp.Services.Common</Name>
