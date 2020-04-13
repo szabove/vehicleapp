@@ -15,11 +15,11 @@ namespace VehicleApp.DAL
 
         protected override void OnModelCreating(DbModelBuilder dbModelBuilder)
         {
-            dbModelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+            //dbModelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             //dbModelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
 
             //Configuring for : VehicleMake has many VehicleModels and will delete them on deletion
-            dbModelBuilder.Entity<VehicleMakeEntity>().HasMany(x => x.VehicleModels).WithRequired(x => x.VehicleMake).WillCascadeOnDelete(true);
+            dbModelBuilder.Entity<VehicleMakeEntity>().HasMany(x => x.VehicleModel).WithRequired(x => x.VehicleMake).WillCascadeOnDelete(true);
         }
     }
 }

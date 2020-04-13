@@ -13,7 +13,7 @@ namespace VehicleApp.DAL
     {
         public VehicleMakeEntity()
         {
-            this.VehicleModels = new HashSet<VehicleModelEntity>();
+            this.VehicleModel = new HashSet<VehicleModelEntity>();
             if (VehicleMakeId == Guid.Empty)
             {
                 VehicleMakeId = Guid.NewGuid();
@@ -25,6 +25,6 @@ namespace VehicleApp.DAL
         [Required]
         public string Name { get; set; }
         public string Abrv { get; set; }
-        public virtual ICollection<VehicleModelEntity> VehicleModels { get; set; }
+        public virtual ICollection<VehicleModelEntity> VehicleModel { get; set; }
     }
 }

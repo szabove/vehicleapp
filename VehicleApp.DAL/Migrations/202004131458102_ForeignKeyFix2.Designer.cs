@@ -7,13 +7,13 @@ namespace VehicleApp.DAL.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.0")]
-    public sealed partial class RemovingPluralization : IMigrationMetadata
+    public sealed partial class ForeignKeyFix2 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RemovingPluralization));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ForeignKeyFix2));
         
         string IMigrationMetadata.Id
         {
-            get { return "202003171419012_RemovingPluralization"; }
+            get { return "202004131458102_ForeignKeyFix2"; }
         }
         
         string IMigrationMetadata.Source

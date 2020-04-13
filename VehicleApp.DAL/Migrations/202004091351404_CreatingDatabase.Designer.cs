@@ -7,13 +7,13 @@ namespace VehicleApp.DAL.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.0")]
-    public sealed partial class NavigationPropertyVehicleModelsMarkedAsVirtual : IMigrationMetadata
+    public sealed partial class CreatingDatabase : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(NavigationPropertyVehicleModelsMarkedAsVirtual));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(CreatingDatabase));
         
         string IMigrationMetadata.Id
         {
-            get { return "202003241523401_NavigationPropertyVehicleModelsMarkedAsVirtual"; }
+            get { return "202004091351404_CreatingDatabase"; }
         }
         
         string IMigrationMetadata.Source

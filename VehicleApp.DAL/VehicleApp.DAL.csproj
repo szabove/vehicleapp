@@ -54,21 +54,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Migrations\202003171414557_CreatingDatabase.cs" />
-    <Compile Include="Migrations\202003171414557_CreatingDatabase.designer.cs">
-      <DependentUpon>202003171414557_CreatingDatabase.cs</DependentUpon>
+    <Compile Include="Migrations\202004091351404_CreatingDatabase.cs" />
+    <Compile Include="Migrations\202004091351404_CreatingDatabase.designer.cs">
+      <DependentUpon>202004091351404_CreatingDatabase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202003171419012_RemovingPluralization.cs" />
-    <Compile Include="Migrations\202003171419012_RemovingPluralization.designer.cs">
-      <DependentUpon>202003171419012_RemovingPluralization.cs</DependentUpon>
+    <Compile Include="Migrations\202004131414170_ForeignKeyFix.cs" />
+    <Compile Include="Migrations\202004131414170_ForeignKeyFix.designer.cs">
+      <DependentUpon>202004131414170_ForeignKeyFix.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202003241523401_NavigationPropertyVehicleModelsMarkedAsVirtual.cs" />
-    <Compile Include="Migrations\202003241523401_NavigationPropertyVehicleModelsMarkedAsVirtual.designer.cs">
-      <DependentUpon>202003241523401_NavigationPropertyVehicleModelsMarkedAsVirtual.cs</DependentUpon>
+    <Compile Include="Migrations\202004131433384_ForeignKeyFix1.cs" />
+    <Compile Include="Migrations\202004131433384_ForeignKeyFix1.designer.cs">
+      <DependentUpon>202004131433384_ForeignKeyFix1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202003241525224_GuidFix.cs" />
-    <Compile Include="Migrations\202003241525224_GuidFix.designer.cs">
-      <DependentUpon>202003241525224_GuidFix.cs</DependentUpon>
+    <Compile Include="Migrations\202004131458102_ForeignKeyFix2.cs" />
+    <Compile Include="Migrations\202004131458102_ForeignKeyFix2.designer.cs">
+      <DependentUpon>202004131458102_ForeignKeyFix2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -81,17 +81,17 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202003171414557_CreatingDatabase.resx">
-      <DependentUpon>202003171414557_CreatingDatabase.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202004091351404_CreatingDatabase.resx">
+      <DependentUpon>202004091351404_CreatingDatabase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202003171419012_RemovingPluralization.resx">
-      <DependentUpon>202003171419012_RemovingPluralization.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202004131414170_ForeignKeyFix.resx">
+      <DependentUpon>202004131414170_ForeignKeyFix.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202003241523401_NavigationPropertyVehicleModelsMarkedAsVirtual.resx">
-      <DependentUpon>202003241523401_NavigationPropertyVehicleModelsMarkedAsVirtual.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202004131433384_ForeignKeyFix1.resx">
+      <DependentUpon>202004131433384_ForeignKeyFix1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202003241525224_GuidFix.resx">
-      <DependentUpon>202003241525224_GuidFix.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202004131458102_ForeignKeyFix2.resx">
+      <DependentUpon>202004131458102_ForeignKeyFix2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

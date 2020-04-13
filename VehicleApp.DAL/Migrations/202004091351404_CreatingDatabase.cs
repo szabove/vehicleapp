@@ -8,36 +8,36 @@
         public override void Up()
         {
             CreateTable(
-                "dbo.VehicleMakes",
+                "dbo.VehicleMake",
                 c => new
                     {
-                        VehicleMakelId = c.Guid(nullable: false),
+                        VehicleMakeId = c.Guid(nullable: false),
                         Name = c.String(nullable: false),
                         Abrv = c.String(),
                     })
-                .PrimaryKey(t => t.VehicleMakelId);
+                .PrimaryKey(t => t.VehicleMakeId);
             
             CreateTable(
-                "dbo.VehicleModels",
+                "dbo.VehicleModel",
                 c => new
                     {
                         VehicleModelId = c.Guid(nullable: false),
                         Name = c.String(nullable: false),
                         Abrv = c.String(),
-                        VehicleMake_VehicleMakelId = c.Guid(),
+                        VehicleMake_VehicleMakeId = c.Guid(nullable: false),
                     })
                 .PrimaryKey(t => t.VehicleModelId)
-                .ForeignKey("dbo.VehicleMakes", t => t.VehicleMake_VehicleMakelId)
-                .Index(t => t.VehicleMake_VehicleMakelId);
+                .ForeignKey("dbo.VehicleMake", t => t.VehicleMake_VehicleMakeId, cascadeDelete: true)
+                .Index(t => t.VehicleMake_VehicleMakeId);
             
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.VehicleModels", "VehicleMake_VehicleMakelId", "dbo.VehicleMakes");
-            DropIndex("dbo.VehicleModels", new[] { "VehicleMake_VehicleMakelId" });
-            DropTable("dbo.VehicleModels");
-            DropTable("dbo.VehicleMakes");
+            DropForeignKey("dbo.VehicleModel", "VehicleMake_VehicleMakeId", "dbo.VehicleMake");
+            DropIndex("dbo.VehicleModel", new[] { "VehicleMake_VehicleMakeId" });
+            DropTable("dbo.VehicleModel");
+            DropTable("dbo.VehicleMake");
         }
     }
 }

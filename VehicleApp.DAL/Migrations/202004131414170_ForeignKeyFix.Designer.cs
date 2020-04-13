@@ -7,13 +7,13 @@ namespace VehicleApp.DAL.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.0")]
-    public sealed partial class GuidFix : IMigrationMetadata
+    public sealed partial class ForeignKeyFix : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(GuidFix));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ForeignKeyFix));
         
         string IMigrationMetadata.Id
         {
-            get { return "202003241525224_GuidFix"; }
+            get { return "202004131414170_ForeignKeyFix"; }
         }
         
         string IMigrationMetadata.Source

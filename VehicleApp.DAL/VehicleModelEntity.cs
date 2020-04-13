@@ -11,7 +11,7 @@ namespace VehicleApp.DAL
     [Table("VehicleModel")]
     public class VehicleModelEntity
     {
-        
+
         public VehicleModelEntity()
         {
             if (VehicleModelId == Guid.Empty)
@@ -22,6 +22,8 @@ namespace VehicleApp.DAL
 
         [Key]
         public Guid VehicleModelId { get; set; }
+        [ForeignKey("VehicleMake")]
+        public Guid VehicleMakeId { get; set; }
         [Required]
         public string Name { get; set; }
         public string Abrv { get; set; }
