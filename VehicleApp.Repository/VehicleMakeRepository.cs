@@ -34,13 +34,14 @@ namespace VehicleApp.Repository
             {
                 return 0;
             }
-            var item = await Get(id);
-            if (item == null)
+
+            var vehicleMake = await _dbContext.VehicleMake.FindAsync(id);
+            if (vehicleMake == null)
             {
                 return 0;
             }
 
-            _dbContext.VehicleMake.Remove(_mapper.Map<IVehicleMake, VehicleMakeEntity>(item));
+            _dbContext.VehicleMake.Remove(vehicleMake);
             return await _dbContext.SaveChangesAsync();
 
         }
@@ -48,7 +49,11 @@ namespace VehicleApp.Repository
         public async Task<IVehicleMake> Get(Guid id)
         {
             var vehicleMake = await _dbContext.VehicleMake.FindAsync(id);
-            return _mapper.Map<VehicleMakeEntity, IVehicleMake>(vehicleMake);
+            if (vehicleMake == null)
+            {
+                return null;
+            }
+            return _mapper.Map<IVehicleMake>(vehicleMake);
         }
 
         public async Task<ICollection<IVehicleMake>> GetAll()

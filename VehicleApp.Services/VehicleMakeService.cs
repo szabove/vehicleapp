@@ -36,8 +36,22 @@ namespace VehicleApp.Services
         public async Task<IVehicleMake> Get(Guid vehicleMakeID)
         {
             var make = await _makeRepository.Get(vehicleMakeID);
+
+            if (make == null)
+            {
+                return null;
+            }
+
             var models = await _modelRepository.GetAllModelsFromMake(make.VehicleMakeId);
-            make.VehicleModel = models;
+
+
+            if (models == null)
+            {
+                return null;
+            }
+
+            make.VehicleModels = models;
+
             return make;
         }
 
