@@ -15,8 +15,6 @@ namespace VehicleApp.WebApi
     {
         protected void Application_Start()
         {
-
-            MappingConfiguration.IncludeAllMappingProfiles();
             DIContainerConfig.RegisterComponents();
 
     //        //Temporary code

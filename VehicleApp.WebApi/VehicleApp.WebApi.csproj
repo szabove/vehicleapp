@@ -49,6 +49,9 @@
     <Reference Include="Autofac, Version=5.1.2.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.5.1.2\lib\net461\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="Autofac.Integration.WebApi, Version=5.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.WebApi2.5.0.0\lib\net461\Autofac.Integration.WebApi.dll</HintPath>
+    </Reference>
     <Reference Include="AutoMapper, Version=9.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.9.0.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
@@ -179,10 +182,11 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="AutoMapperConfiguration\MappingConfiguration.cs" />
     <Compile Include="AutoMapperConfiguration\RestToDomainModelMapping.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\VehicleMakeController.cs" />
+    <Compile Include="Controllers\VehicleModelController.cs" />
+    <Compile Include="DIConfiguration\PresentationLayerDependency.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -290,6 +294,10 @@
     <ProjectReference Include="..\VehicleApp.Services.Common\VehicleApp.Services.Common.csproj">
       <Project>{3be1e25a-a0cc-4bdb-beb9-2bacf7f702a6}</Project>
       <Name>VehicleApp.Services.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VehicleApp.Services\VehicleApp.Services.csproj">
+      <Project>{7648118A-1862-434C-B06B-449E7DB05A30}</Project>
+      <Name>VehicleApp.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

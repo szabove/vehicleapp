@@ -14,6 +14,12 @@ namespace VehicleApp.WebApi
             // Web API routes
             config.MapHttpAttributeRoutes();
 
+            //config.Routes.MapHttpRoute(
+            //    name: "VehicleMakeRoute",
+            //    routeTemplate: "api/make/{controller}/{action}/{id}",
+            //    defaults: new { controller = "VehicleMake", id = RouteParameter.Optional }
+            //    );
+            
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
