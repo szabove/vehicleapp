@@ -10,16 +10,16 @@ namespace VehicleApp.WebApi.AutoMapperConfiguration
     {
         public static void IncludeAllMappingProfiles()
         {
-            var config = new MapperConfiguration(cfg =>
-                cfg.AddMaps(new[] {
-                    typeof(VehicleApp.WebApi.AutoMapperConfiguration.RestToDomainModelMapping),
-                    typeof(VehicleApp.Repository.AutoMapperConfiguration.DomainToEntityModelMapping)
-                })
-            );
+            //var config = new MapperConfiguration(cfg =>
+            //    cfg.AddMaps(new[] {
+            //        typeof(VehicleApp.WebApi.AutoMapperConfiguration.RestToDomainModelMapping),
+            //        typeof(VehicleApp.Repository.AutoMapperConfiguration.DomainToEntityModelMapping)
+            //    })
+            //);
             
-            config.AssertConfigurationIsValid();
+            //config.AssertConfigurationIsValid();
 
-            config.CreateMapper();
+            //config.CreateMapper();
 
         }
     }

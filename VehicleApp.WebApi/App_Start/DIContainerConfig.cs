@@ -1,24 +1,46 @@
 ﻿using Autofac;
+using Autofac.Integration.WebApi;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
+using System.Web.Http;
+using VehicleApp.Repository.DIConfiguration;
+using VehicleApp.Services;
+using VehicleApp.Services.Common;
+using VehicleApp.Services.DIConfiguration;
+using VehicleApp.WebApi.Controllers;
+using VehicleApp.WebApi.DIConfiguration;
 
 namespace VehicleApp.WebApi.App_Start
 {
     public static class DIContainerConfig
     {
-        public static IContainer Configure()
+        public static void RegisterComponents()
         {
             var builder = new ContainerBuilder();
+            //builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+            builder.RegisterType<VehicleMakeController>().InstancePerRequest();
 
-            
+            builder.RegisterModule<PresentationLayerDependency>();
+            builder.RegisterModule<ServiceLayerDependency>();
+            builder.RegisterModule<RepositoryLayerDependency>();
 
-            //builder.RegisterType<VehicleMakeService>().As<Services.Common.IVehicleMakeService>();
+            //Automapper
+            builder.Register<IConfigurationProvider>(ctx => new MapperConfiguration(cfg => cfg.AddMaps(new[] {
+                    typeof(VehicleApp.WebApi.AutoMapperConfiguration.RestToDomainModelMapping),
+                    typeof(VehicleApp.Repository.AutoMapperConfiguration.DomainToEntityModelMapping)
+                }))).SingleInstance();
 
-            
+            builder.Register<IMapper>(ctx => new Mapper(ctx.Resolve<IConfigurationProvider>(), ctx.Resolve)).InstancePerDependency();
 
-            return builder.Build();
+            var container = builder.Build();
+
+            //Global Http configuration
+            var config = GlobalConfiguration.Configuration;
+            config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
         }
     }
 }
