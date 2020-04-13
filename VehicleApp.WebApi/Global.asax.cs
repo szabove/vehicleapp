@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using VehicleApp.WebApi.App_Start;
 using VehicleApp.WebApi.AutoMapperConfiguration;
 
 namespace VehicleApp.WebApi
@@ -16,6 +17,14 @@ namespace VehicleApp.WebApi
         {
 
             MappingConfiguration.IncludeAllMappingProfiles();
+            DIContainerConfig.RegisterComponents();
+
+    //        //Temporary code
+    //        GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings
+    //.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+    //        GlobalConfiguration.Configuration.Formatters
+    //            .Remove(GlobalConfiguration.Configuration.Formatters.XmlFormatter);
+    //        //
 
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
