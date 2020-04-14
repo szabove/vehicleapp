@@ -23,6 +23,7 @@ namespace VehicleApp.WebApi.App_Start
             var builder = new ContainerBuilder();
             //builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
             builder.RegisterType<VehicleMakeController>().InstancePerRequest();
+            builder.RegisterType<VehicleModelController>().InstancePerRequest();
 
             builder.RegisterModule<PresentationLayerDependency>();
             builder.RegisterModule<ServiceLayerDependency>();

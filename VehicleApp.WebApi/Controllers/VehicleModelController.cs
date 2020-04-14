@@ -25,7 +25,7 @@ namespace VehicleApp.WebApi.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("add")]
         public async Task<HttpResponseMessage> AddVehicleModel(VehicleModelViewModel vehicleModel)
         {

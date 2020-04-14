@@ -11,22 +11,13 @@ namespace VehicleApp.DAL
     [Table("VehicleModel")]
     public class VehicleModelEntity
     {
-
-        public VehicleModelEntity()
-        {
-            if (VehicleModelId == Guid.Empty)
-            {
-                VehicleModelId = Guid.NewGuid();
-            }
-        }
-
         [Key]
         public Guid VehicleModelId { get; set; }
-        [ForeignKey("VehicleMake")]
-        public Guid VehicleMakeId { get; set; }
         [Required]
         public string Name { get; set; }
         public string Abrv { get; set; }
+        public Guid VehicleMakeId { get; set; }
+        [ForeignKey(nameof(VehicleMakeId))]
         public virtual VehicleMakeEntity VehicleMake { get; set; }
     }
 }

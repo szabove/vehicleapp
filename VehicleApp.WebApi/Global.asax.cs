@@ -17,12 +17,13 @@ namespace VehicleApp.WebApi
         {
             DIContainerConfig.RegisterComponents();
 
-    //        //Temporary code
-    //        GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings
-    //.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-    //        GlobalConfiguration.Configuration.Formatters
-    //            .Remove(GlobalConfiguration.Configuration.Formatters.XmlFormatter);
-    //        //
+            //Temporary code
+            GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings
+            .ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            GlobalConfiguration.Configuration.Formatters
+            .Remove(GlobalConfiguration.Configuration.Formatters.XmlFormatter);
+            //
+
 
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);

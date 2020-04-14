@@ -31,14 +31,29 @@ namespace VehicleApp.Repository
 
         public async Task<int> Delete(Guid vehicleModelID)
         {
-            var item = await Get(vehicleModelID);
-            _dbContext.VehicleModel.Remove(_mapper.Map<IVehicleModel, VehicleModelEntity>(item));
+            if (vehicleModelID == null)
+            {
+                return 0;
+            }
+
+            var vehicleModel = await _dbContext.VehicleModel.FindAsync(vehicleModelID);
+
+            if (vehicleModel == null)
+            {
+                return 0;
+            }
+
+            _dbContext.VehicleModel.Remove(vehicleModel);
             return await _dbContext.SaveChangesAsync();
         }
 
         public async Task<IVehicleModel> Get(Guid vehicleModelID)
         {
             var vehicleModel = await _dbContext.VehicleModel.FindAsync(vehicleModelID);
+            if (vehicleModel == null)
+            {
+                return null;
+            }
             return _mapper.Map<VehicleModelEntity, IVehicleModel>(vehicleModel);
         }
 
@@ -62,6 +77,10 @@ namespace VehicleApp.Repository
         public async Task<int> Update(IVehicleModel vehicleModel)
         {
             var _vehicleModel = await Get(vehicleModel.VehicleModelId);
+            if (_vehicleModel == null)
+            {
+                return 0;
+            }
             _dbContext.Entry(_vehicleModel).CurrentValues.SetValues(_mapper.Map<IVehicleModel, VehicleModelEntity>(vehicleModel));
             return await _dbContext.SaveChangesAsync();
         }

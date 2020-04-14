@@ -11,14 +11,10 @@ namespace VehicleApp.DAL
     [Table("VehicleMake")]
     public class VehicleMakeEntity
     {
-        public VehicleMakeEntity()
-        {
-            this.VehicleModel = new HashSet<VehicleModelEntity>();
-            if (VehicleMakeId == Guid.Empty)
-            {
-                VehicleMakeId = Guid.NewGuid();
-            }
-        }
+        //public VehicleMakeEntity()
+        //{
+        //    VehicleModel = new HashSet<VehicleModelEntity>();
+        //}
 
         [Key]
         public Guid VehicleMakeId { get; set; }
