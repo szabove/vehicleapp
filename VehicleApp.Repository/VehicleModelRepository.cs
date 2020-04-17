@@ -65,7 +65,7 @@ namespace VehicleApp.Repository
 
         public async Task<ICollection<IVehicleModel>> GetAllModelsFromMake(Guid vehicleMakeID)
         {
-            var vehicleModels = await _dbContext.VehicleModel.Where(v => v.VehicleMake.VehicleMakeId == vehicleMakeID).ToListAsync();
+            var vehicleModels = await _dbContext.VehicleModel.Where(v => v.VehicleMakeId == vehicleMakeID).ToListAsync();
             if (vehicleModels == null)
             {
                 return null;

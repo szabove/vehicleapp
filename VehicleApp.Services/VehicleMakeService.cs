@@ -42,15 +42,15 @@ namespace VehicleApp.Services
                 return null;
             }
 
-            var models = await _modelRepository.GetAllModelsFromMake(make.VehicleMakeId);
+            //var models = await _modelRepository.GetAllModelsFromMake(make.VehicleMakeId);
 
 
-            if (models == null)
-            {
-                return null;
-            }
+            //if (models == null)
+            //{
+            //    return null;
+            //}
 
-            make.VehicleModels = models;
+            //make.VehicleModels = models;
 
             return make;
         }
