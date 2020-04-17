@@ -9,7 +9,15 @@ namespace VehicleApp.WebApi
     {
         public static void Register(HttpConfiguration config)
         {
+
             // Web API configuration and services
+            config.Formatters.Remove(config.Formatters.XmlFormatter);
+            //config.Formatters.Add(config.Formatters.JsonFormatter);
+            config.Formatters.JsonFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
+            //config.Formatters.JsonFormatter.MaxDepth = 1;
+            //config.Formatters.JsonFormatter.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+            config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            //config.Formatters.JsonFormatter.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
 
             // Web API routes
             config.MapHttpAttributeRoutes();
