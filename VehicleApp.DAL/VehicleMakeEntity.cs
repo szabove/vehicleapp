@@ -11,10 +11,10 @@ namespace VehicleApp.DAL
     [Table("VehicleMake")]
     public class VehicleMakeEntity
     {
-        //public VehicleMakeEntity()
-        //{
-        //    VehicleModel = new HashSet<VehicleModelEntity>();
-        //}
+        public VehicleMakeEntity()
+        {
+            VehicleModel = new HashSet<VehicleModelEntity>();
+        }
 
         [Key]
         public Guid VehicleMakeId { get; set; }

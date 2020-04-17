@@ -8,15 +8,6 @@ namespace VehicleApp.WebApi.ViewModels
 {
     public class VehicleMakeViewModel
     {
-        public VehicleMakeViewModel()
-        {
-            this.VehicleModels = new HashSet<VehicleModelViewModel>();
-            if (VehicleMakeId == Guid.Empty)
-            {
-                VehicleMakeId = Guid.NewGuid();
-            }
-        }
-
         [Required]
         public Guid VehicleMakeId { get; set; }
         [Required]

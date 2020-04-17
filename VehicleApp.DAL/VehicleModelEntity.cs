@@ -17,7 +17,6 @@ namespace VehicleApp.DAL
         public string Name { get; set; }
         public string Abrv { get; set; }
         public Guid VehicleMakeId { get; set; }
-        [ForeignKey(nameof(VehicleMakeId))]
-        public virtual VehicleMakeEntity VehicleMake { get; set; }
+        public VehicleMakeEntity VehicleMake { get; set; }
     }
 }
