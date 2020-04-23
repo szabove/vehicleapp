@@ -57,26 +57,61 @@ namespace VehicleApp.Repository
             return _mapper.Map<VehicleModelEntity, IVehicleModel>(vehicleModel);
         }
 
-        public async Task<ICollection<IVehicleModel>> GetAll()
-        {
-            var vehicleModels = await _dbContext.VehicleModel.ToListAsync();
-            return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
-        }
+        //public async Task<ICollection<IVehicleModel>> GetAllSorted(string abc = "")
+        //{
+        //    ICollection<VehicleModelEntity> vehicleModels = null;
+        //    switch (abc.ToLower())
+        //    {
+        //        case "asc":
+        //            vehicleModels = await _dbContext.VehicleModel.OrderBy(x => x.Name).ToListAsync();
+        //            return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
 
-        public async Task<ICollection<IVehicleModel>> GetAllModelsFromMake(Guid vehicleMakeID)
+        //        case "desc":
+        //            vehicleModels = await _dbContext.VehicleModel.OrderByDescending(x => x.Name).ToListAsync();
+        //            return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
+
+        //        default:
+        //            vehicleModels = await _dbContext.VehicleModel.ToListAsync();
+        //            return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
+
+        //    }
+        //    //        vehicleModels = await _dbContext.VehicleModel.ToListAsync();
+        //    //return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
+        //}
+
+        public async Task<ICollection<IVehicleModel>> GetAllModelsFromMake(Guid vehicleMakeID, string abc = "")
         {
-            var vehicleModels = await _dbContext.VehicleModel.Where(v => v.VehicleMakeId == vehicleMakeID).ToListAsync();
+            ICollection<VehicleModelEntity> vehicleModels = await _dbContext.VehicleModel.Where(v => v.VehicleMakeId == vehicleMakeID).ToListAsync();
             if (vehicleModels == null)
             {
                 return null;
             }
-            var mappedVehicleModels = _mapper.Map<List<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
-            return (ICollection<IVehicleModel>)mappedVehicleModels;
+
+            //ICollection<VehicleModelEntity> vehicleModels = null;
+            switch (abc.ToLower())
+            {
+                case "asc":
+                    vehicleModels = vehicleModels.OrderBy(x => x.Name).ToList();
+                    return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
+
+                case "desc":
+                    vehicleModels = vehicleModels.OrderByDescending(x => x.Name).ToList();
+                    return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
+
+                default:
+                    vehicleModels = vehicleModels.OrderBy(x => x.Name).ToList();
+                    return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
+
+            }
+
+            //var mappedVehicleModels = _mapper.Map<List<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
+            //return (ICollection<IVehicleModel>)mappedVehicleModels;
         }
 
         public async Task<int> Update(IVehicleModel vehicleModel)
         {
-            var _vehicleModel = await Get(vehicleModel.VehicleModelId);
+            //var _vehicleModel = await Get(vehicleModel.VehicleModelId);
+            var _vehicleModel = await _dbContext.VehicleModel.FindAsync(vehicleModel.VehicleModelId);
             if (_vehicleModel == null)
             {
                 return 0;

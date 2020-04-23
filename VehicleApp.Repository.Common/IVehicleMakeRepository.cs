@@ -10,7 +10,7 @@ namespace VehicleApp.Repository.Common
     public interface IVehicleMakeRepository
     {
         Task<IVehicleMake> Get(Guid id);
-        Task<ICollection<IVehicleMake>> GetAll();
+        Task<ICollection<IVehicleMake>> GetAllSorted(string abc);
         Task<int> Add(IVehicleMake vehicleMake);
         Task<int> Update(IVehicleMake vehicleMake);
         Task<int> Delete(Guid id);

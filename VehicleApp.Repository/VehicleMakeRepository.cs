@@ -21,7 +21,7 @@ namespace VehicleApp.Repository
             _dbContext = dbContext;
             _mapper = mapper;
         }
-
+        
         public async Task<int> Add(IVehicleMake vehicleMake)
         {
             _dbContext.VehicleMake.Add(_mapper.Map<IVehicleMake, VehicleMakeEntity>(vehicleMake));
@@ -56,15 +56,34 @@ namespace VehicleApp.Repository
             return _mapper.Map<IVehicleMake>(vehicleMake);
         }
 
-        public async Task<ICollection<IVehicleMake>> GetAll()
+        public async Task<ICollection<IVehicleMake>> GetAllSorted(string abc ="")
         {
-            var vehicleMakes = await _dbContext.VehicleMake.ToListAsync();
-            return _mapper.Map<ICollection<VehicleMakeEntity>, ICollection<IVehicleMake>>(vehicleMakes);
+
+            ICollection<VehicleMakeEntity> vehicleMakes = null;
+            switch (abc.ToLower())
+            {
+                case "asc":
+                    vehicleMakes = await _dbContext.VehicleMake.OrderBy(x => x.Name).ToListAsync();
+                    return _mapper.Map<ICollection<VehicleMakeEntity>, ICollection<IVehicleMake>>(vehicleMakes);
+
+                case "desc":
+                    vehicleMakes = await _dbContext.VehicleMake.OrderByDescending(x => x.Name).ToListAsync();
+                    return _mapper.Map<ICollection<VehicleMakeEntity>, ICollection<IVehicleMake>>(vehicleMakes);
+
+                default:
+                    vehicleMakes = await _dbContext.VehicleMake.ToListAsync();
+                    return _mapper.Map<ICollection<VehicleMakeEntity>, ICollection<IVehicleMake>>(vehicleMakes);
+                    
+            }
+
+
+            //vehicleMakes = await _dbContext.VehicleMake.ToListAsync();
+            //return _mapper.Map<ICollection<VehicleMakeEntity>, ICollection<IVehicleMake>>(vehicleMakes);
         }
 
         public async Task<int> Update(IVehicleMake vehicleMake)
         {
-            var _vehicleMake = await Get(vehicleMake.VehicleMakeId);
+            var _vehicleMake = await _dbContext.VehicleMake.FindAsync(vehicleMake.VehicleMakeId);
             if (_vehicleMake == null)
             {
                 return 0;
