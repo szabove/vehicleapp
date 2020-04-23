@@ -30,12 +30,19 @@ namespace VehicleApp.Services
 
         public async Task<IVehicleModel> Get(Guid vehicleModelID)
         {
-            return await _vehicleModelRepository.Get(vehicleModelID);
+            var models = await _vehicleModelRepository.Get(vehicleModelID);
+
+            if (models == null)
+            {
+                throw new Exception("A vehicle model with a given id does not exist!");
+            }
+
+            return models;
         }
 
-        public async Task<ICollection<IVehicleModel>> GetAll()
+        public async Task<ICollection<IVehicleModel>> GetAllModelsFromMake(Guid vehicleMakeID, string abc = "")
         {
-            return await _vehicleModelRepository.GetAll();
+            return await _vehicleModelRepository.GetAllModelsFromMake(vehicleMakeID, abc);
         }
 
         public async Task<int> Update(IVehicleModel vehicleModel)

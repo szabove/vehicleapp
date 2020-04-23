@@ -12,15 +12,12 @@ namespace VehicleApp.Services
 {
     public class VehicleMakeService : IVehicleMakeService
     {
-
+         
         IVehicleMakeRepository _makeRepository;
 
-        IVehicleModelRepository _modelRepository;
-
-        public VehicleMakeService(IVehicleMakeRepository makeRepository, IVehicleModelRepository modelRepository)
+        public VehicleMakeService(IVehicleMakeRepository makeRepository)
         {
             _makeRepository = makeRepository;
-            _modelRepository = modelRepository;
         }
 
         public async Task<int> Add(IVehicleMake vehicleMake)
@@ -39,7 +36,7 @@ namespace VehicleApp.Services
 
             if (make == null)
             {
-                return null;
+                throw new Exception("A vehicle make with a given id does not exist!");
             }
 
             //var models = await _modelRepository.GetAllModelsFromMake(make.VehicleMakeId);
@@ -55,9 +52,11 @@ namespace VehicleApp.Services
             return make;
         }
 
-        public async Task<ICollection<IVehicleMake>> GetAll()
+
+
+        public async Task<ICollection<IVehicleMake>> GetAllSorted(string abc = "")
         {
-            return await _makeRepository.GetAll();
+            return await _makeRepository.GetAllSorted(abc);
         }
 
         public async Task<int> Update(IVehicleMake vehicleMake)
