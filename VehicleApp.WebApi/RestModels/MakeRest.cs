@@ -6,13 +6,13 @@ using System.Web;
 
 namespace VehicleApp.WebApi.ViewModels
 {
-    public class VehicleMakeViewModel
+    public class MakeRest
     {
         [Required]
         public Guid VehicleMakeId { get; set; }
         [Required]
         public string Name { get; set; }
         public string Abrv { get; set; }
-        public ICollection<VehicleModelViewModel> VehicleModels { get; set; }
+        //public ICollection<ModelRest> VehicleModels { get; set; }
     }
 }

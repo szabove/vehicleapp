@@ -6,7 +6,7 @@ using System.Web;
 
 namespace VehicleApp.WebApi.ViewModels
 {
-    public class VehicleModelViewModel
+    public class ModelRest
     {
         [Required]
         public Guid VehicleMakeId { get; set; }
