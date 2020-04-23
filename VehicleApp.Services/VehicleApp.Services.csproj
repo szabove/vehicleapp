@@ -67,9 +67,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DIConfiguration\ServiceLayerDependency.cs" />
+    <Compile Include="ServiceLayerDependency.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VehicleMakePaginationService.cs" />
     <Compile Include="VehicleMakeService.cs" />
+    <Compile Include="VehicleModelPaginationService.cs" />
     <Compile Include="VehicleModelService.cs" />
   </ItemGroup>
   <ItemGroup>
