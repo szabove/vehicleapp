@@ -12,7 +12,6 @@ using VehicleApp.Services;
 using VehicleApp.Services.Common;
 using VehicleApp.Services.DIConfiguration;
 using VehicleApp.WebApi.Controllers;
-using VehicleApp.WebApi.DIConfiguration;
 
 namespace VehicleApp.WebApi.App_Start
 {
@@ -25,14 +24,14 @@ namespace VehicleApp.WebApi.App_Start
             builder.RegisterType<VehicleMakeController>().InstancePerRequest();
             builder.RegisterType<VehicleModelController>().InstancePerRequest();
 
-            builder.RegisterModule<PresentationLayerDependency>();
             builder.RegisterModule<ServiceLayerDependency>();
             builder.RegisterModule<RepositoryLayerDependency>();
 
             //Automapper
             builder.Register<IConfigurationProvider>(ctx => new MapperConfiguration(cfg => cfg.AddMaps(new[] {
                     typeof(VehicleApp.WebApi.AutoMapperConfiguration.RestToDomainModelMapping),
-                    typeof(VehicleApp.Repository.AutoMapperConfiguration.DomainToEntityModelMapping)
+                    typeof(VehicleApp.Repository.AutoMapperConfiguration.DomainToEntityModelMapping),
+                    typeof(VehicleApp.WebApi.AutoMapperConfiguration.RequestToDomainModelMapping)
                 }))).SingleInstance();
 
             builder.Register<IMapper>(ctx => new Mapper(ctx.Resolve<IConfigurationProvider>(), ctx.Resolve)).InstancePerDependency();
