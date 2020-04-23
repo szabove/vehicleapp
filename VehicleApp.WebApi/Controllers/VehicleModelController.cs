@@ -6,9 +6,11 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using VehicleApp.Common;
 using VehicleApp.Model;
 using VehicleApp.Model.Common;
 using VehicleApp.Services.Common;
+using VehicleApp.WebApi.RestModels;
 using VehicleApp.WebApi.ViewModels;
 
 namespace VehicleApp.WebApi.Controllers
@@ -18,16 +20,18 @@ namespace VehicleApp.WebApi.Controllers
     {
         private IVehicleModelService _vehicleModelService;
         private IMapper _mapper;
+        private IPaginationService<IVehicleModel> _paginationService;
 
-        public VehicleModelController(IVehicleModelService vehicleMakeService, IMapper mapper)
+        public VehicleModelController(IVehicleModelService vehicleMakeService, IMapper mapper, IPaginationService<IVehicleModel> paginationService)
         {
             _vehicleModelService = vehicleMakeService;
             _mapper = mapper;
+            _paginationService = paginationService;
         }
 
         [HttpPost]
         [Route("add")]
-        public async Task<HttpResponseMessage> AddVehicleModel(VehicleModelViewModel vehicleModel)
+        public async Task<HttpResponseMessage> AddVehicleModel(ModelRest vehicleModel)
         {
             try
             {
@@ -59,7 +63,7 @@ namespace VehicleApp.WebApi.Controllers
 
             try
             {
-                var response = _mapper.Map<VehicleModel>(await _vehicleModelService.Get(id));
+                var response = _mapper.Map<ModelRest>(await _vehicleModelService.Get(id));
 
                 if (response == null)
                 {
@@ -75,13 +79,40 @@ namespace VehicleApp.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("getall")]
-        public async Task<HttpResponseMessage> GetAllVehicleModels()
+        [Route("getall/{id}")]
+        public async Task<HttpResponseMessage> GetAllVehicleModels(Guid id, [FromUri] PaginationQuery paginationQuery, string abc = "")
         {
+
+            if (id == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+
             try
             {
-                var response = _mapper.Map<VehicleModel>(await _vehicleModelService.GetAll());
+                if (paginationQuery == null)
+                {
+                    var defaultPaginatedResponse = _mapper.Map<ICollection<ModelRest>>(await _vehicleModelService.GetAllModelsFromMake(id, abc));
+                    return Request.CreateResponse(HttpStatusCode.OK, defaultPaginatedResponse);
+                }
+
+                var fetchedData = await _vehicleModelService.GetAllModelsFromMake(id, abc);
+
+                //var response = _mapper.Map<ICollection<VehicleMake>>();
+
+                var paginationParams = _mapper.Map<IPagination>(paginationQuery);
+
+                var pagedResponse = _paginationService.PaginatedResult(fetchedData, paginationParams);
+
+                var response = new PagedResponse<ModelRest>(_mapper.Map<ICollection<ModelRest>>(pagedResponse));
+
+                response.SetPagingParams(paginationParams.PageNumber, paginationParams.PageSize);
+
                 return Request.CreateResponse(HttpStatusCode.OK, response);
+
+
+                //var response = _mapper.Map<ICollection<VehicleModel>>(await _vehicleModelService.GetAllModelsFromMake(id, abc));
+                //return Request.CreateResponse(HttpStatusCode.OK, response);
             }
             catch (Exception ex)
             {
@@ -91,7 +122,7 @@ namespace VehicleApp.WebApi.Controllers
 
         [HttpPost]
         [Route("update/{id}")]
-        public async Task<HttpResponseMessage> UpdateVehicleModel([FromBody]VehicleModelViewModel vehicleModel)
+        public async Task<HttpResponseMessage> UpdateVehicleModel(ModelRest vehicleModel)
         {
             try
             {
