@@ -19,6 +19,7 @@ namespace VehicleApp.DAL
         [Key]
         public Guid VehicleMakeId { get; set; }
         [Required]
+        [MaxLength(20)]
         public string Name { get; set; }
         public string Abrv { get; set; }
         public virtual ICollection<VehicleModelEntity> VehicleModel { get; set; }

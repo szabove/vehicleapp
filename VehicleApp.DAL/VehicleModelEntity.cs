@@ -14,6 +14,7 @@ namespace VehicleApp.DAL
         [Key]
         public Guid VehicleModelId { get; set; }
         [Required]
+        [MaxLength(20)]
         public string Name { get; set; }
         public string Abrv { get; set; }
         public Guid VehicleMakeId { get; set; }

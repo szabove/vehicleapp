@@ -20,6 +20,8 @@ namespace VehicleApp.DAL
 
             //Configuring for : VehicleMake has many VehicleModels and will delete them on deletion
             dbModelBuilder.Entity<VehicleMakeEntity>().HasMany(x => x.VehicleModel).WithRequired(x => x.VehicleMake).WillCascadeOnDelete(true);
+            dbModelBuilder.Entity<VehicleMakeEntity>().HasIndex(x => x.Name).IsUnique();
+            dbModelBuilder.Entity<VehicleModelEntity>().HasIndex(x => x.Name).IsUnique();
         }
     }
 }
