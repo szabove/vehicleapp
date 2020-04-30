@@ -27,12 +27,26 @@ namespace VehicleApp.WebApi
             //    routeTemplate: "api/make/{controller}/{action}/{id}",
             //    defaults: new { controller = "VehicleMake", id = RouteParameter.Optional }
             //    );
-            
+
+            config.Routes.MapHttpRoute(
+                name: "VehicleMake",
+                routeTemplate: "api/vehicle-make/{id}",
+                defaults: new { controller = "vehiclemake", id = RouteParameter.Optional }
+            );
+
+            config.Routes.MapHttpRoute(
+                name: "VehicleModel",
+                routeTemplate: "api/vehicle-model/{id}",
+                defaults: new { controller = "vehiclemodel", id = RouteParameter.Optional }
+            );
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            
+
         }
     }
 }
