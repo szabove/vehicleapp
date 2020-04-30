@@ -7,6 +7,7 @@ using VehicleApp.Services.Common;
 using VehicleApp.Repository.Common;
 using VehicleApp.Model.Common;
 using VehicleApp.Model;
+using VehicleApp.Common;
 
 namespace VehicleApp.Services
 {
@@ -33,35 +34,21 @@ namespace VehicleApp.Services
         public async Task<IVehicleMake> Get(Guid vehicleMakeID)
         {
             var make = await _makeRepository.Get(vehicleMakeID);
-
             if (make == null)
             {
-                throw new Exception("A vehicle make with a given id does not exist!");
+                return null;
             }
-
-            //var models = await _modelRepository.GetAllModelsFromMake(make.VehicleMakeId);
-
-
-            //if (models == null)
-            //{
-            //    return null;
-            //}
-
-            //make.VehicleModels = models;
-
             return make;
         }
 
-
-
-        public async Task<ICollection<IVehicleMake>> GetAllSorted(string abc = "")
+        public async Task<ICollection<IVehicleMake>> FindAsync(IMakeFilter filter)
         {
-            return await _makeRepository.GetAllSorted(abc);
+            return await _makeRepository.FindAsync(filter);
         }
 
-        public async Task<int> Update(IVehicleMake vehicleMake)
+        public async Task<int> Update(Guid ID, IVehicleMake vehicleMake)
         {
-            return await _makeRepository.Update(vehicleMake);
+            return await _makeRepository.Update(ID, vehicleMake);
         }
     }
 }

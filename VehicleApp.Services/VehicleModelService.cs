@@ -45,9 +45,9 @@ namespace VehicleApp.Services
             return await _vehicleModelRepository.GetAllModelsFromMake(vehicleMakeID, abc);
         }
 
-        public async Task<int> Update(IVehicleModel vehicleModel)
+        public async Task<int> Update(Guid ID, IVehicleModel vehicleModel)
         {
-            return await _vehicleModelRepository.Update(vehicleModel);
+            return await _vehicleModelRepository.Update(ID,vehicleModel);
         }
     }
 }
