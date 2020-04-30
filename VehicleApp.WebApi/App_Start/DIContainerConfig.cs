@@ -32,8 +32,7 @@ namespace VehicleApp.WebApi.App_Start
             //Automapper
             builder.Register<IConfigurationProvider>(ctx => new MapperConfiguration(cfg => cfg.AddMaps(new[] {
                     typeof(VehicleApp.WebApi.AutoMapperConfiguration.RestToDomainModelMapping),
-                    typeof(VehicleApp.Repository.AutoMapperConfiguration.DomainToEntityModelMapping),
-                    typeof(VehicleApp.WebApi.AutoMapperConfiguration.RequestToDomainModelMapping)
+                    typeof(VehicleApp.Repository.AutoMapperConfiguration.DomainToEntityModelMapping)
                 }))).SingleInstance();
 
             builder.Register<IMapper>(ctx => new Mapper(ctx.Resolve<IConfigurationProvider>(), ctx.Resolve)).InstancePerDependency();
