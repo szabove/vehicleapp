@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using VehicleApp.Common;
 using VehicleApp.Model;
 using VehicleApp.Model.Common;
 using VehicleApp.WebApi.ViewModels;
@@ -16,6 +17,7 @@ namespace VehicleApp.WebApi.AutoMapperConfiguration
             CreateMap<VehicleMake, MakeRest>().ReverseMap();
             CreateMap<VehicleMake, IVehicleMake>().ReverseMap();
             CreateMap<IVehicleMake, MakeRest>().ReverseMap();
+            CreateMap<ResponseCollection<IVehicleMake>, ResponseCollection<MakeRest>>();
 
             CreateMap<VehicleModel, ModelRest>().ReverseMap();
             CreateMap<VehicleModel, IVehicleModel>().ReverseMap();
