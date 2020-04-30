@@ -15,25 +15,23 @@ using VehicleApp.WebApi.ViewModels;
 
 namespace VehicleApp.WebApi.Controllers
 {
-    [RoutePrefix("api/make")]
     public class VehicleMakeController : ApiController
     {
         private IVehicleMakeService _service;
         private IMapper _mapper;
-        private IPaginationService<IVehicleMake> _pagination;
+        private IMakeFilter _filter;
 
         public VehicleMakeController(IVehicleMakeService service,
                                     IMapper mapper,
-                                    IPaginationService<IVehicleMake> pagination
+                                    IMakeFilter filter
                                     )
         {
             _service = service;
             _mapper = mapper;
-            _pagination = pagination;
+            _filter = filter;
         }
 
         [HttpPost]
-        [Route("add")]
         public async Task<HttpResponseMessage> AddVehicleMake(MakeRest vehicleMake)
         {
             try
@@ -57,7 +55,6 @@ namespace VehicleApp.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("get/{id}")]
         public async Task<HttpResponseMessage> GetVehicleMake(Guid id)
         {
 
@@ -85,45 +82,75 @@ namespace VehicleApp.WebApi.Controllers
 
 
         [HttpGet]
-        [Route("getall")]
-        public async Task<HttpResponseMessage> GetAllVehicleMakesQuery([FromUri]PaginationQuery paginationQuery, string abc = "")
+        public async Task<HttpResponseMessage> FindAsync([FromUri]PaginationQuery paginationQuery, string search)
         {
+
             try
             {
-
-                if (paginationQuery == null)
+                if (string.IsNullOrEmpty(search))
                 {
-                    var defaultPaginatedResponse = _mapper.Map<ICollection<MakeRest>>(await _service.GetAllSorted(abc));
-                    return Request.CreateResponse(HttpStatusCode.OK, new PagedResponse<MakeRest>(defaultPaginatedResponse));
+                    return Request.CreateResponse(HttpStatusCode.NoContent);
                 }
-                
-                var fetchedData = await _service.GetAllSorted(abc);
 
-                //var response = _mapper.Map<ICollection<VehicleMake>>();
+                _filter.Search = search;
 
-                var paginationParams = _mapper.Map<IPagination>(paginationQuery);
+                var paginationParameters = _mapper.Map<IPagination>(paginationQuery);
 
-                var pagedResponse = _pagination.PaginatedResult(fetchedData, paginationParams);
+                var response = await _service.FindAsync(_filter, paginationParameters);
 
-                var response = new PagedResponse<MakeRest>(_mapper.Map<ICollection<MakeRest>>(pagedResponse));
+                var responseCollection = _mapper.Map<ResponseCollection<MakeRest>>(response);
 
-                response.SetPagingParams(paginationParams.PageNumber, paginationParams.PageSize);
+                if (response.Data.Count == 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
 
                 return Request.CreateResponse(HttpStatusCode.OK, response);
+
             }
             catch (Exception ex)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
             }
+
         }
 
-        [HttpPost]
-        [Route("update/{id}")]
-        public async Task<HttpResponseMessage> UpdateVehicleMake(MakeRest vehicleMake)
+        //try
+        //{
+
+        //    if (paginationQuery == null)
+        //    {
+        //        var defaultPaginatedResponse = _mapper.Map<ICollection<MakeRest>>(await _service.GetAllSorted(abc));
+        //        return Request.CreateResponse(HttpStatusCode.OK, new PagedResponse<MakeRest>(defaultPaginatedResponse));
+        //    }
+
+        //    //var fetchedData = await _service.GetAllSorted(abc);
+
+        //    //var response = _mapper.Map<ICollection<VehicleMake>>();
+
+        //    var paginationParams = _mapper.Map<IPagination>(paginationQuery);
+
+        //    var pagedResponse = _pagination.PaginatedResult(fetchedData, paginationParams);
+
+        //    var response = new PagedResponse<MakeRest>(_mapper.Map<ICollection<MakeRest>>(pagedResponse));
+
+        //    response.SetPagingParams(paginationParams.PageNumber, paginationParams.PageSize);
+
+        //    return Request.CreateResponse(HttpStatusCode.OK, response);
+        //}
+        //catch (Exception ex)
+        //{
+        //    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+        //}
+
+
+
+        [HttpPut]
+        public async Task<HttpResponseMessage> UpdateVehicleMake(Guid ID, MakeRest vehicleMake)
         {
             try
             {
-                var response = await _service.Update(_mapper.Map<VehicleMake>(vehicleMake));
+                var response = await _service.Update(ID, _mapper.Map<VehicleMake>(vehicleMake));
                 if (response == 0)
                 {
                     return Request.CreateResponse(HttpStatusCode.Forbidden);
@@ -139,8 +166,7 @@ namespace VehicleApp.WebApi.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("delete/{id}")]
+        [HttpDelete]
         public async Task<HttpResponseMessage> DeleteVehicleMake(Guid id)
         {
             try
