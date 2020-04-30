@@ -15,7 +15,6 @@ using VehicleApp.WebApi.ViewModels;
 
 namespace VehicleApp.WebApi.Controllers
 {
-    [RoutePrefix("api/model")]
     public class VehicleModelController : ApiController
     {
         private IVehicleModelService _vehicleModelService;
@@ -30,7 +29,6 @@ namespace VehicleApp.WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("add")]
         public async Task<HttpResponseMessage> AddVehicleModel(ModelRest vehicleModel)
         {
             try
@@ -52,7 +50,6 @@ namespace VehicleApp.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("get/{id}")]
         public async Task<HttpResponseMessage> GetVehicleModel(Guid id)
         {
 
@@ -78,9 +75,8 @@ namespace VehicleApp.WebApi.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("getall/{id}")]
-        public async Task<HttpResponseMessage> GetAllVehicleModels(Guid id, [FromUri] PaginationQuery paginationQuery, string abc = "")
+        //[HttpGet]
+        public async Task<HttpResponseMessage> xGetAllVehicleModels(Guid id, [FromUri] PaginationQuery paginationQuery, string abc = "")
         {
 
             if (id == null)
@@ -120,13 +116,12 @@ namespace VehicleApp.WebApi.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("update/{id}")]
-        public async Task<HttpResponseMessage> UpdateVehicleModel(ModelRest vehicleModel)
+        [HttpPut]
+        public async Task<HttpResponseMessage> UpdateVehicleModel(Guid ID, ModelRest vehicleModel)
         {
             try
             {
-                var response = await _vehicleModelService.Update(_mapper.Map<VehicleModel>(vehicleModel));
+                var response = await _vehicleModelService.Update(ID, _mapper.Map<VehicleModel>(vehicleModel));
 
                 if (response == 0)
                 {
@@ -146,8 +141,7 @@ namespace VehicleApp.WebApi.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("delete/{id}")]
+        [HttpDelete]
         public async Task<HttpResponseMessage> DeleteVehicleModel(Guid id)
         {
             try
