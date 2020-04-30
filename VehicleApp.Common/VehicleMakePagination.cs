@@ -5,11 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using VehicleApp.Model;
 using VehicleApp.Model.Common;
-using VehicleApp.Services.Common;
 
-namespace VehicleApp.Services
+namespace VehicleApp.Common
 {
-    public class VehicleMakePaginationService : IPaginationService<IVehicleMake>
+    public class VehicleMakePagination : IPagination<IVehicleMake>
     {
         public ICollection<IVehicleMake> PaginatedResult(ICollection<IVehicleMake> data, IPagination pagination)
         {

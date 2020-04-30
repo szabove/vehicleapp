@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace VehicleApp.Common
 {
-    public class PagedResponse<T>
+    public class ResponseCollection<T>
     {
-        public PagedResponse()
+        public ResponseCollection()
         {
         }
 
-        public PagedResponse(ICollection<T> data)
+        public ResponseCollection(ICollection<T> data)
         {
             Data = data;
         }
