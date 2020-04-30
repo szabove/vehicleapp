@@ -5,6 +5,7 @@ using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -22,11 +23,13 @@ namespace VehicleApp.Repository
         VehicleContext _dbContext;
         IMapper _mapper;
         IMakeFilter _filter;
-        public VehicleMakeRepository(VehicleContext dbContext, IMapper mapper, IMakeFilter filter)
+        IPagination<IVehicleMake> _pagination;
+        public VehicleMakeRepository(VehicleContext dbContext, IMapper mapper, IMakeFilter filter,IPagination<IVehicleMake> pagination)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _filter = filter;
+            _pagination = pagination;
         }
         
         public async Task<int> Add(IVehicleMake vehicleMake)
@@ -72,7 +75,7 @@ namespace VehicleApp.Repository
             return _mapper.Map<IVehicleMake>(vehicleMake);
         }
 
-        public async Task<ICollection<IVehicleMake>> FindAsync(IMakeFilter filter)
+        public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination pagination)
         {
             //Set filter query based on filter properties passed from service layer
             var filterQuery = filter.GetFilterQuery();
@@ -83,7 +86,18 @@ namespace VehicleApp.Repository
                 return null;
             }
 
-            return _mapper.Map<List<IVehicleMake>>(vehicleMakes);
+            //Paginating
+            var data = _mapper.Map<ICollection<IVehicleMake>>(vehicleMakes);
+
+            var paginationParams = _mapper.Map<IPagination>(pagination);
+
+            var pagedCollection = _pagination.PaginatedResult(data, paginationParams);
+
+            var responseCollection = new ResponseCollection <  IVehicleMake >(pagedCollection);
+
+            responseCollection.SetPagingParams(pagination.PageNumber, pagination.PageSize);
+
+            return responseCollection;
 
             //return vehicleMakes;
 
