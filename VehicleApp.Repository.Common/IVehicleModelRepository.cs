@@ -13,7 +13,7 @@ namespace VehicleApp.Repository.Common
         Task<IVehicleModel> Get(Guid vehicleModelID);
         //Task<ICollection<IVehicleModel>> GetAllSorted(string abc ="");
         Task<int> Add(IVehicleModel vehicleModel);
-        Task<int> Update(IVehicleModel vehicleModel);
+        Task<int> Update(Guid ID, IVehicleModel vehicleModel);
         Task<int> Delete(Guid vehicleModelID);
         Task<ICollection<IVehicleModel>> GetAllModelsFromMake(Guid vehicleMakeID, string abc = "");
 

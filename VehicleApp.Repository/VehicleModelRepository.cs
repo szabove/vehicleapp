@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,17 @@ namespace VehicleApp.Repository
         public async Task<int> Add(IVehicleModel vehicleModel)
         {
             _dbContext.VehicleModel.Add(_mapper.Map<IVehicleModel, VehicleModelEntity>(vehicleModel));
-            return await _dbContext.SaveChangesAsync();
+
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+            return 1;
         }
 
         public async Task<int> Delete(Guid vehicleModelID)
@@ -108,7 +119,7 @@ namespace VehicleApp.Repository
             //return (ICollection<IVehicleModel>)mappedVehicleModels;
         }
 
-        public async Task<int> Update(IVehicleModel vehicleModel)
+        public async Task<int> Update(Guid ID, IVehicleModel vehicleModel)
         {
             //var _vehicleModel = await Get(vehicleModel.VehicleModelId);
             var _vehicleModel = await _dbContext.VehicleModel.FindAsync(vehicleModel.VehicleModelId);
