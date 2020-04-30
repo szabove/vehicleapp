@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Http;
+using VehicleApp.Common;
 using VehicleApp.Repository.DIConfiguration;
 using VehicleApp.Services;
 using VehicleApp.Services.Common;
@@ -26,6 +27,7 @@ namespace VehicleApp.WebApi.App_Start
 
             builder.RegisterModule<ServiceLayerDependency>();
             builder.RegisterModule<RepositoryLayerDependency>();
+            builder.RegisterModule<CommonLayerDependency>();
 
             //Automapper
             builder.Register<IConfigurationProvider>(ctx => new MapperConfiguration(cfg => cfg.AddMaps(new[] {
