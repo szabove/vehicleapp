@@ -73,8 +73,10 @@
     <Compile Include="CommonLayerDependency.cs" />
     <Compile Include="Filters\IMakeFIlter.cs" />
     <Compile Include="Filters\MakeFIlter.cs" />
-    <Compile Include="PagedResponse.cs" />
+    <Compile Include="IPaginationService.cs" />
+    <Compile Include="ResponseCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VehicleMakePagination.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
