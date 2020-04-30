@@ -41,9 +41,9 @@ namespace VehicleApp.Services
             return make;
         }
 
-        public async Task<ICollection<IVehicleMake>> FindAsync(IMakeFilter filter)
+        public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination pagination)
         {
-            return await _makeRepository.FindAsync(filter);
+            return await _makeRepository.FindAsync(filter, pagination);
         }
 
         public async Task<int> Update(Guid ID, IVehicleMake vehicleMake)

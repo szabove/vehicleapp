@@ -17,8 +17,8 @@ namespace VehicleApp.Services.DIConfiguration
             builder.RegisterType<VehicleModelService>().As<IVehicleModelService>();
             //
             //builder.RegisterType<Pagination>().As<IPagination>();
-            builder.RegisterType<VehicleMakePaginationService>().As<IPaginationService<IVehicleMake>>();
-            builder.RegisterType<VehicleModelPaginationService>().As<IPaginationService<IVehicleModel>>();
+            //builder.RegisterType<VehicleMakePaginationService>().As<IPaginationService<IVehicleMake>>();
+            //builder.RegisterType<VehicleModelPaginationService>().As<IPaginationService<IVehicleModel>>();
         }
     }
 }
