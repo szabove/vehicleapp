@@ -13,12 +13,12 @@ namespace VehicleApp.Common
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<MakeFilter>().As<IMakeFilter>();
-            builder.RegisterType<ModelFilter>().As<IModelFilter>();
-            builder.RegisterType<MakePagination>().As<IPagination<IVehicleMake>>();
-            builder.RegisterType<ModelPagination>().As<IPagination<IVehicleModel>>(); 
-            builder.RegisterType<MakeSorter>().As<ISorter<IVehicleMake>>();
-            builder.RegisterType<ModelSorter>().As<ISorter<IVehicleModel>>();
+            builder.RegisterType<MakeFilter>().As<IMakeFilter>().InstancePerRequest();
+            builder.RegisterType<ModelFilter>().As<IModelFilter>().InstancePerRequest();
+            builder.RegisterType<MakePagination>().As<IPagination<IVehicleMake>>().InstancePerRequest();
+            builder.RegisterType<ModelPagination>().As<IPagination<IVehicleModel>>().InstancePerRequest();
+            builder.RegisterType<MakeSorter>().As<ISorter<IVehicleMake>>().InstancePerRequest();
+            builder.RegisterType<ModelSorter>().As<ISorter<IVehicleModel>>().InstancePerRequest();
         }
     }
 }
