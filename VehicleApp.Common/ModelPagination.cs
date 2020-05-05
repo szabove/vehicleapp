@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VehicleApp.Model;
 using VehicleApp.Model.Common;
 
 namespace VehicleApp.Common
 {
-    public class VehicleMakePagination : IPagination<IVehicleMake>
+    public class ModelPagination : IPagination<IVehicleModel>
     {
-        public ICollection<IVehicleMake> PaginatedResult(ICollection<IVehicleMake> data, IPagination pagination)
+        public ICollection<IVehicleModel> PaginatedResult(ICollection<IVehicleModel> data, IPagination pagination)
         {
             if (pagination == null)
             {
@@ -21,7 +20,7 @@ namespace VehicleApp.Common
 
             var items = data.Skip(itemsToSkip).Take(pagination.PageSize).ToList();
 
-            return (ICollection<IVehicleMake>)items;
+            return (ICollection<IVehicleModel>)items;
         }
     }
 }

@@ -71,12 +71,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonLayerDependency.cs" />
-    <Compile Include="Filters\IMakeFIlter.cs" />
+    <Compile Include="Filters\IMakeFilter.cs" />
+    <Compile Include="Filters\IModelFilter.cs" />
     <Compile Include="Filters\MakeFIlter.cs" />
-    <Compile Include="IPaginationService.cs" />
+    <Compile Include="Filters\ModelFilter.cs" />
+    <Compile Include="ISorter.cs" />
+    <Compile Include="IPagination.cs" />
+    <Compile Include="MakeSorter.cs" />
+    <Compile Include="ModelPagination.cs" />
+    <Compile Include="ModelSorter.cs" />
     <Compile Include="ResponseCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VehicleMakePagination.cs" />
+    <Compile Include="MakePagination.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

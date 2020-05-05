@@ -35,8 +35,9 @@ namespace VehicleApp.Common
         ExpressionStarter<IVehicleMake> FilterByName(ExpressionStarter<IVehicleMake> predicate)
         {
             Search.ToLower();
-            return predicate = predicate.Start(name => name.Name.ToLower().Contains(Search));
+            return predicate = predicate.Start(x => x.Name.Contains(Search));
         }
 
+        
     }
 }
