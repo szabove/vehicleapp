@@ -20,15 +20,18 @@ namespace VehicleApp.WebApi.Controllers
         private IVehicleMakeService _service;
         private IMapper _mapper;
         private IMakeFilter _filter;
+        private ISorter<IVehicleMake> _sorter;
 
         public VehicleMakeController(IVehicleMakeService service,
                                     IMapper mapper,
-                                    IMakeFilter filter
+                                    IMakeFilter filter,
+                                    ISorter<IVehicleMake> sorter
                                     )
         {
             _service = service;
             _mapper = mapper;
             _filter = filter;
+            _sorter = sorter;
         }
 
         [HttpPost]
@@ -82,7 +85,11 @@ namespace VehicleApp.WebApi.Controllers
 
 
         [HttpGet]
-        public async Task<HttpResponseMessage> FindAsync([FromUri]PaginationQuery paginationQuery, string search)
+        public async Task<HttpResponseMessage> FindAsync([FromUri]PaginationQuery paginationQuery,
+                                                        string search, 
+                                                        string sortBy = "name", 
+                                                        string sortDirection = "asc"
+                                                        )
         {
 
             try
@@ -94,9 +101,12 @@ namespace VehicleApp.WebApi.Controllers
 
                 _filter.Search = search;
 
+                _sorter.sortBy = sortBy;
+                _sorter.sortDirection = sortDirection;
+
                 var paginationParameters = _mapper.Map<IPagination>(paginationQuery);
 
-                var response = await _service.FindAsync(_filter, paginationParameters);
+                var response = await _service.FindAsync(_filter, paginationParameters, _sorter);
 
                 var responseCollection = _mapper.Map<ResponseCollection<MakeRest>>(response);
 
@@ -105,7 +115,7 @@ namespace VehicleApp.WebApi.Controllers
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
 
-                return Request.CreateResponse(HttpStatusCode.OK, response);
+                return Request.CreateResponse(HttpStatusCode.OK, responseCollection);
 
             }
             catch (Exception ex)
