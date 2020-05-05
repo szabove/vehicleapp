@@ -14,8 +14,8 @@ namespace VehicleApp.Repository.AutoMapperConfiguration
     {
         public DomainToEntityModelMapping()
         {
-            CreateMap<VehicleMake, VehicleMakeEntity>().ReverseMap().ForMember(d => d.VehicleModels, opt => opt.MapFrom(src=>src.VehicleModel)).ReverseMap();
-            CreateMap<IVehicleMake, VehicleMakeEntity>().ReverseMap().ForMember(d => d.VehicleModels, opt => opt.MapFrom(src => src.VehicleModel)).ReverseMap();
+            CreateMap<VehicleMake, VehicleMakeEntity>().ReverseMap()/*.ForMember(d => d.VehicleModels, opt => opt.MapFrom(src=>src.VehicleModel))*/.ReverseMap();
+            CreateMap<IVehicleMake, VehicleMakeEntity>().ReverseMap()/*.ForMember(d => d.VehicleModels, opt => opt.MapFrom(src => src.VehicleModel))*/.ReverseMap();
             CreateMap<VehicleModel, VehicleModelEntity>().ReverseMap();
             CreateMap<IVehicleModel, VehicleModelEntity>().ReverseMap();
         }

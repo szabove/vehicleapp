@@ -17,11 +17,12 @@ namespace VehicleApp.WebApi.AutoMapperConfiguration
             CreateMap<VehicleMake, MakeRest>().ReverseMap();
             CreateMap<VehicleMake, IVehicleMake>().ReverseMap();
             CreateMap<IVehicleMake, MakeRest>().ReverseMap();
-            CreateMap<ResponseCollection<IVehicleMake>, ResponseCollection<MakeRest>>();
+            CreateMap<ResponseCollection<IVehicleMake>, ResponseCollection<MakeRest>>().ReverseMap();
 
             CreateMap<VehicleModel, ModelRest>().ReverseMap();
             CreateMap<VehicleModel, IVehicleModel>().ReverseMap();
             CreateMap<IVehicleModel, ModelRest>().ReverseMap();
+            CreateMap<ResponseCollection<IVehicleModel>, ResponseCollection<ModelRest>>().ReverseMap();
         }
     }
 }
