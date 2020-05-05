@@ -22,13 +22,11 @@ namespace VehicleApp.Repository
     {
         VehicleContext _dbContext;
         IMapper _mapper;
-        IMakeFilter _filter;
         IPagination<IVehicleMake> _pagination;
-        public VehicleMakeRepository(VehicleContext dbContext, IMapper mapper, IMakeFilter filter,IPagination<IVehicleMake> pagination)
+        public VehicleMakeRepository(VehicleContext dbContext, IMapper mapper, IPagination<IVehicleMake> pagination)
         {
             _dbContext = dbContext;
             _mapper = mapper;
-            _filter = filter;
             _pagination = pagination;
         }
         
@@ -75,8 +73,10 @@ namespace VehicleApp.Repository
             return _mapper.Map<IVehicleMake>(vehicleMake);
         }
 
-        public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination pagination)
+        public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination pagination, ISorter<IVehicleMake> sorter)
         {
+            ICollection<IVehicleMake> data = null;
+
             //Set filter query based on filter properties passed from service layer
             var filterQuery = filter.GetFilterQuery();
 
@@ -86,8 +86,22 @@ namespace VehicleApp.Repository
                 return null;
             }
 
+            //Sorting
+
+            var sortQuery = sorter.GetSortQuery();
+
+            if (sortQuery != null)
+            {
+                data = sorter.SortData(_mapper.Map<ICollection<IVehicleMake>>(vehicleMakes), sortQuery);
+            }
+            else
+            {
+                data = _mapper.Map<ICollection<IVehicleMake>>(vehicleMakes);
+            }
+            
+
             //Paginating
-            var data = _mapper.Map<ICollection<IVehicleMake>>(vehicleMakes);
+            //var data = _mapper.Map<ICollection<IVehicleMake>>(vehicleMakes);
 
             var paginationParams = _mapper.Map<IPagination>(pagination);
 
@@ -98,21 +112,7 @@ namespace VehicleApp.Repository
             responseCollection.SetPagingParams(pagination.PageNumber, pagination.PageSize);
 
             return responseCollection;
-
-            //return vehicleMakes;
-
-            //filter.SetDataToFilter(_mapper.Map<List<VehicleMake>>(vehicleMakes));
-
-            //var filteredItems = filter.FilterItems();
-
-            //if (filteredItems == null)
-            // {
-            //     return null;
-            //}
-
-            //return _mapper.Map<List<IVehicleMake>>(filteredItems);
-
-
+            
             //ICollection<VehicleMakeEntity> vehicleMakes = null;
             //switch (abc.ToLower())
             //{
@@ -130,9 +130,6 @@ namespace VehicleApp.Repository
 
             //}
 
-
-            //vehicleMakes = await _dbContext.VehicleMake.ToListAsync();
-            //return _mapper.Map<ICollection<VehicleMakeEntity>, ICollection<IVehicleMake>>(vehicleMakes);
         }
 
         public async Task<int> Update(Guid ID, IVehicleMake vehicleMake)

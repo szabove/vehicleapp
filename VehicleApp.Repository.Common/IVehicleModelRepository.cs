@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VehicleApp.Common;
+using VehicleApp.Common.Filters;
 using VehicleApp.DAL;
 using VehicleApp.Model.Common;
 
@@ -10,12 +12,10 @@ namespace VehicleApp.Repository.Common
 {
     public interface IVehicleModelRepository
     {
-        Task<IVehicleModel> Get(Guid vehicleModelID);
-        //Task<ICollection<IVehicleModel>> GetAllSorted(string abc ="");
         Task<int> Add(IVehicleModel vehicleModel);
+        Task<IVehicleModel> Get(Guid id);
         Task<int> Update(Guid ID, IVehicleModel vehicleModel);
         Task<int> Delete(Guid vehicleModelID);
-        Task<ICollection<IVehicleModel>> GetAllModelsFromMake(Guid vehicleMakeID, string abc = "");
-
+        Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter,IPagination pagination, ISorter<IVehicleModel> sorter);
     }
 }

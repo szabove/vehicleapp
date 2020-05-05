@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
+using AutoMapper.Extensions.ExpressionMapping;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using VehicleApp.Common;
+using VehicleApp.Common.Filters;
 using VehicleApp.DAL;
 using VehicleApp.Model.Common;
 using VehicleApp.Repository.Common;
@@ -17,11 +21,13 @@ namespace VehicleApp.Repository
     {
         private readonly VehicleContext _dbContext;
         IMapper _mapper;
+        IPagination<IVehicleModel> _pagination;
 
-        public VehicleModelRepository(VehicleContext dbContext, IMapper mapper)
+        public VehicleModelRepository(VehicleContext dbContext, IMapper mapper, IPagination<IVehicleModel> pagination)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _pagination = pagination;
         }
 
         public async Task<int> Add(IVehicleModel vehicleModel)
@@ -68,61 +74,50 @@ namespace VehicleApp.Repository
             return _mapper.Map<VehicleModelEntity, IVehicleModel>(vehicleModel);
         }
 
-        //public async Task<ICollection<IVehicleModel>> GetAllSorted(string abc = "")
-        //{
-        //    ICollection<VehicleModelEntity> vehicleModels = null;
-        //    switch (abc.ToLower())
-        //    {
-        //        case "asc":
-        //            vehicleModels = await _dbContext.VehicleModel.OrderBy(x => x.Name).ToListAsync();
-        //            return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
-
-        //        case "desc":
-        //            vehicleModels = await _dbContext.VehicleModel.OrderByDescending(x => x.Name).ToListAsync();
-        //            return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
-
-        //        default:
-        //            vehicleModels = await _dbContext.VehicleModel.ToListAsync();
-        //            return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
-
-        //    }
-        //    //        vehicleModels = await _dbContext.VehicleModel.ToListAsync();
-        //    //return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
-        //}
-
-        public async Task<ICollection<IVehicleModel>> GetAllModelsFromMake(Guid vehicleMakeID, string abc = "")
+        public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, IPagination pagination, ISorter<IVehicleModel> sorter)
         {
-            ICollection<VehicleModelEntity> vehicleModels = await _dbContext.VehicleModel.Where(v => v.VehicleMakeId == vehicleMakeID).ToListAsync();
-            if (vehicleModels == null)
+            ICollection<IVehicleModel> data = null;
+
+            //Set filter query based on filter properties passed from service layer
+            var filterQuery = filter.GetFilterQuery();
+
+            var vehicleMakes = await _dbContext.VehicleModel.Where(_mapper.MapExpression<Expression<Func<VehicleModelEntity, bool>>>(filterQuery)).ToListAsync();
+            if (vehicleMakes == null)
             {
                 return null;
             }
 
-            //ICollection<VehicleModelEntity> vehicleModels = null;
-            switch (abc.ToLower())
+
+            //Sorting
+
+            var sortQuery = sorter.GetSortQuery();
+
+            if (sortQuery != null)
             {
-                case "asc":
-                    vehicleModels = vehicleModels.OrderBy(x => x.Name).ToList();
-                    return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
-
-                case "desc":
-                    vehicleModels = vehicleModels.OrderByDescending(x => x.Name).ToList();
-                    return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
-
-                default:
-                    vehicleModels = vehicleModels.OrderBy(x => x.Name).ToList();
-                    return _mapper.Map<ICollection<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
-
+                data = sorter.SortData(_mapper.Map<ICollection<IVehicleModel>>(vehicleMakes), sortQuery);
+            }
+            else
+            {
+                data = _mapper.Map<ICollection<IVehicleModel>>(vehicleMakes);
             }
 
-            //var mappedVehicleModels = _mapper.Map<List<VehicleModelEntity>, ICollection<IVehicleModel>>(vehicleModels);
-            //return (ICollection<IVehicleModel>)mappedVehicleModels;
+
+            //Paginating
+
+            var paginationParams = _mapper.Map<IPagination>(pagination);
+
+            var pagedCollection = _pagination.PaginatedResult(data, paginationParams);
+
+            var responseCollection = new ResponseCollection<IVehicleModel>(pagedCollection);
+
+            responseCollection.SetPagingParams(pagination.PageNumber, pagination.PageSize);
+
+            return responseCollection;
         }
 
         public async Task<int> Update(Guid ID, IVehicleModel vehicleModel)
         {
-            //var _vehicleModel = await Get(vehicleModel.VehicleModelId);
-            var _vehicleModel = await _dbContext.VehicleModel.FindAsync(vehicleModel.VehicleModelId);
+            var _vehicleModel = await _dbContext.VehicleModel.FindAsync(ID);
             if (_vehicleModel == null)
             {
                 return 0;
