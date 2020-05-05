@@ -12,21 +12,6 @@ namespace VehicleApp.Common
     {
         public string sortBy { get; set; }
         public string sortDirection { get; set; }
-
-        public Expression<Func<IVehicleModel, dynamic>> GetSortQuery()
-        {
-            sortBy.ToLower();
-            switch (sortBy)
-            {
-                case "name":
-                    Expression<Func<IVehicleModel, dynamic>> temp = x => x.Name;
-                    return temp;
-
-                default:
-                    return null;
-            }
-        }
-
         public ICollection<IVehicleModel> SortData(ICollection<IVehicleModel> dataToSort, System.Linq.Expressions.Expression<Func<IVehicleModel, dynamic>> sortQuery)
         {
             sortDirection.ToLower();
@@ -41,5 +26,22 @@ namespace VehicleApp.Common
                     return dataToSort.AsQueryable().OrderBy(sortQuery).ToList();
             }
         }
+        public Expression<Func<IVehicleModel, dynamic>> GetSortQuery()
+        {
+            sortBy.ToLower();
+            switch (sortBy)
+            {
+                case "name":
+                    Expression<Func<IVehicleModel, dynamic>> _sortByName = x => x.Name;
+                    return _sortByName;
+                case "abrv":
+                    Expression<Func<IVehicleModel, dynamic>> _sortByAbrv = x => x.Abrv;
+                    return _sortByAbrv;
+                default:
+                    return null;
+            }
+        }
+
+        
     }
 }

@@ -35,9 +35,11 @@ namespace VehicleApp.Common
             switch (sortBy)
             {
                 case "name":
-                    Expression<Func<IVehicleMake, dynamic>> temp = x => x.Name;
-                    return temp;
-
+                    Expression<Func<IVehicleMake, dynamic>> _sortByName = x => x.Name;
+                    return _sortByName;
+                case "abrv":
+                    Expression<Func<IVehicleMake, dynamic>> _sortByAbrv = x => x.Abrv;
+                    return _sortByAbrv;
                 default:
                     return null;
             }
