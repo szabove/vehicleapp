@@ -54,6 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IRepository.cs" />
+    <Compile Include="IUnitOfWork.cs" />
     <Compile Include="IVehicleMakeRepository.cs" />
     <Compile Include="IVehicleModelRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

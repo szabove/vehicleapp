@@ -19,31 +19,27 @@ namespace VehicleApp.Repository
 {
     public class VehicleModelRepository : IVehicleModelRepository
     {
-        private readonly VehicleContext _dbContext;
+        IRepository<VehicleModelEntity> _repository;
         IMapper _mapper;
         IPagination<IVehicleModel> _pagination;
 
-        public VehicleModelRepository(VehicleContext dbContext, IMapper mapper, IPagination<IVehicleModel> pagination)
+        public VehicleModelRepository(IRepository<VehicleModelEntity> repository, IMapper mapper, IPagination<IVehicleModel> pagination)
         {
-            _dbContext = dbContext;
+            _repository = repository;
             _mapper = mapper;
             _pagination = pagination;
         }
 
         public async Task<int> Add(IVehicleModel vehicleModel)
         {
-            _dbContext.VehicleModel.Add(_mapper.Map<IVehicleModel, VehicleModelEntity>(vehicleModel));
-
             try
             {
-                await _dbContext.SaveChangesAsync();
+                return await _repository.AddAsync(_mapper.Map<VehicleModelEntity>(vehicleModel));
             }
             catch (Exception)
             {
                 return 0;
             }
-
-            return 1;
         }
 
         public async Task<int> Delete(Guid vehicleModelID)
@@ -53,25 +49,24 @@ namespace VehicleApp.Repository
                 return 0;
             }
 
-            var vehicleModel = await _dbContext.VehicleModel.FindAsync(vehicleModelID);
+            var vehicleModel = await _repository.GetAsync(vehicleModelID);
 
             if (vehicleModel == null)
             {
                 return 0;
             }
 
-            _dbContext.VehicleModel.Remove(vehicleModel);
-            return await _dbContext.SaveChangesAsync();
+            return await _repository.DeleteAsync(vehicleModelID);
         }
 
-        public async Task<IVehicleModel> Get(Guid vehicleModelID)
+        public async Task<IVehicleModel> Get(Guid ID)
         {
-            var vehicleModel = await _dbContext.VehicleModel.FindAsync(vehicleModelID);
-            if (vehicleModel == null)
+            var response = _mapper.Map<IVehicleModel>(await _repository.GetAsync(ID));
+            if (response == null)
             {
                 return null;
             }
-            return _mapper.Map<VehicleModelEntity, IVehicleModel>(vehicleModel);
+            return response;
         }
 
         public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, IPagination pagination, ISorter<IVehicleModel> sorter)
@@ -81,12 +76,11 @@ namespace VehicleApp.Repository
             //Set filter query based on filter properties passed from service layer
             var filterQuery = filter.GetFilterQuery();
 
-            var vehicleMakes = await _dbContext.VehicleModel.Where(_mapper.MapExpression<Expression<Func<VehicleModelEntity, bool>>>(filterQuery)).ToListAsync();
+            var vehicleMakes = await _repository.WhereQueryAsync(_mapper.MapExpression<Expression<Func<VehicleModelEntity, bool>>>(filterQuery));
             if (vehicleMakes == null)
             {
                 return null;
             }
-
 
             //Sorting
 
@@ -100,8 +94,7 @@ namespace VehicleApp.Repository
             {
                 data = _mapper.Map<ICollection<IVehicleModel>>(vehicleMakes);
             }
-
-
+            
             //Paginating
 
             var paginationParams = _mapper.Map<IPagination>(pagination);
@@ -117,13 +110,15 @@ namespace VehicleApp.Repository
 
         public async Task<int> Update(Guid ID, IVehicleModel vehicleModel)
         {
-            var _vehicleModel = await _dbContext.VehicleModel.FindAsync(ID);
-            if (_vehicleModel == null)
+            try
             {
+                return await _repository.UpdateAsync(ID, _mapper.Map<VehicleModelEntity>(vehicleModel));
+            }
+            catch (Exception)
+            {
+
                 return 0;
             }
-            _dbContext.Entry(_vehicleModel).CurrentValues.SetValues(_mapper.Map<IVehicleModel, VehicleModelEntity>(vehicleModel));
-            return await _dbContext.SaveChangesAsync();
         }
     }
 }
