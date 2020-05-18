@@ -13,9 +13,14 @@ namespace VehicleApp.Repository.DIConfiguration
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<VehicleContext>();
-            builder.RegisterType<VehicleMakeRepository>().As<IVehicleMakeRepository>();
-            builder.RegisterType<VehicleModelRepository>().As<IVehicleModelRepository>();
+            //InstancePerRequest();
+            builder.RegisterType<VehicleContext>().As<IVehicleContext>().InstancePerRequest();
+            builder.RegisterType<VehicleMakeRepository>().As<IVehicleMakeRepository>().InstancePerRequest(); 
+            builder.RegisterType<VehicleModelRepository>().As<IVehicleModelRepository>().InstancePerRequest(); 
+
+            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerRequest(); 
+            builder.RegisterType<Repository<VehicleMakeEntity>>().As<IRepository<VehicleMakeEntity>>().InstancePerRequest(); 
+            builder.RegisterType<Repository<VehicleModelEntity>>().As<IRepository<VehicleModelEntity>>().InstancePerRequest(); 
         }
     }
 }
