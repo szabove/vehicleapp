@@ -8,10 +8,10 @@ namespace VehicleApp.WebApi.ViewModels
 {
     public class ModelRest
     {
-        //[Required]
-        //public Guid VehicleMakeId { get; set; }
-        //[Required]
-        //public Guid VehicleModelId { get; set; }
+        [Required]
+        public Guid VehicleMakeId { get; set; }
+        [Required]
+        public Guid VehicleModelId { get; set; }
         [Required]
         public string Name { get; set; }
         public string Abrv { get; set; }

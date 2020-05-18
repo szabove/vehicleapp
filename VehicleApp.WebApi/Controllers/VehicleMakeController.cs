@@ -124,37 +124,7 @@ namespace VehicleApp.WebApi.Controllers
             }
 
         }
-
-        //try
-        //{
-
-        //    if (paginationQuery == null)
-        //    {
-        //        var defaultPaginatedResponse = _mapper.Map<ICollection<MakeRest>>(await _service.GetAllSorted(abc));
-        //        return Request.CreateResponse(HttpStatusCode.OK, new PagedResponse<MakeRest>(defaultPaginatedResponse));
-        //    }
-
-        //    //var fetchedData = await _service.GetAllSorted(abc);
-
-        //    //var response = _mapper.Map<ICollection<VehicleMake>>();
-
-        //    var paginationParams = _mapper.Map<IPagination>(paginationQuery);
-
-        //    var pagedResponse = _pagination.PaginatedResult(fetchedData, paginationParams);
-
-        //    var response = new PagedResponse<MakeRest>(_mapper.Map<ICollection<MakeRest>>(pagedResponse));
-
-        //    response.SetPagingParams(paginationParams.PageNumber, paginationParams.PageSize);
-
-        //    return Request.CreateResponse(HttpStatusCode.OK, response);
-        //}
-        //catch (Exception ex)
-        //{
-        //    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
-        //}
-
-
-
+        
         [HttpPut]
         public async Task<HttpResponseMessage> UpdateVehicleMake(Guid ID, MakeRest vehicleMake)
         {
