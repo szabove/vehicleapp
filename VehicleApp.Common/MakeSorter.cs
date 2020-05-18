@@ -11,6 +11,12 @@ namespace VehicleApp.Common
 {
     public class MakeSorter : ISorter<IVehicleMake>
     {
+        public MakeSorter()
+        {
+            sortBy = "name";
+            sortDirection = "asc";
+        }
+
         public string sortBy { get; set; }
         public string sortDirection { get; set; }
 

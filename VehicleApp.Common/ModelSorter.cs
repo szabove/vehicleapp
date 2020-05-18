@@ -10,9 +10,15 @@ namespace VehicleApp.Common
 {
     public class ModelSorter : ISorter<IVehicleModel>
     {
+        public ModelSorter()
+        {
+            sortBy = "name";
+            sortDirection = "asc";
+        }
+
         public string sortBy { get; set; }
         public string sortDirection { get; set; }
-        public ICollection<IVehicleModel> SortData(ICollection<IVehicleModel> dataToSort, System.Linq.Expressions.Expression<Func<IVehicleModel, dynamic>> sortQuery)
+        public ICollection<IVehicleModel> SortData(ICollection<IVehicleModel> dataToSort, Expression<Func<IVehicleModel, dynamic>> sortQuery)
         {
             sortDirection.ToLower();
 
