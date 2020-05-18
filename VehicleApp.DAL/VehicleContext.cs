@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace VehicleApp.DAL
 {
-    public class VehicleContext : DbContext
+    public class VehicleContext : DbContext, IVehicleContext
     {
         public DbSet<VehicleModelEntity> VehicleModel { get; set; }
         public DbSet<VehicleMakeEntity> VehicleMake { get; set; }
-
+        
         protected override void OnModelCreating(DbModelBuilder dbModelBuilder)
         {
             //dbModelBuilder.Conventions.Remove<PluralizingTableNameConvention>();

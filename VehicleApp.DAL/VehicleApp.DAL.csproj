@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IVehicleContext.cs" />
     <Compile Include="Migrations\202004091351404_CreatingDatabase.cs" />
     <Compile Include="Migrations\202004091351404_CreatingDatabase.designer.cs">
       <DependentUpon>202004091351404_CreatingDatabase.cs</DependentUpon>
