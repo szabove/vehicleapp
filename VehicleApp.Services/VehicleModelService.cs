@@ -13,43 +13,66 @@ namespace VehicleApp.Services
 {
     public class VehicleModelService : IVehicleModelService
     {
-        IVehicleModelRepository _vehicleModelRepository;
+        IUnitOfWork _unitOfWork;
 
-        public VehicleModelService(IVehicleModelRepository vehicleModelRepository)
+        public VehicleModelService(IUnitOfWork unitOfWork)
         {
-            _vehicleModelRepository = vehicleModelRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<int> Add(IVehicleModel vehicleModel)
         {
-            return await _vehicleModelRepository.Add(vehicleModel);
+            var result = await _unitOfWork.Models.Add(vehicleModel);
+            if (result == 0)
+            {
+                return 0;
+            }
+
+            return await _unitOfWork.CommitAsync();
         }
 
-        public async  Task<int> Delete(Guid vehicleModelID)
+        public async  Task<int> Delete(Guid ID)
         {
-            return await _vehicleModelRepository.Delete(vehicleModelID);
+            var model = await _unitOfWork.Models.Get(ID);
+            if (model == null)
+            {
+                return 0;
+            }
+
+            var result = await _unitOfWork.Models.Delete(ID);
+            if (result == 0)
+            {
+                return 0;
+            }
+
+            return await _unitOfWork.CommitAsync();
         }
 
-        public async Task<IVehicleModel> Get(Guid vehicleModelID)
+        public async Task<IVehicleModel> Get(Guid ID)
         {
-            var models = await _vehicleModelRepository.Get(vehicleModelID);
-
-            if (models == null)
+            var model = await _unitOfWork.Models.Get(ID);
+            if (model == null)
             {
                 return null;
             }
-
-            return models;
+            return model;
         }
 
         public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, IPagination pagination, ISorter<IVehicleModel> sorter)
         {
-            return await _vehicleModelRepository.FindAsync(filter, pagination, sorter);
+            return await _unitOfWork.Models.FindAsync(filter, pagination, sorter);
         }
 
         public async Task<int> Update(Guid ID, IVehicleModel vehicleModel)
         {
-            return await _vehicleModelRepository.Update(ID,vehicleModel);
+            var result = await _unitOfWork.Models.Update(ID, vehicleModel);
+
+            if (result == 0)
+            {
+                return 0;
+            }
+
+            return await _unitOfWork.CommitAsync();
         }
     }
 }

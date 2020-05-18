@@ -11,10 +11,10 @@ namespace VehicleApp.Services.Common
 {
     public interface IVehicleModelService
     {
-        Task<IVehicleModel> Get(Guid vehicleModelID);
         Task<int> Add(IVehicleModel vehicleModel);
+        Task<IVehicleModel> Get(Guid ID);
         Task<int> Update(Guid ID, IVehicleModel vehicleModel);
-        Task<int> Delete(Guid vehicleModelID);
+        Task<int> Delete(Guid ID);
         Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, IPagination pagination, ISorter<IVehicleModel> sorter);
     }
 }

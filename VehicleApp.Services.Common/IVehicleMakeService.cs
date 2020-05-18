@@ -10,10 +10,10 @@ namespace VehicleApp.Services.Common
 {
     public interface IVehicleMakeService
     {
-        Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination pagination, ISorter<IVehicleMake> sorter);
-        Task<IVehicleMake> Get(Guid vehicleMakeID);
         Task<int> Add(IVehicleMake vehicleMake);
+        Task<IVehicleMake> Get(Guid ID);
         Task<int> Update(Guid ID, IVehicleMake vehicleMake);
-        Task<int> Delete(Guid vehicleMakeID);
+        Task<int> Delete(Guid ID);
+        Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination pagination, ISorter<IVehicleMake> sorter);
     }
 }

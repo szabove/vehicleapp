@@ -13,27 +13,38 @@ namespace VehicleApp.Services
 {
     public class VehicleMakeService : IVehicleMakeService
     {
-         
-        IVehicleMakeRepository _makeRepository;
+        IUnitOfWork _unitOFWork;
 
-        public VehicleMakeService(IVehicleMakeRepository makeRepository)
+        public VehicleMakeService(IUnitOfWork unitOFWork)
         {
-            _makeRepository = makeRepository;
+            _unitOFWork = unitOFWork;
         }
 
         public async Task<int> Add(IVehicleMake vehicleMake)
         {
-            return await _makeRepository.Add(vehicleMake);
+            var result = await _unitOFWork.Makes.Add(vehicleMake);
+            if (result == 0)
+            {
+                return 0;
+            }
+
+            return await _unitOFWork.CommitAsync();
         }
 
-        public async Task<int> Delete(Guid vehicleMakeID)
+        public async Task<int> Delete(Guid ID)
         {
-            return await _makeRepository.Delete(vehicleMakeID);
+            var result =  await _unitOFWork.Makes.Delete(ID);
+            if (result == 0)
+            {
+                return 0;
+            }
+
+            return await _unitOFWork.CommitAsync();
         }
 
-        public async Task<IVehicleMake> Get(Guid vehicleMakeID)
+        public async Task<IVehicleMake> Get(Guid ID)
         {
-            var make = await _makeRepository.Get(vehicleMakeID);
+            var make = await _unitOFWork.Makes.Get(ID);
             if (make == null)
             {
                 return null;
@@ -43,12 +54,19 @@ namespace VehicleApp.Services
 
         public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination pagination, ISorter<IVehicleMake> sorter)
         {
-            return await _makeRepository.FindAsync(filter, pagination, sorter);
+            return await _unitOFWork.Makes.FindAsync(filter, pagination, sorter);
         }
 
         public async Task<int> Update(Guid ID, IVehicleMake vehicleMake)
         {
-            return await _makeRepository.Update(ID, vehicleMake);
+            var result = await _unitOFWork.Makes.Update(ID, vehicleMake);
+
+            if (result == 0)
+            {
+                return 0;
+            }
+
+            return await _unitOFWork.CommitAsync();
         }
     }
 }
