@@ -10,6 +10,8 @@ namespace VehicleApp.Common
 {
     public interface IPagination<T> where T : class
     {
-        ICollection<T> PaginatedResult(ICollection<T> data, IPagination pagination);
+        int PageNumber { get; set; }
+        int PageSize { get; set; }
+        ICollection<T> PaginatedResult(ICollection<T> data, int pageSize, int pageNumber);
     }
 }

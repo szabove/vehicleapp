@@ -10,16 +10,14 @@ namespace VehicleApp.Common
 {
     public class MakePagination : IPagination<IVehicleMake>
     {
-        public ICollection<IVehicleMake> PaginatedResult(ICollection<IVehicleMake> data, IPagination pagination)
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+
+        public ICollection<IVehicleMake> PaginatedResult(ICollection<IVehicleMake> data, int pageSize, int pageNumber)
         {
-            if (pagination == null)
-            {
-                return data;
-            }
+            var itemsToSkip = (pageNumber - 1) * pageSize;
 
-            var itemsToSkip = (pagination.PageNumber - 1) * pagination.PageSize;
-
-            var items = data.Skip(itemsToSkip).Take(pagination.PageSize).ToList();
+            var items = data.Skip(itemsToSkip).Take(pageSize).ToList();
 
             return (ICollection<IVehicleMake>)items;
         }

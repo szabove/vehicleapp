@@ -14,6 +14,6 @@ namespace VehicleApp.Repository.Common
         Task<IVehicleMake> Get(Guid id);
         Task<int> Update(Guid ID, IVehicleMake vehicleMake);
         Task<int> Delete(Guid id);
-        Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination pagination, ISorter<IVehicleMake> sorter);
+        Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination<IVehicleMake> pagination, ISorter<IVehicleMake> sorter);
     }
 }

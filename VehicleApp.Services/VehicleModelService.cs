@@ -58,7 +58,7 @@ namespace VehicleApp.Services
             return model;
         }
 
-        public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, IPagination pagination, ISorter<IVehicleModel> sorter)
+        public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, IPagination<IVehicleModel> pagination, ISorter<IVehicleModel> sorter)
         {
             return await _unitOfWork.Models.FindAsync(filter, pagination, sorter);
         }

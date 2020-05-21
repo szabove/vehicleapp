@@ -52,7 +52,7 @@ namespace VehicleApp.Services
             return make;
         }
 
-        public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination pagination, ISorter<IVehicleMake> sorter)
+        public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination<IVehicleMake> pagination, ISorter<IVehicleMake> sorter)
         {
             return await _unitOFWork.Makes.FindAsync(filter, pagination, sorter);
         }

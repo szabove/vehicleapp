@@ -22,17 +22,20 @@ namespace VehicleApp.Repository
     {
         IRepository<VehicleMakeEntity> _repository;
         IMapper _mapper;
-        IPagination<IVehicleMake> _pagination;
 
-        public VehicleMakeRepository(IRepository<VehicleMakeEntity> repository, IMapper mapper, IPagination<IVehicleMake> pagination, IVehicleContext context)
+        public VehicleMakeRepository(IRepository<VehicleMakeEntity> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _pagination = pagination;
         }
         
         public async Task<int> Add(IVehicleMake vehicleMake)
         {
+            if (vehicleMake.VehicleMakeId == Guid.Empty)
+            {
+                return 0;
+            }
+
             try
             {
                 return await _repository.AddAsync(_mapper.Map<VehicleMakeEntity>(vehicleMake));
@@ -70,7 +73,7 @@ namespace VehicleApp.Repository
             return response;
         }
 
-        public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination pagination, ISorter<IVehicleMake> sorter)
+        public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination<IVehicleMake> pagination, ISorter<IVehicleMake> sorter)
         {
             ICollection<IVehicleMake> data = null;
 
@@ -97,10 +100,8 @@ namespace VehicleApp.Repository
             }
             
             //Paginating
-
-            var paginationParams = _mapper.Map<IPagination>(pagination);
-
-            var pagedCollection = _pagination.PaginatedResult(data, paginationParams);
+            
+            var pagedCollection = pagination.PaginatedResult(data, pagination.PageSize, pagination.PageNumber);
 
             var responseCollection = new ResponseCollection <  IVehicleMake >(pagedCollection);
 

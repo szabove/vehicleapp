@@ -21,13 +21,11 @@ namespace VehicleApp.Repository
     {
         IRepository<VehicleModelEntity> _repository;
         IMapper _mapper;
-        IPagination<IVehicleModel> _pagination;
 
-        public VehicleModelRepository(IRepository<VehicleModelEntity> repository, IMapper mapper, IPagination<IVehicleModel> pagination)
+        public VehicleModelRepository(IRepository<VehicleModelEntity> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _pagination = pagination;
         }
 
         public async Task<int> Add(IVehicleModel vehicleModel)
@@ -69,7 +67,7 @@ namespace VehicleApp.Repository
             return response;
         }
 
-        public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, IPagination pagination, ISorter<IVehicleModel> sorter)
+        public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, IPagination<IVehicleModel> pagination, ISorter<IVehicleModel> sorter)
         {
             ICollection<IVehicleModel> data = null;
 
@@ -96,10 +94,8 @@ namespace VehicleApp.Repository
             }
             
             //Paginating
-
-            var paginationParams = _mapper.Map<IPagination>(pagination);
-
-            var pagedCollection = _pagination.PaginatedResult(data, paginationParams);
+            
+            var pagedCollection = pagination.PaginatedResult(data, pagination.PageSize, pagination.PageNumber);
 
             var responseCollection = new ResponseCollection<IVehicleModel>(pagedCollection);
 
