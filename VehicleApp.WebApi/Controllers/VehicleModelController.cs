@@ -22,17 +22,20 @@ namespace VehicleApp.WebApi.Controllers
         private IMapper _mapper;
         private IModelFilter _filter;
         private ISorter<IVehicleModel> _sorter;
+        private IPagination<IVehicleModel> _pagination;
 
         public VehicleModelController(IVehicleModelService service, 
                                         IMapper mapper,
                                         IModelFilter filter,
-                                        ISorter<IVehicleModel> sorter
+                                        ISorter<IVehicleModel> sorter,
+                                        IPagination<IVehicleModel> pagination
                                         )
         {
             _service = service;
             _mapper = mapper;
             _filter = filter;
             _sorter = sorter;
+            _pagination = pagination;
         }
 
         [HttpPost]
@@ -108,9 +111,10 @@ namespace VehicleApp.WebApi.Controllers
                 _sorter.sortBy = sortBy;
                 _sorter.sortDirection = sortDirection;
 
-                var paginationParameters = _mapper.Map<IPagination>(paginationQuery);
+                _pagination.PageNumber = paginationQuery.PageNumber;
+                _pagination.PageSize = paginationQuery.PageSize;
 
-                var response = await _service.FindAsync(_filter, paginationParameters, _sorter);
+                var response = await _service.FindAsync(_filter, _pagination, _sorter);
 
                 var responseCollection = _mapper.Map<ResponseCollection<ModelRest>>(response);
 
