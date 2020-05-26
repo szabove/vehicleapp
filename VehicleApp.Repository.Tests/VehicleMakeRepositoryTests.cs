@@ -19,13 +19,13 @@ namespace VehicleApp.Repository.Tests
 {
     public class VehicleMakeRepositoryTests
     {
-        private readonly Mock<IVehicleMakeRepository> _sut;
+        private readonly VehicleMakeRepository _sut;
         private readonly Mock<IRepository<VehicleMakeEntity>> _repositoryMock = new Mock<IRepository<VehicleMakeEntity>>();
         private readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
 
         public VehicleMakeRepositoryTests()
         {
-            _sut = new Mock<IVehicleMakeRepository>();
+            _sut = new VehicleMakeRepository(_repositoryMock.Object, _mapperMock.Object);
         }
 
         [Fact]
@@ -43,15 +43,13 @@ namespace VehicleApp.Repository.Tests
 
             var testEntity = mapper.Map<IVehicleMake>(makeEntity);
 
-            _repositoryMock.Setup(x => x.AddAsync(makeEntity)).ReturnsAsync(1);
-            _sut.Setup(x => x.Add(testEntity)).ReturnsAsync(1);
+            _repositoryMock.Setup(x => x.AddAsync(It.IsAny<VehicleMakeEntity>())).ReturnsAsync(1);
 
             //Act
 
-            var result = await _sut.Object.Add(testEntity);
-            //Assert
-            
+            var result = await _sut.Add(testEntity);
 
+            //Assert
             result.Should().Be(1);
         }
 
