@@ -48,7 +48,7 @@ namespace VehicleApp.Repository
 
         public async Task<int> Delete(Guid id)
         {
-            if (id == null)
+            if (id == Guid.Empty)
             {
                 return 0;
             }
@@ -76,6 +76,11 @@ namespace VehicleApp.Repository
         public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination<IVehicleMake> pagination, ISorter<IVehicleMake> sorter)
         {
             ICollection<IVehicleMake> data = null;
+
+            if (filter == null)
+            {
+                return null;
+            }
 
             //Set filter query based on filter properties passed from service layer
             var filterQuery = filter.GetFilterQuery();
@@ -113,13 +118,17 @@ namespace VehicleApp.Repository
 
         public async Task<int> Update(Guid ID, IVehicleMake vehicleMake)
         {
+            if (ID == Guid.Empty)
+            {
+                return 0;
+            }
+
             try
             {
                 return await _repository.UpdateAsync(ID, _mapper.Map<VehicleMakeEntity>(vehicleMake));
             }
             catch (Exception)
             {
-
                 return 0;
             }
         }
