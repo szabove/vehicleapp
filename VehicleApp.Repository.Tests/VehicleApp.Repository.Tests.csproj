@@ -106,6 +106,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\VehicleApp.Common\VehicleApp.Common.csproj">
+      <Project>{A8CB7639-614A-4A76-9674-A4789A97E30D}</Project>
+      <Name>VehicleApp.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VehicleApp.DAL\VehicleApp.DAL.csproj">
       <Project>{3A7CA7D6-D1CC-41C5-A93A-49CD5F08F39A}</Project>
       <Name>VehicleApp.DAL</Name>
