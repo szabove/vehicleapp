@@ -204,12 +204,12 @@ namespace VehicleApp.Repository.Tests
 
             List<VehicleMakeEntity> vehicleMakesFromDB = new List<VehicleMakeEntity>()
             {
-                //new VehicleMakeEntity() { VehicleMakeId = Guid.NewGuid(), Name = "Opel"},
+                new VehicleMakeEntity() { VehicleMakeId = Guid.NewGuid(), Name = "Opel"},
                 new VehicleMakeEntity() { VehicleMakeId = Guid.NewGuid(), Name = "Audi"},
-                //new VehicleMakeEntity() { VehicleMakeId = Guid.NewGuid(), Name = "BMW"},
+                new VehicleMakeEntity() { VehicleMakeId = Guid.NewGuid(), Name = "BMW"},
                 new VehicleMakeEntity() { VehicleMakeId = Guid.NewGuid(), Name = "Toyota"},
-                //new VehicleMakeEntity() { VehicleMakeId = Guid.NewGuid(), Name = "Ford"},
-                //new VehicleMakeEntity() { VehicleMakeId = Guid.NewGuid(), Name = "Suzuki"},
+                new VehicleMakeEntity() { VehicleMakeId = Guid.NewGuid(), Name = "Ford"},
+                new VehicleMakeEntity() { VehicleMakeId = Guid.NewGuid(), Name = "Suzuki"},
                 new VehicleMakeEntity() { VehicleMakeId = Guid.NewGuid(), Name = "Nissan"},
                 new VehicleMakeEntity() { VehicleMakeId = Guid.NewGuid(), Name = "Hyundai"},
                 new VehicleMakeEntity() { VehicleMakeId = Guid.NewGuid(), Name = "Mazda"},
@@ -217,7 +217,11 @@ namespace VehicleApp.Repository.Tests
             };
 
             IEnumerable<IVehicleMake> vehicleMakes = _mapper.Map<IEnumerable<IVehicleMake>>(vehicleMakesFromDB);
-            
+
+            _filterMock.SetupAllProperties();
+            _paginationMock.SetupAllProperties();
+            _sorterMock.SetupAllProperties();
+
             _filterMock.Object.Search = "A";
             _paginationMock.Object.PageNumber = 1;
             _paginationMock.Object.PageSize = 10;
@@ -230,9 +234,22 @@ namespace VehicleApp.Repository.Tests
             //Sort query
             Expression<Func<IVehicleMake, dynamic>> sortQuery = x => x.Name;
 
-            //Applying sorting query to data from DB
-            vehicleMakes = vehicleMakes.AsQueryable().OrderBy(sortQuery).ToList();
+            //Applying filter query to data from DB
+            vehicleMakes = vehicleMakes.AsQueryable().Where(filterQuery).ToList();
 
+            //Applying sorting query to data from DB
+            switch (_sorterMock.Object.sortDirection)
+            {
+                case "asc":
+                    vehicleMakes = vehicleMakes.AsQueryable().OrderBy(sortQuery).ToList();
+                    break;
+                case "desc":
+                    vehicleMakes = vehicleMakes.AsQueryable().OrderByDescending(sortQuery).ToList();
+                    break;
+                default:
+                    break;
+            }
+            
             _filterMock.Setup(X => X.GetFilterQuery()).Returns(filterQuery);
             
             _repositoryMock.Setup(x => x.WhereQueryAsync(It.IsAny<Expression<Func<VehicleMakeEntity, bool>>>())).ReturnsAsync(vehicleMakesFromDB);
@@ -248,7 +265,9 @@ namespace VehicleApp.Repository.Tests
             //Assert
             response.Should().NotBeNull();
             response.Data.Should().BeInAscendingOrder(sortQuery);
-            response.Data.Should().HaveCount(6);
+            response.Data.Should().HaveCount(5);
+            response.PageNumber.Should().Be(1);
+            response.PageSize.Should().Be(10);
             _filterMock.Verify(X => X.GetFilterQuery(), Times.Once);
             _repositoryMock.Verify(x => x.WhereQueryAsync(It.IsAny<Expression<Func<VehicleMakeEntity, bool>>>()), Times.Once);
             _sorterMock.Verify(X => X.GetSortQuery(), Times.Once);
