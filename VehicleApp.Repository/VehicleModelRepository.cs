@@ -30,6 +30,11 @@ namespace VehicleApp.Repository
 
         public async Task<int> Add(IVehicleModel vehicleModel)
         {
+            if (vehicleModel.VehicleModelId == Guid.Empty || vehicleModel.VehicleMakeId == Guid.Empty)
+            {
+                return 0;
+            }
+
             try
             {
                 return await _repository.AddAsync(_mapper.Map<VehicleModelEntity>(vehicleModel));
@@ -42,7 +47,7 @@ namespace VehicleApp.Repository
 
         public async Task<int> Delete(Guid vehicleModelID)
         {
-            if (vehicleModelID == null)
+            if (vehicleModelID == Guid.Empty)
             {
                 return 0;
             }
@@ -59,6 +64,11 @@ namespace VehicleApp.Repository
 
         public async Task<IVehicleModel> Get(Guid ID)
         {
+            if (ID == Guid.Empty)
+            {
+                return null;
+            }
+
             var response = _mapper.Map<IVehicleModel>(await _repository.GetAsync(ID));
             if (response == null)
             {
@@ -106,6 +116,14 @@ namespace VehicleApp.Repository
 
         public async Task<int> Update(Guid ID, IVehicleModel vehicleModel)
         {
+
+            if (ID == Guid.Empty || 
+                vehicleModel.VehicleModelId == Guid.Empty || 
+                vehicleModel.VehicleMakeId == Guid.Empty)
+            {
+                return 0;
+            }
+
             try
             {
                 return await _repository.UpdateAsync(ID, _mapper.Map<VehicleModelEntity>(vehicleModel));

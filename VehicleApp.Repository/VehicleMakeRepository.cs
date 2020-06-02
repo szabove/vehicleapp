@@ -65,6 +65,11 @@ namespace VehicleApp.Repository
 
         public async Task<IVehicleMake> Get(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                return null;
+            }
+
             var response = _mapper.Map<IVehicleMake>(await _repository.GetAsync(id));
             if (response == null)
             {
@@ -118,7 +123,7 @@ namespace VehicleApp.Repository
 
         public async Task<int> Update(Guid ID, IVehicleMake vehicleMake)
         {
-            if (ID == Guid.Empty)
+            if (ID == Guid.Empty || vehicleMake.VehicleMakeId == Guid.Empty)
             {
                 return 0;
             }
