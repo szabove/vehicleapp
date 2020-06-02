@@ -40,6 +40,11 @@ namespace VehicleApp.WebApi.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> AddVehicleMake(MakeRest vehicleMake)
         {
+            if (vehicleMake.VehicleMakeId == Guid.Empty)
+            {
+                Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+
             try
             {
                 var response = await _service.Add(_mapper.Map<IVehicleMake>(vehicleMake));
@@ -111,6 +116,11 @@ namespace VehicleApp.WebApi.Controllers
                 _pagination.PageSize = paginationQuery.PageSize;
 
                 var response = await _service.FindAsync(_filter, _pagination, _sorter);
+
+                if (response == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
 
                 var responseCollection = _mapper.Map<ResponseCollection<MakeRest>>(response);
 
