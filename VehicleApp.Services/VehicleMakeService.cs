@@ -22,6 +22,11 @@ namespace VehicleApp.Services
 
         public async Task<int> Add(IVehicleMake vehicleMake)
         {
+            if (vehicleMake.VehicleMakeId == Guid.Empty)
+            {
+                return 0;
+            }
+
             var result = await _unitOFWork.Makes.Add(vehicleMake);
             if (result == 0)
             {
@@ -33,6 +38,11 @@ namespace VehicleApp.Services
 
         public async Task<int> Delete(Guid ID)
         {
+            if (ID == Guid.Empty)
+            {
+                return 0;
+            }
+
             var result =  await _unitOFWork.Makes.Delete(ID);
             if (result == 0)
             {
@@ -44,6 +54,11 @@ namespace VehicleApp.Services
 
         public async Task<IVehicleMake> Get(Guid ID)
         {
+            if (ID == Guid.Empty)
+            {
+                return null;
+            }
+
             var make = await _unitOFWork.Makes.Get(ID);
             if (make == null)
             {
@@ -54,11 +69,21 @@ namespace VehicleApp.Services
 
         public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination<IVehicleMake> pagination, ISorter<IVehicleMake> sorter)
         {
+            if (filter == null)
+            {
+                return null;
+            }
+
             return await _unitOFWork.Makes.FindAsync(filter, pagination, sorter);
         }
 
         public async Task<int> Update(Guid ID, IVehicleMake vehicleMake)
         {
+            if (ID == Guid.Empty || vehicleMake.VehicleMakeId == Guid.Empty)
+            {
+                return 0;
+            }
+
             var result = await _unitOFWork.Makes.Update(ID, vehicleMake);
 
             if (result == 0)

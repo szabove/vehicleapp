@@ -22,6 +22,11 @@ namespace VehicleApp.Services
 
         public async Task<int> Add(IVehicleModel vehicleModel)
         {
+            if (vehicleModel.VehicleModelId == Guid.Empty || vehicleModel.VehicleMakeId == Guid.Empty)
+            {
+                return 0;
+            }
+
             var result = await _unitOfWork.Models.Add(vehicleModel);
             if (result == 0)
             {
@@ -33,8 +38,7 @@ namespace VehicleApp.Services
 
         public async  Task<int> Delete(Guid ID)
         {
-            var model = await _unitOfWork.Models.Get(ID);
-            if (model == null)
+            if (ID == Guid.Empty)
             {
                 return 0;
             }
@@ -50,6 +54,11 @@ namespace VehicleApp.Services
 
         public async Task<IVehicleModel> Get(Guid ID)
         {
+            if (ID == Guid.Empty)
+            {
+                return null;
+            }
+
             var model = await _unitOfWork.Models.Get(ID);
             if (model == null)
             {
@@ -60,11 +69,23 @@ namespace VehicleApp.Services
 
         public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, IPagination<IVehicleModel> pagination, ISorter<IVehicleModel> sorter)
         {
+            if (filter == null)
+            {
+                return null;
+            }
+
             return await _unitOfWork.Models.FindAsync(filter, pagination, sorter);
         }
 
         public async Task<int> Update(Guid ID, IVehicleModel vehicleModel)
         {
+            if (ID == Guid.Empty ||
+                vehicleModel.VehicleModelId == Guid.Empty ||
+                vehicleModel.VehicleMakeId == Guid.Empty)
+            {
+                return 0;
+            }
+
             var result = await _unitOfWork.Models.Update(ID, vehicleModel);
 
             if (result == 0)
