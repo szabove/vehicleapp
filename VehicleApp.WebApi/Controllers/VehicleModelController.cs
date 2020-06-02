@@ -116,8 +116,13 @@ namespace VehicleApp.WebApi.Controllers
 
                 var response = await _service.FindAsync(_filter, _pagination, _sorter);
 
-                var responseCollection = _mapper.Map<ResponseCollection<ModelRest>>(response);
+                if (response == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
 
+                var responseCollection = _mapper.Map<ResponseCollection<ModelRest>>(response);
+                
                 if (response.Data.Count == 0)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound);

@@ -155,7 +155,7 @@ namespace VehicleApp.WebApi.Tests
         }
 
         [Fact]
-        public async Task GetVehicleMake_DoesntReturnVehicleMakeBecauseNotFound()
+        public async Task GetVehicleMake_ShouldNotReturnVehicleMakeBecauseNotFound()
         {
             //Arrange
 
