@@ -70,7 +70,7 @@ namespace VehicleApp.Repository.Tests
         }
 
         [Fact]
-        public async Task Add_ShouldNotAddVehicleMakeInvalidGuid()
+        public async Task Add_ShouldNotAddVehicleMakeBecauseEmptyGuid()
         {
             //Arrange
 
@@ -120,7 +120,7 @@ namespace VehicleApp.Repository.Tests
         }
 
         [Fact]
-        public async Task Delete_ShouldNotDeleteVehicleMake()
+        public async Task Delete_ShouldNotDeleteVehicleMakeBecauseEmptyGuid()
         {
             //Arrange
 
@@ -172,7 +172,7 @@ namespace VehicleApp.Repository.Tests
         }
 
         [Fact]
-        public async Task Update_ShouldNotUpdateVehicleMake()
+        public async Task Update_ShouldNotUpdateVehicleMakeBecauseEmptyGuid()
         {
             //Arrange
 
@@ -231,7 +231,7 @@ namespace VehicleApp.Repository.Tests
             //Filter query
             Expression<Func<IVehicleMake, bool>> filterQuery = x => x.Name.Contains(_filterMock.Object.Search.ToLower());
 
-            //Sort query
+            //Sort query by name
             Expression<Func<IVehicleMake, dynamic>> sortQuery = x => x.Name;
 
             //Applying filter query to data from DB
@@ -252,7 +252,7 @@ namespace VehicleApp.Repository.Tests
             
             _filterMock.Setup(X => X.GetFilterQuery()).Returns(filterQuery);
             
-            _repositoryMock.Setup(x => x.WhereQueryAsync(It.IsAny<Expression<Func<VehicleMakeEntity, bool>>>())).ReturnsAsync(vehicleMakesFromDB);
+            _repositoryMock.Setup(x => x.WhereQueryAsync(It.IsAny<Expression<Func<VehicleMakeEntity, bool>>>())).ReturnsAsync(_mapper.Map<IEnumerable<VehicleMakeEntity>>(vehicleMakes));
 
             _sorterMock.Setup(x => x.GetSortQuery()).Returns(sortQuery);
             _sorterMock.Setup(x => x.SortData(It.IsAny<ICollection<IVehicleMake>>(), It.IsAny<Expression<Func<IVehicleMake, dynamic>>>())).Returns(vehicleMakes.ToList());
