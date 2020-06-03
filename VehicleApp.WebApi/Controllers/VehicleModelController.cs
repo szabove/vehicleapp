@@ -11,6 +11,7 @@ using VehicleApp.Common.Filters;
 using VehicleApp.Model;
 using VehicleApp.Model.Common;
 using VehicleApp.Services.Common;
+using VehicleApp.WebApi.ActionFilters;
 using VehicleApp.WebApi.RestModels;
 using VehicleApp.WebApi.ViewModels;
 
@@ -38,9 +39,15 @@ namespace VehicleApp.WebApi.Controllers
             _pagination = pagination;
         }
 
+        [ValidateModelState]
         [HttpPost]
         public async Task<HttpResponseMessage> AddVehicleModel(ModelRest vehicleModel)
         {
+            if (vehicleModel.VehicleMakeId == Guid.Empty || vehicleModel.VehicleModelId == Guid.Empty)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+
             try
             {
                 var response = await _service.Add(_mapper.Map<IVehicleModel>(vehicleModel));
@@ -138,9 +145,15 @@ namespace VehicleApp.WebApi.Controllers
 
         }
 
+        [ValidateModelState]
         [HttpPut]
         public async Task<HttpResponseMessage> UpdateVehicleModel(Guid ID, ModelRest vehicleModel)
         {
+            if (ID == Guid.Empty)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+
             try
             {
                 var response = await _service.Update(ID, _mapper.Map<VehicleModel>(vehicleModel));
@@ -166,6 +179,11 @@ namespace VehicleApp.WebApi.Controllers
         [HttpDelete]
         public async Task<HttpResponseMessage> DeleteVehicleModel(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+
             try
             {
                 var response = await _service.Delete(id);

@@ -10,6 +10,7 @@ using VehicleApp.Common;
 using VehicleApp.Model;
 using VehicleApp.Model.Common;
 using VehicleApp.Services.Common;
+using VehicleApp.WebApi.ActionFilters;
 using VehicleApp.WebApi.RestModels;
 using VehicleApp.WebApi.ViewModels;
 
@@ -37,6 +38,7 @@ namespace VehicleApp.WebApi.Controllers
             _pagination = pagination;
         }
 
+        [ValidateModelState]
         [HttpPost]
         public async Task<HttpResponseMessage> AddVehicleMake(MakeRest vehicleMake)
         {
@@ -65,6 +67,7 @@ namespace VehicleApp.WebApi.Controllers
             }
         }
 
+
         [HttpGet]
         public async Task<HttpResponseMessage> GetVehicleMake(Guid id)
         {
@@ -90,8 +93,7 @@ namespace VehicleApp.WebApi.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
             }
         }
-
-
+                
         [HttpGet]
         public async Task<HttpResponseMessage> FindAsync([FromUri]PaginationQuery paginationQuery,
                                                         string search, 
@@ -138,7 +140,8 @@ namespace VehicleApp.WebApi.Controllers
             }
 
         }
-        
+
+        [ValidateModelState]
         [HttpPut]
         public async Task<HttpResponseMessage> UpdateVehicleMake(Guid ID, MakeRest vehicleMake)
         {
