@@ -64,34 +64,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseEntity.cs" />
     <Compile Include="IVehicleContext.cs" />
-    <Compile Include="Migrations\202004091351404_CreatingDatabase.cs" />
-    <Compile Include="Migrations\202004091351404_CreatingDatabase.designer.cs">
-      <DependentUpon>202004091351404_CreatingDatabase.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004131414170_ForeignKeyFix.cs" />
-    <Compile Include="Migrations\202004131414170_ForeignKeyFix.designer.cs">
-      <DependentUpon>202004131414170_ForeignKeyFix.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004131433384_ForeignKeyFix1.cs" />
-    <Compile Include="Migrations\202004131433384_ForeignKeyFix1.designer.cs">
-      <DependentUpon>202004131433384_ForeignKeyFix1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004131458102_ForeignKeyFix2.cs" />
-    <Compile Include="Migrations\202004131458102_ForeignKeyFix2.designer.cs">
-      <DependentUpon>202004131458102_ForeignKeyFix2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004140842273_VehicleModelEntityFix.cs" />
-    <Compile Include="Migrations\202004140842273_VehicleModelEntityFix.designer.cs">
-      <DependentUpon>202004140842273_VehicleModelEntityFix.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004140904151_VehicleModelEntityFix1.cs" />
-    <Compile Include="Migrations\202004140904151_VehicleModelEntityFix1.designer.cs">
-      <DependentUpon>202004140904151_VehicleModelEntityFix1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202004291100027_SettingMaxLengthAndUniqueOnDbEntities.cs" />
-    <Compile Include="Migrations\202004291100027_SettingMaxLengthAndUniqueOnDbEntities.designer.cs">
-      <DependentUpon>202004291100027_SettingMaxLengthAndUniqueOnDbEntities.cs</DependentUpon>
+    <Compile Include="Migrations\202006041026345_InitialDatabaseCreation.cs" />
+    <Compile Include="Migrations\202006041026345_InitialDatabaseCreation.designer.cs">
+      <DependentUpon>202006041026345_InitialDatabaseCreation.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -104,26 +81,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202004091351404_CreatingDatabase.resx">
-      <DependentUpon>202004091351404_CreatingDatabase.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004131414170_ForeignKeyFix.resx">
-      <DependentUpon>202004131414170_ForeignKeyFix.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004131433384_ForeignKeyFix1.resx">
-      <DependentUpon>202004131433384_ForeignKeyFix1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004131458102_ForeignKeyFix2.resx">
-      <DependentUpon>202004131458102_ForeignKeyFix2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004140842273_VehicleModelEntityFix.resx">
-      <DependentUpon>202004140842273_VehicleModelEntityFix.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004140904151_VehicleModelEntityFix1.resx">
-      <DependentUpon>202004140904151_VehicleModelEntityFix1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202004291100027_SettingMaxLengthAndUniqueOnDbEntities.resx">
-      <DependentUpon>202004291100027_SettingMaxLengthAndUniqueOnDbEntities.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202006041026345_InitialDatabaseCreation.resx">
+      <DependentUpon>202006041026345_InitialDatabaseCreation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

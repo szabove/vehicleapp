@@ -9,10 +9,8 @@ using System.Threading.Tasks;
 namespace VehicleApp.DAL
 {
     [Table("VehicleModel")]
-    public class VehicleModelEntity
+    public class VehicleModelEntity : BaseEntity
     {
-        [Key]
-        public Guid VehicleModelId { get; set; }
         [Required]
         [MaxLength(20)]
         public string Name { get; set; }

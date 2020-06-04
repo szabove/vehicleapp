@@ -9,15 +9,13 @@ using System.Threading.Tasks;
 namespace VehicleApp.DAL
 {
     [Table("VehicleMake")]
-    public class VehicleMakeEntity
+    public class VehicleMakeEntity : BaseEntity
     {
         public VehicleMakeEntity()
         {
             VehicleModel = new HashSet<VehicleModelEntity>();
         }
 
-        [Key]
-        public Guid VehicleMakeId { get; set; }
         [Required]
         [MaxLength(20)]
         public string Name { get; set; }
