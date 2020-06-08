@@ -91,7 +91,7 @@
   <ItemGroup>
     <Compile Include="AutoMapperConfiguration\DomainToEntityModelMapping.cs" />
     <Compile Include="Repository.cs" />
-    <Compile Include="RepositoryLayerDependency.cs" />
+    <Compile Include="RepositoryLayerDIModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitOfWork.cs" />
     <Compile Include="VehicleMakeRepository.cs" />

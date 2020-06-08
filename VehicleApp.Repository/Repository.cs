@@ -1,74 +1,127 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using VehicleApp.DAL;
+using VehicleApp.Model;
 using VehicleApp.Model.Common;
 using VehicleApp.Repository.Common;
 
 namespace VehicleApp.Repository
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public abstract class Repository<T> : IRepository<T> where T : BaseEntity
     {
         IVehicleContext DatabaseContext;
+        IUnitOfWork UnitOfWork;
                 
-        public Repository(IVehicleContext context)
+        public Repository(IVehicleContext databaseContext, IUnitOfWork unitOfWork)
         {
-            DatabaseContext = context;
+            if (databaseContext == null)
+            {
+                throw new ArgumentNullException();
+            }
+            DatabaseContext = databaseContext;
+            UnitOfWork = unitOfWork;
         }
 
-        public async Task<int> AddAsync(T entity) 
+        public async Task<int> AddAsync(T entity)
         {
-            try
+            if (entity == null)
             {
-                DatabaseContext.Set<T>().Add(entity);
-                return await Task.FromResult(1);
+                throw new ArgumentNullException();
             }
-            catch (Exception)
+
+            entity.SetDateCreated();
+
+            var addAsyncResult = await UnitOfWork.AddUoWAsync<T>(entity);
+            if (addAsyncResult == 0)
             {
                 return 0;
             }
+            return await UnitOfWork.CommitAsync();
         }
 
         public async Task<int> DeleteAsync(Guid id)
         {
-            try
+            if (id == Guid.Empty)
             {
-                T entity = await GetAsync(id);
-                DatabaseContext.Set<T>().Remove(entity);
-
-                return await Task.FromResult(1);
+                throw new ArgumentNullException();
             }
-            catch (Exception)
+            var deleteAsyncResult = await UnitOfWork.DeleteUoWAsync<T>(id);
+            if (deleteAsyncResult == 0)
             {
                 return 0;
             }
+            return await UnitOfWork.CommitAsync();
         }
-        
+
+        public async Task<int> DeleteAsync(T entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException();
+            }
+            var deleteAsyncResult = await UnitOfWork.DeleteUoWAsync<T>(entity);
+            if (deleteAsyncResult == 0)
+            {
+                return 0;
+            }
+            return await UnitOfWork.CommitAsync();
+        }
+
         public async Task<T> GetAsync(Guid id)
         {
-            return await DatabaseContext.Set<T>().FindAsync(id);
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentNullException();
+            }
+
+            try
+            {
+                return await DatabaseContext.Set<T>().FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<int> UpdateAsync(Guid id, T entity) 
         {
-            try
+            if (id == Guid.Empty || entity == null)
             {
-                T _entity = await GetAsync(id);
-                DatabaseContext.Entry(_entity).CurrentValues.SetValues(entity);
-                return await Task.FromResult(1);
+                throw new ArgumentNullException();
             }
-            catch (Exception)
+
+            var entityFromGetAsyncResult = await GetAsync(id);
+            if (entityFromGetAsyncResult == null)
             {
                 return 0;
             }
+
+            entity.DateUpdated = DateTime.Now;
+            DatabaseContext.Entry(entityFromGetAsyncResult).CurrentValues.SetValues(entity);
+            DatabaseContext.Entry(entityFromGetAsyncResult).Property(x => x.DateCreated).IsModified = false;
+
+            var updateAsyncResult = await UnitOfWork.UpdateUoWAsync<T>(entityFromGetAsyncResult);
+            if (updateAsyncResult == 0)
+            {
+                return 0;
+            }
+
+            return await UnitOfWork.CommitAsync();
         }
 
-        public async Task<IEnumerable<T>> WhereQueryAsync(Expression<Func<T, bool>> expression) 
+        public async Task<IEnumerable<T>> WhereQueryAsync(Expression<Func<T, bool>> expression)
         {
+            if (expression == null)
+            {
+                throw new ArgumentNullException();
+            }
             return await DatabaseContext.Set<T>().Where(expression).ToListAsync();
         }
 

@@ -77,6 +77,10 @@
       <Project>{0EC571FC-B1B3-4D39-914B-0483475FB4DE}</Project>
       <Name>VehicleApp.Model.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VehicleApp.Model\VehicleApp.Model.csproj">
+      <Project>{24A8EB5D-4576-4628-8006-A02675B36F36}</Project>
+      <Name>VehicleApp.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

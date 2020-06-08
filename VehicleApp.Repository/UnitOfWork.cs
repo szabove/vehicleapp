@@ -15,29 +15,96 @@ namespace VehicleApp.Repository
     {
         IVehicleContext DatabaseContext;
 
-        public UnitOfWork(IVehicleContext databaseContext,
-                            IVehicleMakeRepository _makes,
-                            IVehicleModelRepository _models
-                            )
+        public UnitOfWork(IVehicleContext databaseContext)
         {
+            if (databaseContext == null)
+            {
+                throw new ArgumentNullException();
+            }
             DatabaseContext = databaseContext;
-            Makes = _makes;
-            Models = _models;
         }
 
-        public IVehicleMakeRepository Makes { get; set; }
-        public IVehicleModelRepository Models { get; set; }
-              
-        
+        public Task<int> AddUoWAsync<T>(T entity) where T : class
+        {
+            try
+            {
+                DbEntityEntry dbEntityEntry = DatabaseContext.Entry(entity);
+                if (dbEntityEntry.State != EntityState.Detached)
+                {
+                    dbEntityEntry.State = EntityState.Added;
+                }
+                else
+                {
+                    DatabaseContext.Set<T>().Add(entity);
+                }
+                return Task.FromResult(1);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
+        public Task<int> DeleteUoWAsync<T>(T entity) where T : class
+        {
+            try
+            {
+                DbEntityEntry dbEntityEntry = DatabaseContext.Entry(entity);
+                if (dbEntityEntry.State != EntityState.Deleted)
+                {
+                    dbEntityEntry.State = EntityState.Deleted;
+                }
+                else
+                {
+                    DatabaseContext.Set<T>().Attach(entity);
+                    DatabaseContext.Set<T>().Remove(entity);
+                }
+                return Task.FromResult(1);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public Task<int> DeleteUoWAsync<T>(Guid id) where T : class
+        {
+            var entity = DatabaseContext.Set<T>().Find(id);
+            if (entity == null)
+            {
+                return Task.FromResult(0);
+            }
+            return DeleteUoWAsync<T>(entity);
+        }
+
+        public Task<int> UpdateUoWAsync<T>(T entity) where T : class
+        {
+            try
+            {
+                DbEntityEntry dbEntityEntry = DatabaseContext.Entry(entity);
+                if (dbEntityEntry.State == EntityState.Detached)
+                {
+                    DatabaseContext.Set<T>().Attach(entity);
+                }
+                dbEntityEntry.State = EntityState.Modified;
+                return Task.FromResult(1);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<int> CommitAsync()
         {
             try
             {
                 return await DatabaseContext.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return 0;
+                throw ex;
             }
         }
 
@@ -45,5 +112,6 @@ namespace VehicleApp.Repository
         {
             DatabaseContext.Dispose();
         }
+
     }
 }

@@ -8,8 +8,10 @@ namespace VehicleApp.Repository.Common
 {
     public interface IUnitOfWork : IDisposable
     {
-        IVehicleMakeRepository Makes { get; set; }
-        IVehicleModelRepository Models { get; set; }
+        Task<int> AddUoWAsync<T>(T entity) where T : class;
+        Task<int> UpdateUoWAsync<T>(T entity) where T : class;
+        Task<int> DeleteUoWAsync<T>(T entity) where T : class;
+        Task<int> DeleteUoWAsync<T>(Guid id) where T : class;
         Task<int> CommitAsync();
     }
 }

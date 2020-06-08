@@ -12,32 +12,32 @@ using System.Threading.Tasks;
 using VehicleApp.Common;
 using VehicleApp.Common.Filters;
 using VehicleApp.DAL;
+using VehicleApp.Model;
 using VehicleApp.Model.Common;
 using VehicleApp.Repository.Common;
 
 namespace VehicleApp.Repository
 {
-    public class VehicleModelRepository : IVehicleModelRepository
+    public class VehicleModelRepository : Repository<BaseEntity>, IVehicleModelRepository
     {
-        IRepository<VehicleModelEntity> _repository;
         IMapper _mapper;
 
-        public VehicleModelRepository(IRepository<VehicleModelEntity> repository, IMapper mapper)
+        public VehicleModelRepository(IMapper mapper, IVehicleContext context, IUnitOfWork unitOfWork) :
+            base(context, unitOfWork)
         {
-            _repository = repository;
             _mapper = mapper;
         }
 
-        public async Task<int> Add(IVehicleModel vehicleModel)
+        public async Task<int> AddAsync(IVehicleModel vehicleModel)
         {
-            if (vehicleModel.VehicleModelId == Guid.Empty || vehicleModel.VehicleMakeId == Guid.Empty)
+            if (vehicleModel.Id == Guid.Empty || vehicleModel.VehicleMakeId == Guid.Empty)
             {
                 return 0;
             }
 
             try
             {
-                return await _repository.AddAsync(_mapper.Map<VehicleModelEntity>(vehicleModel));
+                return await AddAsync(_mapper.Map<VehicleModelEntity>(vehicleModel));
             }
             catch (Exception)
             {
@@ -45,31 +45,31 @@ namespace VehicleApp.Repository
             }
         }
 
-        public async Task<int> Delete(Guid vehicleModelID)
+        public new async Task<int> DeleteAsync(Guid id)
         {
-            if (vehicleModelID == Guid.Empty)
+            if (id == Guid.Empty)
             {
                 return 0;
             }
 
-            var vehicleModel = await _repository.GetAsync(vehicleModelID);
+            var vehicleMake = await base.GetAsync(id);
 
-            if (vehicleModel == null)
+            if (vehicleMake == null)
             {
                 return 0;
             }
 
-            return await _repository.DeleteAsync(vehicleModelID);
+            return await DeleteAsync(id);
         }
 
-        public async Task<IVehicleModel> Get(Guid ID)
+        public new async Task<IVehicleModel> GetAsync(Guid id)
         {
-            if (ID == Guid.Empty)
+            if (id == Guid.Empty)
             {
                 return null;
             }
 
-            var response = _mapper.Map<IVehicleModel>(await _repository.GetAsync(ID));
+            var response = _mapper.Map<IVehicleModel>(await base.GetAsync(id));
             if (response == null)
             {
                 return null;
@@ -79,46 +79,47 @@ namespace VehicleApp.Repository
 
         public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, IPagination<IVehicleModel> pagination, ISorter<IVehicleModel> sorter)
         {
-            ICollection<IVehicleModel> data = null;
+            throw new NotImplementedException();
+            //ICollection<IVehicleModel> data = null;
 
-            //Set filter query based on filter properties passed from service layer
-            var filterQuery = filter.GetFilterQuery();
+            ////Set filter query based on filter properties passed from service layer
+            //var filterQuery = filter.GetFilterQuery();
 
-            var vehicleMakes = await _repository.WhereQueryAsync(_mapper.MapExpression<Expression<Func<VehicleModelEntity, bool>>>(filterQuery));
-            if (vehicleMakes == null)
-            {
-                return null;
-            }
+            //var vehicleMakes = await _repository.WhereQueryAsync(_mapper.MapExpression<Expression<Func<VehicleModelEntity, bool>>>(filterQuery));
+            //if (vehicleMakes == null)
+            //{
+            //    return null;
+            //}
 
-            //Sorting
+            ////Sorting
 
-            var sortQuery = sorter.GetSortQuery();
+            //var sortQuery = sorter.GetSortQuery();
 
-            if (sortQuery != null)
-            {
-                data = sorter.SortData(_mapper.Map<ICollection<IVehicleModel>>(vehicleMakes), sortQuery);
-            }
-            else
-            {
-                data = _mapper.Map<ICollection<IVehicleModel>>(vehicleMakes);
-            }
+            //if (sortQuery != null)
+            //{
+            //    data = sorter.SortData(_mapper.Map<ICollection<IVehicleModel>>(vehicleMakes), sortQuery);
+            //}
+            //else
+            //{
+            //    data = _mapper.Map<ICollection<IVehicleModel>>(vehicleMakes);
+            //}
             
-            //Paginating
+            ////Paginating
             
-            var pagedCollection = pagination.PaginatedResult(data, pagination.PageSize, pagination.PageNumber);
+            //var pagedCollection = pagination.PaginatedResult(data, pagination.PageSize, pagination.PageNumber);
 
-            var responseCollection = new ResponseCollection<IVehicleModel>(pagedCollection);
+            //var responseCollection = new ResponseCollection<IVehicleModel>(pagedCollection);
 
-            responseCollection.SetPagingParams(pagination.PageNumber, pagination.PageSize);
+            //responseCollection.SetPagingParams(pagination.PageNumber, pagination.PageSize);
 
-            return responseCollection;
+            //return responseCollection;
         }
 
-        public async Task<int> Update(Guid ID, IVehicleModel vehicleModel)
+        public async Task<int> UpdateAsync(Guid id, IVehicleModel vehicleModel)
         {
 
-            if (ID == Guid.Empty || 
-                vehicleModel.VehicleModelId == Guid.Empty || 
+            if (id == Guid.Empty ||
+                vehicleModel.Id == Guid.Empty ||
                 vehicleModel.VehicleMakeId == Guid.Empty)
             {
                 return 0;
@@ -126,7 +127,7 @@ namespace VehicleApp.Repository
 
             try
             {
-                return await _repository.UpdateAsync(ID, _mapper.Map<VehicleModelEntity>(vehicleModel));
+                return await UpdateAsync(id, _mapper.Map<VehicleModelEntity>(vehicleModel));
             }
             catch (Exception)
             {
