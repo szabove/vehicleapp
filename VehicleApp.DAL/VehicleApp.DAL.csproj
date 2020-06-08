@@ -65,10 +65,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
+    <Compile Include="IBaseEntity.cs" />
     <Compile Include="IVehicleContext.cs" />
     <Compile Include="Migrations\202006041026345_InitialDatabaseCreation.cs" />
     <Compile Include="Migrations\202006041026345_InitialDatabaseCreation.designer.cs">
       <DependentUpon>202006041026345_InitialDatabaseCreation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006041157466_BaseEntityDateUpdatedSetToNullable.cs" />
+    <Compile Include="Migrations\202006041157466_BaseEntityDateUpdatedSetToNullable.designer.cs">
+      <DependentUpon>202006041157466_BaseEntityDateUpdatedSetToNullable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006041204380_BaseEntityDateTimeTypeNameSetTodatetime2.cs" />
+    <Compile Include="Migrations\202006041204380_BaseEntityDateTimeTypeNameSetTodatetime2.designer.cs">
+      <DependentUpon>202006041204380_BaseEntityDateTimeTypeNameSetTodatetime2.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -83,6 +92,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202006041026345_InitialDatabaseCreation.resx">
       <DependentUpon>202006041026345_InitialDatabaseCreation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006041157466_BaseEntityDateUpdatedSetToNullable.resx">
+      <DependentUpon>202006041157466_BaseEntityDateUpdatedSetToNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006041204380_BaseEntityDateTimeTypeNameSetTodatetime2.resx">
+      <DependentUpon>202006041204380_BaseEntityDateTimeTypeNameSetTodatetime2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
