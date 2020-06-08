@@ -43,7 +43,7 @@ namespace VehicleApp.WebApi.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> AddVehicleModel(ModelRest vehicleModel)
         {
-            if (vehicleModel.VehicleMakeId == Guid.Empty || vehicleModel.VehicleModelId == Guid.Empty)
+            if (vehicleModel.VehicleMakeId == Guid.Empty || vehicleModel.Id == Guid.Empty)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }

@@ -25,8 +25,8 @@ namespace VehicleApp.WebApi.App_Start
             builder.RegisterType<VehicleMakeController>().InstancePerRequest();
             builder.RegisterType<VehicleModelController>().InstancePerRequest();
 
-            builder.RegisterModule<ServiceLayerDependency>();
-            builder.RegisterModule<RepositoryLayerDependency>();
+            builder.RegisterModule<ServiceLayerDIModule>();
+            builder.RegisterModule<RepositoryLayerDIModule>();
             builder.RegisterModule<CommonLayerDependency>();
 
             //Automapper

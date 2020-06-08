@@ -42,7 +42,7 @@ namespace VehicleApp.WebApi.Controllers
         [HttpPost]
         public async Task<HttpResponseMessage> AddVehicleMake(MakeRest vehicleMake)
         {
-            if (vehicleMake.VehicleMakeId == Guid.Empty)
+            if (vehicleMake.Id == Guid.Empty)
             {
                 Request.CreateResponse(HttpStatusCode.BadRequest);
             }
@@ -95,16 +95,17 @@ namespace VehicleApp.WebApi.Controllers
         }
                 
         [HttpGet]
-        public async Task<HttpResponseMessage> FindAsync([FromUri]PaginationQuery paginationQuery,
-                                                        string search, 
-                                                        string sortBy = "name", 
-                                                        string sortDirection = "asc"
+        public async Task<HttpResponseMessage> FindAsync(Common.Temp.BaseFilterParameters filter
+            //[FromUri]PaginationQuery paginationQuery,
+            //                                            string search, 
+            //                                            string sortBy = "name", 
+            //                                            string sortDirection = "asc"
                                                         )
         {
 
             try
             {
-                if (string.IsNullOrEmpty(search))
+                if (string.IsNullOrEmpty(filter.Search))
                 {
                     return Request.CreateResponse(HttpStatusCode.NoContent);
                 }
@@ -143,11 +144,11 @@ namespace VehicleApp.WebApi.Controllers
 
         [ValidateModelState]
         [HttpPut]
-        public async Task<HttpResponseMessage> UpdateVehicleMake(Guid ID, MakeRest vehicleMake)
+        public async Task<HttpResponseMessage> UpdateVehicleMake(Guid id, MakeRest vehicleMake)
         {
             try
             {
-                var response = await _service.Update(ID, _mapper.Map<VehicleMake>(vehicleMake));
+                var response = await _service.Update(id, _mapper.Map<VehicleMake>(vehicleMake));
                 if (response == 0)
                 {
                     return Request.CreateResponse(HttpStatusCode.Forbidden);

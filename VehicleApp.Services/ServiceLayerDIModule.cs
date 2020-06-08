@@ -9,16 +9,12 @@ using VehicleApp.Services.Common;
 
 namespace VehicleApp.Services.DIConfiguration
 {
-    public class ServiceLayerDependency : Module
+    public class ServiceLayerDIModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<VehicleMakeService>().As<IVehicleMakeService>();
             builder.RegisterType<VehicleModelService>().As<IVehicleModelService>();
-            //
-            //builder.RegisterType<Pagination>().As<IPagination>();
-            //builder.RegisterType<VehicleMakePaginationService>().As<IPaginationService<IVehicleMake>>();
-            //builder.RegisterType<VehicleModelPaginationService>().As<IPaginationService<IVehicleModel>>();
         }
     }
 }

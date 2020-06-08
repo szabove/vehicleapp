@@ -1,10 +1,12 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VehicleApp.Common;
 using VehicleApp.Common.Filters;
+using VehicleApp.Model;
 using VehicleApp.Model.Common;
 using VehicleApp.Repository.Common;
 using VehicleApp.Services.Common;
@@ -13,58 +15,42 @@ namespace VehicleApp.Services
 {
     public class VehicleModelService : IVehicleModelService
     {
-        IUnitOfWork _unitOfWork;
+        IVehicleModelRepository VehicleModelRepository;
+        IMapper Mapper;
 
-        public VehicleModelService(IUnitOfWork unitOfWork)
+        public VehicleModelService(IVehicleModelRepository vehicleModelRepository, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
+            VehicleModelRepository = vehicleModelRepository;
+            Mapper = mapper;
         }
 
         public async Task<int> Add(IVehicleModel vehicleModel)
         {
-            if (vehicleModel.VehicleModelId == Guid.Empty || vehicleModel.VehicleMakeId == Guid.Empty)
+            if (vehicleModel.Id == Guid.Empty || vehicleModel.VehicleMakeId == Guid.Empty)
             {
                 return 0;
             }
-
-            var result = await _unitOfWork.Models.Add(vehicleModel);
-            if (result == 0)
-            {
-                return 0;
-            }
-
-            return await _unitOfWork.CommitAsync();
+            return await VehicleModelRepository.AddAsync(vehicleModel);
         }
 
-        public async  Task<int> Delete(Guid ID)
+        public async  Task<int> Delete(Guid id)
         {
-            if (ID == Guid.Empty)
+            if (id == Guid.Empty)
             {
                 return 0;
             }
 
-            var result = await _unitOfWork.Models.Delete(ID);
-            if (result == 0)
-            {
-                return 0;
-            }
-
-            return await _unitOfWork.CommitAsync();
+            return await VehicleModelRepository.DeleteAsync(id);
         }
 
-        public async Task<IVehicleModel> Get(Guid ID)
+        public async Task<IVehicleModel> Get(Guid id)
         {
-            if (ID == Guid.Empty)
+            if (id == Guid.Empty)
             {
                 return null;
             }
 
-            var model = await _unitOfWork.Models.Get(ID);
-            if (model == null)
-            {
-                return null;
-            }
-            return model;
+            return Mapper.Map<IVehicleModel>(await VehicleModelRepository.GetAsync(id));
         }
 
         public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, IPagination<IVehicleModel> pagination, ISorter<IVehicleModel> sorter)
@@ -74,26 +60,19 @@ namespace VehicleApp.Services
                 return null;
             }
 
-            return await _unitOfWork.Models.FindAsync(filter, pagination, sorter);
+            return await VehicleModelRepository.FindAsync(filter, pagination, sorter);
         }
 
-        public async Task<int> Update(Guid ID, IVehicleModel vehicleModel)
+        public async Task<int> Update(Guid id, IVehicleModel vehicleModel)
         {
-            if (ID == Guid.Empty ||
-                vehicleModel.VehicleModelId == Guid.Empty ||
+            if (id == Guid.Empty ||
+                vehicleModel.Id == Guid.Empty ||
                 vehicleModel.VehicleMakeId == Guid.Empty)
             {
                 return 0;
             }
 
-            var result = await _unitOfWork.Models.Update(ID, vehicleModel);
-
-            if (result == 0)
-            {
-                return 0;
-            }
-
-            return await _unitOfWork.CommitAsync();
+            return await VehicleModelRepository.UpdateAsync(id, vehicleModel);
         }
     }
 }
