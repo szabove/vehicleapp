@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace VehicleApp.Model.Common
 {
-    public interface IVehicleMake
+    public interface IVehicleMake : IBaseModel
     {
-        Guid VehicleMakeId { get; set; }
         string Name{ get; set; }
         string Abrv { get; set; }
         ICollection<IVehicleModel> VehicleModels { get; set; }

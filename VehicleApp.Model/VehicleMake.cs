@@ -7,9 +7,8 @@ using VehicleApp.Model.Common;
 
 namespace VehicleApp.Model
 {
-    public class VehicleMake : IVehicleMake
+    public class VehicleMake : BaseModel, IVehicleMake
     {
-        public Guid VehicleMakeId { get; set; }
         public string Name { get; set; }
         public string Abrv { get; set; }
         public ICollection<IVehicleModel> VehicleModels { get; set; }
