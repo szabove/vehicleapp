@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace VehicleApp.Common.Filters
 {
-    public interface IMakeFilter
+    public interface IMakeFilter: IBaseFilter
     {
-        string Search { get; set; }
     }
 }

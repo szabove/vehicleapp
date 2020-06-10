@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace VehicleApp.Common.Filters
 {
-    public interface IModelFilter 
+    public interface IModelFilter :IBaseFilter
     {
-        string Search { get; set; }
         Guid VehicleMakeId { get; set; }
     }
 }

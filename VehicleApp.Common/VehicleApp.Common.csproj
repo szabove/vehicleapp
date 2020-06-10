@@ -78,8 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonLayerDIModule.cs" />
-    <Compile Include="Filters\Filter.cs" />
     <Compile Include="Filters\FilterFacade.cs" />
+    <Compile Include="Filters\IBaseFilter.cs" />
     <Compile Include="Filters\IFilterAggregateService.cs" />
     <Compile Include="Filters\IFilterFacade.cs" />
     <Compile Include="Filters\IMakeFilter.cs" />
