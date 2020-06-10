@@ -37,8 +37,14 @@
     <Reference Include="Autofac, Version=5.2.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.5.2.0\lib\net461\Autofac.dll</HintPath>
     </Reference>
+    <Reference Include="Autofac.Extras.AggregateService, Version=5.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.Extras.AggregateService.5.0.0\lib\netstandard2.0\Autofac.Extras.AggregateService.dll</HintPath>
+    </Reference>
     <Reference Include="AutoMapper, Version=9.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.9.0.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
@@ -55,6 +61,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
@@ -70,19 +77,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonLayerDependency.cs" />
+    <Compile Include="CommonLayerDIModule.cs" />
+    <Compile Include="Filters\Filter.cs" />
+    <Compile Include="Filters\FilterFacade.cs" />
+    <Compile Include="Filters\IFilterAggregateService.cs" />
+    <Compile Include="Filters\IFilterFacade.cs" />
     <Compile Include="Filters\IMakeFilter.cs" />
     <Compile Include="Filters\IModelFilter.cs" />
-    <Compile Include="Filters\MakeFIlter.cs" />
+    <Compile Include="Filters\IPagination.cs" />
+    <Compile Include="Filters\ISorter.cs" />
+    <Compile Include="Filters\MakeFilter.cs" />
+    <Compile Include="Filters\MakeFilterParams.cs" />
     <Compile Include="Filters\ModelFilter.cs" />
-    <Compile Include="ISorter.cs" />
-    <Compile Include="IPagination.cs" />
-    <Compile Include="MakeSorter.cs" />
-    <Compile Include="ModelPagination.cs" />
-    <Compile Include="ModelSorter.cs" />
+    <Compile Include="Filters\ModelFilterParams.cs" />
+    <Compile Include="Filters\Pagination.cs" />
     <Compile Include="ResponseCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MakePagination.cs" />
+    <Compile Include="Filters\BaseFilterParams.cs" />
+    <Compile Include="Filters\Sorter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -97,6 +109,9 @@
       <Project>{24A8EB5D-4576-4628-8006-A02675B36F36}</Project>
       <Name>VehicleApp.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Temp\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

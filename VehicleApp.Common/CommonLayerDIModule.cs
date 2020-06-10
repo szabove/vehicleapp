@@ -6,19 +6,20 @@ using System.Text;
 using System.Threading.Tasks;
 using VehicleApp.Common.Filters;
 using VehicleApp.Model.Common;
+using Autofac.Extras.AggregateService;
 
 namespace VehicleApp.Common
 {
-    public class CommonLayerDependency : Module
+    public class CommonLayerDIModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterAggregateService<IFilterAggregateService>();
+            builder.RegisterType<FilterFacade>().As<IFilterFacade>().InstancePerRequest();
             builder.RegisterType<MakeFilter>().As<IMakeFilter>().InstancePerRequest();
             builder.RegisterType<ModelFilter>().As<IModelFilter>().InstancePerRequest();
-            builder.RegisterType<MakePagination>().As<IPagination<IVehicleMake>>().InstancePerRequest();
-            builder.RegisterType<ModelPagination>().As<IPagination<IVehicleModel>>().InstancePerRequest();
-            builder.RegisterType<MakeSorter>().As<ISorter<IVehicleMake>>().InstancePerRequest();
-            builder.RegisterType<ModelSorter>().As<ISorter<IVehicleModel>>().InstancePerRequest();
+            builder.RegisterType<Sorter>().As<ISorter>().InstancePerRequest();
+            builder.RegisterType<Pagination>().As<IPagination>().InstancePerRequest();
         }
     }
 }

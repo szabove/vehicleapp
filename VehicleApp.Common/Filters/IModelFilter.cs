@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Linq.Expressions;
-using VehicleApp.Model.Common;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace VehicleApp.Common.Filters
 {
-    public interface IModelFilter
+    public interface IModelFilter 
     {
         string Search { get; set; }
-        Guid VehicleMakeID { get; set; }
-        Expression<Func<IVehicleModel, bool>> GetFilterQuery();
+        Guid VehicleMakeId { get; set; }
     }
 }

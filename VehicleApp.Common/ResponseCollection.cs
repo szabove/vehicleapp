@@ -8,25 +8,21 @@ namespace VehicleApp.Common
 {
     public class ResponseCollection<T>
     {
-        public ResponseCollection()
-        {
-        }
+        //public ResponseCollection()
+        //{
+        //}
 
-        public ResponseCollection(ICollection<T> data)
+        public ResponseCollection(IEnumerable<T> data, int pagenumber, int pagesize)
         {
             Data = data;
+            PageNumber = pagenumber;
+            PageSize = pagesize;
         }
 
-        public ICollection<T> Data { get; set; }
+        public IEnumerable<T> Data { get; set; }
 
         public int? PageNumber { get; set; } = 1;
 
         public int? PageSize { get; set; } = 10;
-
-        public void SetPagingParams(int pagenumber, int pagesize)
-        {
-            PageNumber = pagenumber;
-            PageSize = pagesize;
-        }
     }
 }
