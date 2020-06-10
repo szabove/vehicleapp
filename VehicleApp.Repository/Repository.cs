@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LinqKit;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -115,15 +116,5 @@ namespace VehicleApp.Repository
 
             return await UnitOfWork.CommitAsync();
         }
-
-        public async Task<IEnumerable<T>> WhereQueryAsync(Expression<Func<T, bool>> expression)
-        {
-            if (expression == null)
-            {
-                throw new ArgumentNullException();
-            }
-            return await DatabaseContext.Set<T>().Where(expression).ToListAsync();
-        }
-
     }
 }

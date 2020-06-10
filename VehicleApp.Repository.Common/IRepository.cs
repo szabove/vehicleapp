@@ -17,6 +17,5 @@ namespace VehicleApp.Repository.Common
         Task<int> UpdateAsync(Guid id, T entity);
         Task<int> DeleteAsync(T entity);
         Task<int> DeleteAsync(Guid id);
-        Task<IEnumerable<T>> WhereQueryAsync(Expression<Func<T, bool>> expression);
     }
 }

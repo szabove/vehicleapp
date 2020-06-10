@@ -27,7 +27,7 @@ namespace VehicleApp.WebApi.App_Start
 
             builder.RegisterModule<ServiceLayerDIModule>();
             builder.RegisterModule<RepositoryLayerDIModule>();
-            builder.RegisterModule<CommonLayerDependency>();
+            builder.RegisterModule<CommonLayerDIModule>();
 
             //Automapper
             builder.Register<IConfigurationProvider>(ctx => new MapperConfiguration(cfg => cfg.AddMaps(new[] {

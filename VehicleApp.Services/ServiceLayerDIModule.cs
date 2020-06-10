@@ -13,8 +13,8 @@ namespace VehicleApp.Services.DIConfiguration
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<VehicleMakeService>().As<IVehicleMakeService>();
-            builder.RegisterType<VehicleModelService>().As<IVehicleModelService>();
+            builder.RegisterType<VehicleMakeService>().As<IVehicleMakeService>().InstancePerRequest();
+            builder.RegisterType<VehicleModelService>().As<IVehicleModelService>().InstancePerRequest();
         }
     }
 }

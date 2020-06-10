@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -12,45 +10,38 @@ using VehicleApp.Model;
 using VehicleApp.Model.Common;
 using VehicleApp.Services.Common;
 using VehicleApp.WebApi.ActionFilters;
-using VehicleApp.WebApi.RestModels;
 using VehicleApp.WebApi.ViewModels;
 
 namespace VehicleApp.WebApi.Controllers
 {
     public class VehicleModelController : ApiController
     {
-        private IVehicleModelService _service;
-        private IMapper _mapper;
-        private IModelFilter _filter;
-        private ISorter<IVehicleModel> _sorter;
-        private IPagination<IVehicleModel> _pagination;
+        private IVehicleModelService ModelService;
+        private IMapper Mapper;
+        private IFilterFacade FilterFacade;
 
-        public VehicleModelController(IVehicleModelService service, 
+        public VehicleModelController(IVehicleModelService modelService, 
                                         IMapper mapper,
-                                        IModelFilter filter,
-                                        ISorter<IVehicleModel> sorter,
-                                        IPagination<IVehicleModel> pagination
+                                        IFilterFacade filterFacade
                                         )
         {
-            _service = service;
-            _mapper = mapper;
-            _filter = filter;
-            _sorter = sorter;
-            _pagination = pagination;
+            ModelService = modelService;
+            Mapper = mapper;
+            FilterFacade = filterFacade;
         }
 
         [ValidateModelState]
         [HttpPost]
         public async Task<HttpResponseMessage> AddVehicleModel(ModelRest vehicleModel)
         {
-            if (vehicleModel.VehicleMakeId == Guid.Empty || vehicleModel.Id == Guid.Empty)
+            if (vehicleModel == null)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
 
             try
             {
-                var response = await _service.Add(_mapper.Map<IVehicleModel>(vehicleModel));
+                var response = await ModelService.Add(Mapper.Map<IVehicleModel>(vehicleModel));
                 if (response == 0)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotAcceptable);
@@ -77,7 +68,7 @@ namespace VehicleApp.WebApi.Controllers
 
             try
             {
-                var response = _mapper.Map<ModelRest>(await _service.Get(id));
+                var response = Mapper.Map<ModelRest>(await ModelService.Get(id));
 
                 if (response == null)
                 {
@@ -93,47 +84,32 @@ namespace VehicleApp.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<HttpResponseMessage> FindAsync([FromUri] PaginationQuery paginationQuery,
-                                                            string search,
-                                                            string makeID = "",
-                                                            string sortBy = "name",
-                                                            string sortDirection = "asc"
-                                                        )
+        public async Task<HttpResponseMessage> FindAsync([FromUri] ModelFilterParams filterParams)
         {
 
             try
             {
-                if (string.IsNullOrEmpty(search))
-                {
-                    return Request.CreateResponse(HttpStatusCode.NoContent);
-                }
+                IModelFilter filter = FilterFacade.CreateModelFilter();
+                filter.Search = filterParams.Search;
+                filter.VehicleMakeId = filterParams.VehicleMakeId;
 
-                _filter.Search = search;
+                ISorter sorter = FilterFacade.CreateSorter();
+                sorter.SortBy = filterParams.SortBy;
+                sorter.SortDirection = filterParams.SortDirection;
 
-                if (Guid.TryParse(makeID, out var _makeID))
-                {
-                    _filter.VehicleMakeID = _makeID;
-                }
-                
-                _sorter.sortBy = sortBy;
-                _sorter.sortDirection = sortDirection;
+                IPagination pagination = FilterFacade.CreatePagination();
+                pagination.PageNumber = filterParams.PageNumber;
+                pagination.RecordsPerPage = filterParams.RecordsPerPage;
 
-                _pagination.PageNumber = paginationQuery.PageNumber;
-                _pagination.PageSize = paginationQuery.PageSize;
+                var response = await ModelService.FindAsync(filter, sorter, pagination);
 
-                var response = await _service.FindAsync(_filter, _pagination, _sorter);
 
                 if (response == null)
                 {
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
 
-                var responseCollection = _mapper.Map<ResponseCollection<ModelRest>>(response);
-                
-                if (response.Data.Count == 0)
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotFound);
-                }
+                var responseCollection = Mapper.Map<ResponseCollection<ModelRest>>(response);
 
                 return Request.CreateResponse(HttpStatusCode.OK, responseCollection);
 
@@ -149,14 +125,14 @@ namespace VehicleApp.WebApi.Controllers
         [HttpPut]
         public async Task<HttpResponseMessage> UpdateVehicleModel(Guid ID, ModelRest vehicleModel)
         {
-            if (ID == Guid.Empty)
+            if (ID == Guid.Empty || vehicleModel == null)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
 
             try
             {
-                var response = await _service.Update(ID, _mapper.Map<VehicleModel>(vehicleModel));
+                var response = await ModelService.Update(ID, Mapper.Map<VehicleModel>(vehicleModel));
 
                 if (response == 0)
                 {
@@ -186,7 +162,7 @@ namespace VehicleApp.WebApi.Controllers
 
             try
             {
-                var response = await _service.Delete(id);
+                var response = await ModelService.Delete(id);
                 if (response == 1)
                 {
                     return Request.CreateResponse(HttpStatusCode.OK);

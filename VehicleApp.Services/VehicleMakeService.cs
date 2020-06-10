@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using VehicleApp.Services.Common;
 using VehicleApp.Repository.Common;
 using VehicleApp.Model.Common;
-using VehicleApp.Model;
 using VehicleApp.Common;
-using AutoMapper;
+using VehicleApp.Common.Filters;
 
 namespace VehicleApp.Services
 {
@@ -16,17 +12,14 @@ namespace VehicleApp.Services
     {
         IVehicleMakeRepository VehicleMakeRepository;
 
-        IMapper Mapper;
-
-        public VehicleMakeService(IVehicleMakeRepository vehicleMakeRepository, IMapper mapper)
+        public VehicleMakeService(IVehicleMakeRepository vehicleMakeRepository)
         {
             VehicleMakeRepository = vehicleMakeRepository;
-            Mapper = mapper;
         }
 
         public async Task<int> Add(IVehicleMake vehicleMake)
         {
-            if (vehicleMake.Id == Guid.Empty)
+            if (vehicleMake == null)
             {
                 return 0;
             }
@@ -53,24 +46,27 @@ namespace VehicleApp.Services
             return await VehicleMakeRepository.GetAsync(id);
         }
 
-        public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, IPagination<IVehicleMake> pagination, ISorter<IVehicleMake> sorter)
-        {
-            if (filter == null)
-            {
-                return null;
-            }
-
-            return await VehicleMakeRepository.FindAsync(filter, pagination, sorter);
-        }
 
         public async Task<int> Update(Guid id, IVehicleMake vehicleMake)
         {
-            if (id == Guid.Empty || vehicleMake.Id == Guid.Empty)
+            if (id == Guid.Empty || vehicleMake == null)
             {
                 return 0;
             }
 
             return await VehicleMakeRepository.UpdateAsync(id, vehicleMake);
+        }
+
+        public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, ISorter sorter, IPagination pagination)
+        {
+            if (filter == null || 
+                sorter == null || 
+                pagination == null)
+            {
+                return null;
+            }
+
+            return await VehicleMakeRepository.FindAsync(filter, sorter, pagination);
         }
     }
 }

@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using VehicleApp.Common;
 using VehicleApp.Common.Filters;
-using VehicleApp.Model;
 using VehicleApp.Model.Common;
 using VehicleApp.Repository.Common;
 using VehicleApp.Services.Common;
@@ -26,7 +22,7 @@ namespace VehicleApp.Services
 
         public async Task<int> Add(IVehicleModel vehicleModel)
         {
-            if (vehicleModel.Id == Guid.Empty || vehicleModel.VehicleMakeId == Guid.Empty)
+            if (vehicleModel == null)
             {
                 return 0;
             }
@@ -53,21 +49,21 @@ namespace VehicleApp.Services
             return Mapper.Map<IVehicleModel>(await VehicleModelRepository.GetAsync(id));
         }
 
-        public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, IPagination<IVehicleModel> pagination, ISorter<IVehicleModel> sorter)
+        public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, ISorter sorter, IPagination pagination)
         {
-            if (filter == null)
+            if (filter == null ||
+                sorter == null ||
+                pagination == null)
             {
                 return null;
             }
 
-            return await VehicleModelRepository.FindAsync(filter, pagination, sorter);
+            return await VehicleModelRepository.FindAsync(filter, sorter, pagination);
         }
 
         public async Task<int> Update(Guid id, IVehicleModel vehicleModel)
         {
-            if (id == Guid.Empty ||
-                vehicleModel.Id == Guid.Empty ||
-                vehicleModel.VehicleMakeId == Guid.Empty)
+            if (id == Guid.Empty || vehicleModel == null)
             {
                 return 0;
             }
