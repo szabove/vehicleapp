@@ -12,10 +12,10 @@ namespace VehicleApp.Repository.Common
 {
     public interface IRepository<T> where T : BaseEntity
     {
-        Task<int> AddAsync(T entity);
-        Task<T> GetAsync(Guid id);
-        Task<int> UpdateAsync(Guid id, T entity);
-        Task<int> DeleteAsync(T entity);
-        Task<int> DeleteAsync(Guid id);
+        Task<int> AddEntityAsync(T entity);
+        Task<T> GetEntityAsync(Guid id);
+        Task<int> UpdateEntityAsync(Guid id, T entity);
+        Task<int> DeleteEntityAsync(T entity);
+        Task<int> DeleteEntityAsync(Guid id);
     }
 }

@@ -44,7 +44,7 @@ namespace VehicleApp.Repository
 
             try
             {
-                return await base.AddAsync(Mapper.Map<VehicleMakeEntity>(vehicleMake));
+                return await AddEntityAsync(Mapper.Map<VehicleMakeEntity>(vehicleMake));
             }
             catch (Exception ex)
             {
@@ -52,31 +52,31 @@ namespace VehicleApp.Repository
             }
         }
 
-        public new async Task<int> DeleteAsync(Guid id)
+        public async Task<int> DeleteAsync(Guid id)
         {
             if (id == Guid.Empty)
             {
                 return 0;
             }
 
-            var vehicleMake = await base.GetAsync(id);
+            var vehicleMake = await GetAsync(id);
 
             if (vehicleMake == null)
             {
                 return 0;
             }
 
-            return await base.DeleteAsync(id);
+            return await DeleteAsync(id);
         }
 
-        public new async Task<IVehicleMake> GetAsync(Guid id)
+        public async Task<IVehicleMake> GetAsync(Guid id)
         {
             if (id == Guid.Empty)
             {
                 return null;
             }
 
-            var response = Mapper.Map<IVehicleMake>(await base.GetAsync(id));
+            var response = Mapper.Map<IVehicleMake>(await GetEntityAsync(id));
             if (response == null)
             {
                 return null;
@@ -125,7 +125,7 @@ namespace VehicleApp.Repository
 
             try
             {
-                return await base.UpdateAsync(id, Mapper.Map<VehicleMakeEntity>(vehicleMake));
+                return await UpdateEntityAsync(id, Mapper.Map<VehicleMakeEntity>(vehicleMake));
             }
             catch (Exception)
             {

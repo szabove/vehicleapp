@@ -29,7 +29,7 @@ namespace VehicleApp.Repository
             UnitOfWork = unitOfWork;
         }
 
-        public async Task<int> AddAsync(T entity)
+        public async Task<int> AddEntityAsync(T entity)
         {
             if (entity == null)
             {
@@ -46,7 +46,7 @@ namespace VehicleApp.Repository
             return await UnitOfWork.CommitAsync();
         }
 
-        public async Task<int> DeleteAsync(Guid id)
+        public async Task<int> DeleteEntityAsync(Guid id)
         {
             if (id == Guid.Empty)
             {
@@ -60,7 +60,7 @@ namespace VehicleApp.Repository
             return await UnitOfWork.CommitAsync();
         }
 
-        public async Task<int> DeleteAsync(T entity)
+        public async Task<int> DeleteEntityAsync(T entity)
         {
             if (entity == null)
             {
@@ -74,7 +74,7 @@ namespace VehicleApp.Repository
             return await UnitOfWork.CommitAsync();
         }
 
-        public async Task<T> GetAsync(Guid id)
+        public async Task<T> GetEntityAsync(Guid id)
         {
             if (id == Guid.Empty)
             {
@@ -91,14 +91,14 @@ namespace VehicleApp.Repository
             }
         }
 
-        public async Task<int> UpdateAsync(Guid id, T entity) 
+        public async Task<int> UpdateEntityAsync(Guid id, T entity) 
         {
             if (id == Guid.Empty || entity == null)
             {
                 throw new ArgumentNullException();
             }
 
-            var entityFromGetAsyncResult = await GetAsync(id);
+            var entityFromGetAsyncResult = await GetEntityAsync(id);
             if (entityFromGetAsyncResult == null)
             {
                 return 0;
