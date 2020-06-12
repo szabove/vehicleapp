@@ -48,13 +48,6 @@ namespace VehicleApp.Repository
                 return 0;
             }
 
-            var vehicleMake = await GetEntityAsync(id);
-
-            if (vehicleMake == null)
-            {
-                return 0;
-            }
-
             return await DeleteEntityAsync(id);
         }
 

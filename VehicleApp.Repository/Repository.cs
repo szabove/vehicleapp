@@ -104,9 +104,9 @@ namespace VehicleApp.Repository
                 return 0;
             }
 
-            entity.DateUpdated = DateTime.Now;
-            DatabaseContext.Entry(entityFromGetAsyncResult).CurrentValues.SetValues(entity);
-            DatabaseContext.Entry(entityFromGetAsyncResult).Property(x => x.DateCreated).IsModified = false;
+            //entity.DateUpdated = DateTime.Now;
+            //DatabaseContext.Entry(entityFromGetAsyncResult).CurrentValues.SetValues(entity);
+            //DatabaseContext.Entry(entityFromGetAsyncResult).Property(x => x.DateCreated).IsModified = false;
 
             var updateAsyncResult = await UnitOfWork.UpdateUoWAsync<T>(entityFromGetAsyncResult);
             if (updateAsyncResult == 0)
