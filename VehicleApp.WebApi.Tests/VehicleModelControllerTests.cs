@@ -22,17 +22,18 @@ namespace VehicleApp.WebApi.Tests
 {
     public class VehicleModelControllerTests
     {
-        VehicleModelController _sut;
-        Mock<IVehicleModelService> _serviceMock = new Mock<IVehicleModelService>();
-        Mock<IModelFilter> _filterMock = new Mock<IModelFilter>();
-        Mock<ISorter<IVehicleModel>> _sorterMock = new Mock<ISorter<IVehicleModel>>();
-        Mock<IPagination<IVehicleModel>> _paginationMock = new Mock<IPagination<IVehicleModel>>();
-        IMapper _mapper;
+        VehicleModelController VehicleModelController;
+        Mock<IVehicleModelService> ServiceMock = new Mock<IVehicleModelService>();
+        Mock<IFilterFacade> FilterFacadeMock = new Mock<IFilterFacade>();
+        Mock<IModelFilter> filterMock = new Mock<IModelFilter>();
+        Mock<ISorter> sorterMock = new Mock<ISorter>();
+        Mock<IPagination> paginationMock = new Mock<IPagination>();
+        IMapper Mapper;
 
         public VehicleModelControllerTests()
         {
-            _mapper = SetupAutomapper();
-            _sut = new VehicleModelController(_serviceMock.Object, _mapper, _filterMock.Object, _sorterMock.Object, _paginationMock.Object);
+            Mapper = SetupAutomapper();
+            VehicleModelController = new VehicleModelController(ServiceMock.Object, Mapper, FilterFacadeMock.Object);
         }
 
         public IMapper SetupAutomapper()
@@ -53,24 +54,23 @@ namespace VehicleApp.WebApi.Tests
 
             ModelRest modelRest = new ModelRest()
             {
-                VehicleModelId = Guid.NewGuid(),
-                VehicleMakeId = Guid.NewGuid(),
-                Name = "Corsa"
+                Id = Guid.NewGuid(),
+                Name = "Opel"
             };
 
-            IVehicleModel vehicleMake = _mapper.Map<IVehicleModel>(modelRest);
+            IVehicleModel vehicleModel = Mapper.Map<IVehicleModel>(modelRest);
 
-            _serviceMock.Setup(x => x.Add(It.IsAny<IVehicleModel>())).ReturnsAsync(1);
-            _sut.Request = new HttpRequestMessage();
-            _sut.Configuration = new HttpConfiguration();
+            ServiceMock.Setup(x => x.Add(It.IsAny<IVehicleModel>())).ReturnsAsync(1);
+            VehicleModelController.Request = new HttpRequestMessage();
+            VehicleModelController.Configuration = new HttpConfiguration();
             //Act
 
-            var response = await _sut.AddVehicleModel(modelRest);
+            var response = await VehicleModelController.AddVehicleModel(modelRest);
 
             //Assert
 
             response.StatusCode.Should().Be(HttpStatusCode.Created);
-            _serviceMock.Verify(x => x.Add(It.IsAny<IVehicleModel>()), Times.Once);
+            ServiceMock.Verify(x => x.Add(It.IsAny<IVehicleModel>()), Times.Once);
         }
 
         [Fact]
@@ -80,24 +80,24 @@ namespace VehicleApp.WebApi.Tests
 
             ModelRest modelRest = new ModelRest()
             {
-                VehicleModelId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 VehicleMakeId = Guid.NewGuid(),
                 Name = "Corsa"
             };
 
-            IVehicleModel vehicleMake = _mapper.Map<IVehicleModel>(modelRest);
+            IVehicleModel vehicleModel = Mapper.Map<IVehicleModel>(modelRest);
 
-            _serviceMock.Setup(x => x.Add(It.IsAny<IVehicleModel>())).ReturnsAsync(0);
-            _sut.Request = new HttpRequestMessage();
-            _sut.Configuration = new HttpConfiguration();
+            ServiceMock.Setup(x => x.Add(It.IsAny<IVehicleModel>())).ReturnsAsync(0);
+            VehicleModelController.Request = new HttpRequestMessage();
+            VehicleModelController.Configuration = new HttpConfiguration();
             //Act
 
-            var response = await _sut.AddVehicleModel(modelRest);
+            var response = await VehicleModelController.AddVehicleModel(modelRest);
 
             //Assert
 
             response.StatusCode.Should().Be(HttpStatusCode.NotAcceptable);
-            _serviceMock.Verify(x => x.Add(It.IsAny<IVehicleModel>()), Times.Once);
+            ServiceMock.Verify(x => x.Add(It.IsAny<IVehicleModel>()), Times.Once);
         }
 
         [Fact]
@@ -107,24 +107,24 @@ namespace VehicleApp.WebApi.Tests
 
             ModelRest modelRest = new ModelRest()
             {
-                VehicleModelId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 VehicleMakeId = Guid.NewGuid(),
                 Name = "Corsa"
             };
 
-            IVehicleModel vehicleMake = _mapper.Map<IVehicleModel>(modelRest);
+            IVehicleModel vehicleModel = Mapper.Map<IVehicleModel>(modelRest);
 
-            _serviceMock.Setup(x => x.Add(It.IsAny<IVehicleModel>())).ReturnsAsync(null);
-            _sut.Request = new HttpRequestMessage();
-            _sut.Configuration = new HttpConfiguration();
+            ServiceMock.Setup(x => x.Add(It.IsAny<IVehicleModel>())).ReturnsAsync(null);
+            VehicleModelController.Request = new HttpRequestMessage();
+            VehicleModelController.Configuration = new HttpConfiguration();
             //Act
 
-            var response = await _sut.AddVehicleModel(modelRest);
+            var response = await VehicleModelController.AddVehicleModel(modelRest);
 
             //Assert
 
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            _serviceMock.Verify(x => x.Add(It.IsAny<IVehicleModel>()), Times.Once);
+            ServiceMock.Verify(x => x.Add(It.IsAny<IVehicleModel>()), Times.Once);
         }
 
         [Fact]
@@ -136,25 +136,25 @@ namespace VehicleApp.WebApi.Tests
 
             ModelRest modelRest = new ModelRest()
             {
-                VehicleModelId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 VehicleMakeId = Guid.NewGuid(),
                 Name = "Corsa"
             };
 
-            IVehicleModel vehicleModel = _mapper.Map<IVehicleModel>(modelRest);
+            IVehicleModel vehicleModel = Mapper.Map<IVehicleModel>(modelRest);
 
-            _serviceMock.Setup(x => x.Get(It.IsAny<Guid>())).ReturnsAsync(vehicleModel);
+            ServiceMock.Setup(x => x.Get(It.IsAny<Guid>())).ReturnsAsync(vehicleModel);
 
-            _sut.Request = new HttpRequestMessage();
-            _sut.Configuration = new HttpConfiguration();
+            VehicleModelController.Request = new HttpRequestMessage();
+            VehicleModelController.Configuration = new HttpConfiguration();
 
             //Act
 
-            var response = await _sut.GetVehicleModel(generatedGuid);
+            var response = await VehicleModelController.GetVehicleModel(generatedGuid);
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.Found);
-            _serviceMock.Verify(x => x.Get(It.IsAny<Guid>()), Times.Once);
+            ServiceMock.Verify(x => x.Get(It.IsAny<Guid>()), Times.Once);
         }
 
         [Fact]
@@ -166,25 +166,25 @@ namespace VehicleApp.WebApi.Tests
 
             ModelRest modelRest = new ModelRest()
             {
-                VehicleModelId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 VehicleMakeId = Guid.NewGuid(),
                 Name = "Corsa"
             };
 
-            IVehicleModel vehicleModel = _mapper.Map<IVehicleModel>(modelRest);
+            IVehicleModel vehicleModel = Mapper.Map<IVehicleModel>(modelRest);
 
-            _serviceMock.Setup(x => x.Get(It.IsAny<Guid>())).ReturnsAsync((IVehicleModel)null);
+            ServiceMock.Setup(x => x.Get(It.IsAny<Guid>())).ReturnsAsync((IVehicleModel)null);
 
-            _sut.Request = new HttpRequestMessage();
-            _sut.Configuration = new HttpConfiguration();
+            VehicleModelController.Request = new HttpRequestMessage();
+            VehicleModelController.Configuration = new HttpConfiguration();
 
             //Act
 
-            var response = await _sut.GetVehicleModel(generatedGuid);
+            var response = await VehicleModelController.GetVehicleModel(generatedGuid);
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            _serviceMock.Verify(x => x.Get(It.IsAny<Guid>()), Times.Once);
+            ServiceMock.Verify(x => x.Get(It.IsAny<Guid>()), Times.Once);
         }
 
         [Fact]
@@ -196,25 +196,25 @@ namespace VehicleApp.WebApi.Tests
 
             ModelRest modelRest = new ModelRest()
             {
-                VehicleModelId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 VehicleMakeId = Guid.NewGuid(),
                 Name = "Corsa"
             };
 
-            IVehicleModel vehicleMake = _mapper.Map<IVehicleModel>(modelRest);
+            IVehicleModel vehicleMake = Mapper.Map<IVehicleModel>(modelRest);
 
-            _serviceMock.Setup(x => x.Update(It.IsAny<Guid>(), It.IsAny<IVehicleModel>())).ReturnsAsync(1);
+            ServiceMock.Setup(x => x.Update(It.IsAny<Guid>(), It.IsAny<IVehicleModel>())).ReturnsAsync(1);
 
-            _sut.Request = new HttpRequestMessage();
-            _sut.Configuration = new HttpConfiguration();
+            VehicleModelController.Request = new HttpRequestMessage();
+            VehicleModelController.Configuration = new HttpConfiguration();
 
             //Act
 
-            var response = await _sut.UpdateVehicleModel(generatedGuid, modelRest);
+            var response = await VehicleModelController.UpdateVehicleModel(generatedGuid, modelRest);
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            _serviceMock.Verify(x => x.Update(It.IsAny<Guid>(), It.IsAny<IVehicleModel>()), Times.Once);
+            ServiceMock.Verify(x => x.Update(It.IsAny<Guid>(), It.IsAny<IVehicleModel>()), Times.Once);
         }
 
         [Fact]
@@ -226,25 +226,25 @@ namespace VehicleApp.WebApi.Tests
 
             ModelRest modelRest = new ModelRest()
             {
-                VehicleModelId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 VehicleMakeId = Guid.NewGuid(),
                 Name = "Corsa"
             };
 
-            IVehicleModel vehicleMake = _mapper.Map<IVehicleModel>(modelRest);
+            IVehicleModel vehicleMake = Mapper.Map<IVehicleModel>(modelRest);
 
-            _serviceMock.Setup(x => x.Update(It.IsAny<Guid>(), It.IsAny<IVehicleModel>())).ReturnsAsync(0);
+            ServiceMock.Setup(x => x.Update(It.IsAny<Guid>(), It.IsAny<IVehicleModel>())).ReturnsAsync(0);
 
-            _sut.Request = new HttpRequestMessage();
-            _sut.Configuration = new HttpConfiguration();
+            VehicleModelController.Request = new HttpRequestMessage();
+            VehicleModelController.Configuration = new HttpConfiguration();
 
             //Act
 
-            var response = await _sut.UpdateVehicleModel(generatedGuid, modelRest);
+            var response = await VehicleModelController.UpdateVehicleModel(generatedGuid, modelRest);
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-            _serviceMock.Verify(x => x.Update(It.IsAny<Guid>(), It.IsAny<IVehicleModel>()), Times.Once);
+            ServiceMock.Verify(x => x.Update(It.IsAny<Guid>(), It.IsAny<IVehicleModel>()), Times.Once);
         }
 
         [Fact]
@@ -256,25 +256,25 @@ namespace VehicleApp.WebApi.Tests
 
             ModelRest modelRest = new ModelRest()
             {
-                VehicleModelId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 VehicleMakeId = Guid.NewGuid(),
                 Name = "Corsa"
             };
 
-            IVehicleModel vehicleMake = _mapper.Map<IVehicleModel>(modelRest);
+            IVehicleModel vehicleMake = Mapper.Map<IVehicleModel>(modelRest);
 
-            _serviceMock.Setup(x => x.Delete(It.IsAny<Guid>())).ReturnsAsync(1);
+            ServiceMock.Setup(x => x.Delete(It.IsAny<Guid>())).ReturnsAsync(1);
 
-            _sut.Request = new HttpRequestMessage();
-            _sut.Configuration = new HttpConfiguration();
+            VehicleModelController.Request = new HttpRequestMessage();
+            VehicleModelController.Configuration = new HttpConfiguration();
 
             //Act
 
-            var response = await _sut.DeleteVehicleModel(generatedGuid);
+            var response = await VehicleModelController.DeleteVehicleModel(generatedGuid);
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            _serviceMock.Verify(x => x.Delete(It.IsAny<Guid>()), Times.Once);
+            ServiceMock.Verify(x => x.Delete(It.IsAny<Guid>()), Times.Once);
         }
 
         [Fact]
@@ -286,31 +286,38 @@ namespace VehicleApp.WebApi.Tests
 
             ModelRest modelRest = new ModelRest()
             {
-                VehicleModelId = Guid.NewGuid(),
+                Id = Guid.NewGuid(),
                 VehicleMakeId = Guid.NewGuid(),
                 Name = "Corsa"
             };
 
-            IVehicleModel vehicleMake = _mapper.Map<IVehicleModel>(modelRest);
+            IVehicleModel vehicleMake = Mapper.Map<IVehicleModel>(modelRest);
 
-            _serviceMock.Setup(x => x.Delete(It.IsAny<Guid>())).ReturnsAsync(0);
+            ServiceMock.Setup(x => x.Delete(It.IsAny<Guid>())).ReturnsAsync(0);
 
-            _sut.Request = new HttpRequestMessage();
-            _sut.Configuration = new HttpConfiguration();
+            VehicleModelController.Request = new HttpRequestMessage();
+            VehicleModelController.Configuration = new HttpConfiguration();
 
             //Act
 
-            var response = await _sut.DeleteVehicleModel(generatedGuid);
+            var response = await VehicleModelController.DeleteVehicleModel(generatedGuid);
 
             //Assert
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-            _serviceMock.Verify(x => x.Delete(It.IsAny<Guid>()), Times.Once);
+            ServiceMock.Verify(x => x.Delete(It.IsAny<Guid>()), Times.Once);
         }
 
         [Fact]
         public async Task FindAsync_ShouldReturnResponseCollection()
         {
             //Arrange
+
+            ModelFilterParams filterParams = new ModelFilterParams()
+            {
+                Search = "t",
+                VehicleMakeId = Guid.NewGuid()
+            };
+
             int pageNumber = 1;
             int pageSize = 10;
             string search = "a";
@@ -318,43 +325,50 @@ namespace VehicleApp.WebApi.Tests
 
             List<ModelRest> modelRests = new List<ModelRest>()
             {
-                new ModelRest{ VehicleModelId = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Corsa"},
-                new ModelRest{ VehicleModelId = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Astra"},
-                new ModelRest{ VehicleModelId = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Zafira"},
+                new ModelRest{ Id = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Corsa"},
+                new ModelRest{ Id = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Astra"},
+                new ModelRest{ Id = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Zafira"},
             };
 
-            var vehilceModels = _mapper.Map<ICollection<IVehicleModel>>(modelRests);
+            var vehilceModels = Mapper.Map<ICollection<IVehicleModel>>(modelRests);
 
-            ResponseCollection<IVehicleModel> responseCollection = new ResponseCollection<IVehicleModel>()
-            {
-                Data = vehilceModels,
-                PageNumber = pageNumber,
-                PageSize = pageSize
-            };
+            ResponseCollection<IVehicleModel> responseCollection = new ResponseCollection<IVehicleModel>(vehilceModels, pageNumber, pageSize);
 
-            _filterMock.SetupAllProperties();
-            _sorterMock.SetupAllProperties();
-            _paginationMock.SetupAllProperties();
 
-            _serviceMock.Setup(x => x.FindAsync(It.IsAny<IModelFilter>(), It.IsAny<IPagination<IVehicleModel>>(), It.IsAny<ISorter<IVehicleModel>>())).ReturnsAsync(responseCollection);
+            filterMock.SetupAllProperties();
+            sorterMock.SetupAllProperties();
+            paginationMock.SetupAllProperties();
 
-            _sut.Request = new HttpRequestMessage();
-            _sut.Configuration = new HttpConfiguration();
+            FilterFacadeMock.Setup(x => x.CreateModelFilter()).Returns(filterMock.Object);
+            FilterFacadeMock.Setup(x => x.CreatePagination()).Returns(paginationMock.Object);
+            FilterFacadeMock.Setup(x => x.CreateSorter()).Returns(sorterMock.Object);
+
+            ServiceMock.Setup(x => x.FindAsync(It.IsAny<IModelFilter>(), It.IsAny<ISorter>(), It.IsAny<IPagination>())).ReturnsAsync(responseCollection);
+
+            VehicleModelController.Request = new HttpRequestMessage();
+            VehicleModelController.Configuration = new HttpConfiguration();
 
             //Act
 
-            var result = await _sut.FindAsync(_paginationQuery, search);
+            var result = await VehicleModelController.FindAsync(filterParams);
 
             //Assert
 
             result.StatusCode.Should().Be(HttpStatusCode.OK);
-            _serviceMock.Verify(x => x.FindAsync(It.IsAny<IModelFilter>(), It.IsAny<IPagination<IVehicleModel>>(), It.IsAny<ISorter<IVehicleModel>>()), Times.Once);
+            ServiceMock.Verify(x => x.FindAsync(It.IsAny<IModelFilter>(), It.IsAny<ISorter>(), It.IsAny<IPagination>()), Times.Once);
         }
 
         [Fact]
         public async Task FindAsync_ShouldNotReturnResponseCollectionBeacuseNotFound()
         {
             //Arrange
+
+            ModelFilterParams filterParams = new ModelFilterParams()
+            {
+                Search = "t",
+                VehicleMakeId = Guid.NewGuid()
+            };
+
             int pageNumber = 1;
             int pageSize = 10;
             string search = "a";
@@ -362,37 +376,37 @@ namespace VehicleApp.WebApi.Tests
 
             List<ModelRest> modelRests = new List<ModelRest>()
             {
-                new ModelRest{ VehicleModelId = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Corsa"},
-                new ModelRest{ VehicleModelId = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Astra"},
-                new ModelRest{ VehicleModelId = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Zafira"},
+                new ModelRest{ Id = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Corsa"},
+                new ModelRest{ Id = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Astra"},
+                new ModelRest{ Id = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Zafira"},
             };
 
-            var vehilceModels = _mapper.Map<ICollection<IVehicleModel>>(modelRests);
+            var vehilceModels = Mapper.Map<ICollection<IVehicleModel>>(modelRests);
 
-            ResponseCollection<IVehicleModel> responseCollection = new ResponseCollection<IVehicleModel>()
-            {
-                Data = vehilceModels,
-                PageNumber = pageNumber,
-                PageSize = pageSize
-            };
+            ResponseCollection<IVehicleModel> responseCollection = new ResponseCollection<IVehicleModel>(vehilceModels, pageNumber, pageSize);
 
-            _filterMock.SetupAllProperties();
-            _sorterMock.SetupAllProperties();
-            _paginationMock.SetupAllProperties();
 
-            _serviceMock.Setup(x => x.FindAsync(It.IsAny<IModelFilter>(), It.IsAny<IPagination<IVehicleModel>>(), It.IsAny<ISorter<IVehicleModel>>())).ReturnsAsync((ResponseCollection<IVehicleModel>)null);
+            filterMock.SetupAllProperties();
+            sorterMock.SetupAllProperties();
+            paginationMock.SetupAllProperties();
 
-            _sut.Request = new HttpRequestMessage();
-            _sut.Configuration = new HttpConfiguration();
+            FilterFacadeMock.Setup(x => x.CreateModelFilter()).Returns(filterMock.Object);
+            FilterFacadeMock.Setup(x => x.CreatePagination()).Returns(paginationMock.Object);
+            FilterFacadeMock.Setup(x => x.CreateSorter()).Returns(sorterMock.Object);
+
+            ServiceMock.Setup(x => x.FindAsync(It.IsAny<IModelFilter>(), It.IsAny<ISorter>(), It.IsAny<IPagination>())).ReturnsAsync((ResponseCollection<IVehicleModel>)null);
+
+            VehicleModelController.Request = new HttpRequestMessage();
+            VehicleModelController.Configuration = new HttpConfiguration();
 
             //Act
 
-            var result = await _sut.FindAsync(_paginationQuery, search);
+            var result = await VehicleModelController.FindAsync(filterParams);
 
             //Assert
 
             result.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            _serviceMock.Verify(x => x.FindAsync(It.IsAny<IModelFilter>(), It.IsAny<IPagination<IVehicleModel>>(), It.IsAny<ISorter<IVehicleModel>>()), Times.Once);
+            ServiceMock.Verify(x => x.FindAsync(It.IsAny<IModelFilter>(), It.IsAny<ISorter>(), It.IsAny<IPagination>()), Times.Once);
         }
 
     }
