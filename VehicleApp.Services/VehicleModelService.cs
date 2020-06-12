@@ -12,12 +12,10 @@ namespace VehicleApp.Services
     public class VehicleModelService : IVehicleModelService
     {
         IVehicleModelRepository VehicleModelRepository;
-        IMapper Mapper;
 
-        public VehicleModelService(IVehicleModelRepository vehicleModelRepository, IMapper mapper)
+        public VehicleModelService(IVehicleModelRepository vehicleModelRepository)
         {
             VehicleModelRepository = vehicleModelRepository;
-            Mapper = mapper;
         }
 
         public async Task<int> Add(IVehicleModel vehicleModel)
@@ -46,7 +44,7 @@ namespace VehicleApp.Services
                 return null;
             }
 
-            return Mapper.Map<IVehicleModel>(await VehicleModelRepository.GetAsync(id));
+            return await VehicleModelRepository.GetAsync(id);
         }
 
         public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, ISorter sorter, IPagination pagination)
