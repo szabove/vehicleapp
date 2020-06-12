@@ -13,12 +13,12 @@ namespace VehicleApp.Services.Tests
 {
     public class VehicleModelServiceTests
     {
-        Mock<IUnitOfWork> _mockUnitOfWork = new Mock<IUnitOfWork>();
-        VehicleModelService _sut;
+        Mock<IVehicleModelRepository> RepositoryMock = new Mock<IVehicleModelRepository>();
+        VehicleModelService VehicleModelService;
 
         public VehicleModelServiceTests()
         {
-            _sut = new VehicleModelService(_mockUnitOfWork.Object);
+            VehicleModelService = new VehicleModelService(RepositoryMock.Object);
         }
 
         [Fact]
@@ -30,24 +30,22 @@ namespace VehicleApp.Services.Tests
 
             vehicleModel.SetupAllProperties();
 
+            vehicleModel.Object.Id = Guid.NewGuid();
             vehicleModel.Object.VehicleMakeId = Guid.NewGuid();
-            vehicleModel.Object.VehicleModelId = Guid.NewGuid();
             vehicleModel.Object.Name = "Focus";
 
-            _mockUnitOfWork.Setup(x => x.Models.Add(It.IsAny<IVehicleModel>())).ReturnsAsync(1);
-            _mockUnitOfWork.Setup(x => x.CommitAsync()).ReturnsAsync(1);
+            RepositoryMock.Setup(x => x.AddAsync(It.IsAny<IVehicleModel>())).ReturnsAsync(1);
             //Act
 
-            var result = await _sut.Add(vehicleModel.Object);
+            var result = await VehicleModelService.Add(vehicleModel.Object);
 
             //Assert
             result.Should().Be(1);
-            _mockUnitOfWork.Verify(x => x.Models.Add(It.IsAny<IVehicleModel>()), Times.Once);
-            _mockUnitOfWork.Verify(x => x.CommitAsync(), Times.Once);
+            RepositoryMock.Verify(x => x.AddAsync(It.IsAny<IVehicleModel>()), Times.Once);
         }
 
         [Fact]
-        public async Task Add_ShouldNotAddModelBecauseEmptyGuid()
+        public async Task Add_ShouldNotAddModeBecauseReturnsZeroFromRepository()
         {
             //Arrange
 
@@ -55,43 +53,18 @@ namespace VehicleApp.Services.Tests
 
             vehicleModel.SetupAllProperties();
 
-            vehicleModel.Object.VehicleMakeId = Guid.Empty;
-            vehicleModel.Object.VehicleModelId = Guid.NewGuid();
-            vehicleModel.Object.Name = "Focus";
-
-            //Act
-
-            var result = await _sut.Add(vehicleModel.Object);
-
-            //Assert
-            result.Should().Be(0);
-            _mockUnitOfWork.Verify(x => x.Models.Add(It.IsAny<IVehicleModel>()), Times.Never);
-            _mockUnitOfWork.Verify(x => x.CommitAsync(), Times.Never);
-        }
-
-        [Fact]
-        public async Task Add_ShouldNotAddModelBecauseAlreadyAdded()
-        {
-            //Arrange
-
-            Mock<IVehicleModel> vehicleModel = new Mock<IVehicleModel>();
-
-            vehicleModel.SetupAllProperties();
-
+            vehicleModel.Object.Id = Guid.NewGuid();
             vehicleModel.Object.VehicleMakeId = Guid.NewGuid();
-            vehicleModel.Object.VehicleModelId = Guid.NewGuid();
             vehicleModel.Object.Name = "Focus";
 
-            _mockUnitOfWork.Setup(x => x.Models.Add(It.IsAny<IVehicleModel>())).ReturnsAsync(0);
-
+            RepositoryMock.Setup(x => x.AddAsync(It.IsAny<IVehicleModel>())).ReturnsAsync(0);
             //Act
 
-            var result = await _sut.Add(vehicleModel.Object);
+            var result = await VehicleModelService.Add(vehicleModel.Object);
 
             //Assert
             result.Should().Be(0);
-            _mockUnitOfWork.Verify(x => x.Models.Add(It.IsAny<IVehicleModel>()), Times.Once);
-            _mockUnitOfWork.Verify(x => x.CommitAsync(), Times.Never);
+            RepositoryMock.Verify(x => x.AddAsync(It.IsAny<IVehicleModel>()), Times.Once);
         }
 
         [Fact]
@@ -100,26 +73,18 @@ namespace VehicleApp.Services.Tests
             //Arange
 
             var generatedGuid = Guid.NewGuid();
-            Mock<IVehicleModel> vehicleModel = new Mock<IVehicleModel>();
 
-            vehicleModel.SetupAllProperties();
-            vehicleModel.Object.VehicleMakeId = generatedGuid;
-            vehicleModel.Object.VehicleModelId = Guid.NewGuid();
-            vehicleModel.Object.Name = "Focus";
-
-            _mockUnitOfWork.Setup(x => x.Models.Delete(It.IsAny<Guid>())).ReturnsAsync(1);
-            _mockUnitOfWork.Setup(x => x.CommitAsync()).ReturnsAsync(1);
+            RepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<Guid>())).ReturnsAsync(1);
 
             //Act
 
-            var result = await _sut.Delete(generatedGuid);
+            var result = await VehicleModelService.Delete(generatedGuid);
 
             //Assert
 
             result.Should().Be(1);
             generatedGuid.Should().NotBeEmpty();
-            _mockUnitOfWork.Verify(x => x.Models.Delete(It.IsAny<Guid>()), Times.Once);
-            _mockUnitOfWork.Verify(x => x.CommitAsync(), Times.Once);
+            RepositoryMock.Verify(x => x.DeleteAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Fact]
@@ -128,25 +93,18 @@ namespace VehicleApp.Services.Tests
             //Arange
 
             var generatedGuid = Guid.NewGuid();
-            Mock<IVehicleModel> vehicleModel = new Mock<IVehicleModel>();
 
-            vehicleModel.SetupAllProperties();
-            vehicleModel.Object.VehicleMakeId = generatedGuid;
-            vehicleModel.Object.VehicleModelId = Guid.NewGuid();
-            vehicleModel.Object.Name = "Focus";
-
-            _mockUnitOfWork.Setup(x => x.Models.Delete(It.IsAny<Guid>())).ReturnsAsync(0);
+            RepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<Guid>())).ReturnsAsync(0);
 
             //Act
 
-            var result = await _sut.Delete(generatedGuid);
+            var result = await VehicleModelService.Delete(generatedGuid);
 
             //Assert
 
             result.Should().Be(0);
             generatedGuid.Should().NotBeEmpty();
-            _mockUnitOfWork.Verify(x => x.Models.Delete(It.IsAny<Guid>()), Times.Once);
-            _mockUnitOfWork.Verify(x => x.CommitAsync(), Times.Never);
+            RepositoryMock.Verify(x => x.DeleteAsync(It.IsAny<Guid>()), Times.Once);
         }
 
         [Fact]
@@ -158,20 +116,22 @@ namespace VehicleApp.Services.Tests
             Mock<IVehicleModel> vehicleModel = new Mock<IVehicleModel>();
 
             vehicleModel.SetupAllProperties();
-            vehicleModel.Object.VehicleMakeId = generatedGuid;
-            vehicleModel.Object.VehicleModelId = Guid.NewGuid();
+
+            vehicleModel.Object.Id = Guid.NewGuid();
+            vehicleModel.Object.VehicleMakeId = Guid.NewGuid();
             vehicleModel.Object.Name = "Focus";
 
-            _mockUnitOfWork.Setup(x => x.Models.Update(It.IsAny<Guid>(), It.IsAny<IVehicleModel>())).ReturnsAsync(1);
-            _mockUnitOfWork.Setup(x => x.CommitAsync()).ReturnsAsync(1);
+            RepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<Guid>(), It.IsAny<IVehicleModel>())).ReturnsAsync(1);
 
             //Act
-            var result = await _sut.Update(generatedGuid, vehicleModel.Object);
+
+            var result = await VehicleModelService.Update(generatedGuid, vehicleModel.Object);
 
             //Assert
+
             result.Should().Be(1);
-            _mockUnitOfWork.Verify(x => x.Models.Update(It.IsAny<Guid>(), It.IsAny<IVehicleModel>()), Times.Once);
-            _mockUnitOfWork.Verify(x => x.CommitAsync(), Times.Once);
+            generatedGuid.Should().NotBeEmpty();
+            RepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Guid>(), It.IsAny<IVehicleModel>()), Times.Once);
         }
 
         [Fact]
@@ -183,19 +143,22 @@ namespace VehicleApp.Services.Tests
             Mock<IVehicleModel> vehicleModel = new Mock<IVehicleModel>();
 
             vehicleModel.SetupAllProperties();
-            vehicleModel.Object.VehicleMakeId = generatedGuid;
-            vehicleModel.Object.VehicleModelId = Guid.NewGuid();
+
+            vehicleModel.Object.Id = Guid.NewGuid();
+            vehicleModel.Object.VehicleMakeId = Guid.NewGuid();
             vehicleModel.Object.Name = "Focus";
 
-            _mockUnitOfWork.Setup(x => x.Models.Update(It.IsAny<Guid>(), It.IsAny<IVehicleModel>())).ReturnsAsync(0);
+            RepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<Guid>(), It.IsAny<IVehicleModel>())).ReturnsAsync(0);
 
             //Act
-            var result = await _sut.Update(generatedGuid, vehicleModel.Object);
+
+            var result = await VehicleModelService.Update(generatedGuid, vehicleModel.Object);
 
             //Assert
+
             result.Should().Be(0);
-            _mockUnitOfWork.Verify(x => x.Models.Update(It.IsAny<Guid>(), It.IsAny<IVehicleModel>()), Times.Once);
-            _mockUnitOfWork.Verify(x => x.CommitAsync(), Times.Never);
+            generatedGuid.Should().NotBeEmpty();
+            RepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Guid>(), It.IsAny<IVehicleModel>()), Times.Once);
         }
 
     }
