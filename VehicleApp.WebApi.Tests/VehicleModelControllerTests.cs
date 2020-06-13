@@ -25,9 +25,9 @@ namespace VehicleApp.WebApi.Tests
         VehicleModelController VehicleModelController;
         Mock<IVehicleModelService> ServiceMock = new Mock<IVehicleModelService>();
         Mock<IFilterFacade> FilterFacadeMock = new Mock<IFilterFacade>();
-        Mock<IModelFilter> filterMock = new Mock<IModelFilter>();
-        Mock<ISorter> sorterMock = new Mock<ISorter>();
-        Mock<IPagination> paginationMock = new Mock<IPagination>();
+        Mock<IModelFilter> FilterMock = new Mock<IModelFilter>();
+        Mock<ISorter> SorterMock = new Mock<ISorter>();
+        Mock<IPagination> PaginationMock = new Mock<IPagination>();
         IMapper Mapper;
 
         public VehicleModelControllerTests()
@@ -335,13 +335,13 @@ namespace VehicleApp.WebApi.Tests
             ResponseCollection<IVehicleModel> responseCollection = new ResponseCollection<IVehicleModel>(vehilceModels, pageNumber, pageSize);
 
 
-            filterMock.SetupAllProperties();
-            sorterMock.SetupAllProperties();
-            paginationMock.SetupAllProperties();
+            FilterMock.SetupAllProperties();
+            SorterMock.SetupAllProperties();
+            PaginationMock.SetupAllProperties();
 
-            FilterFacadeMock.Setup(x => x.CreateModelFilter()).Returns(filterMock.Object);
-            FilterFacadeMock.Setup(x => x.CreatePagination()).Returns(paginationMock.Object);
-            FilterFacadeMock.Setup(x => x.CreateSorter()).Returns(sorterMock.Object);
+            FilterFacadeMock.Setup(x => x.CreateModelFilter()).Returns(FilterMock.Object);
+            FilterFacadeMock.Setup(x => x.CreateSorter()).Returns(SorterMock.Object);
+            FilterFacadeMock.Setup(x => x.CreatePagination()).Returns(PaginationMock.Object);
 
             ServiceMock.Setup(x => x.FindAsync(It.IsAny<IModelFilter>(), It.IsAny<ISorter>(), It.IsAny<IPagination>())).ReturnsAsync(responseCollection);
 
@@ -386,13 +386,13 @@ namespace VehicleApp.WebApi.Tests
             ResponseCollection<IVehicleModel> responseCollection = new ResponseCollection<IVehicleModel>(vehilceModels, pageNumber, pageSize);
 
 
-            filterMock.SetupAllProperties();
-            sorterMock.SetupAllProperties();
-            paginationMock.SetupAllProperties();
+            FilterMock.SetupAllProperties();
+            SorterMock.SetupAllProperties();
+            PaginationMock.SetupAllProperties();
 
-            FilterFacadeMock.Setup(x => x.CreateModelFilter()).Returns(filterMock.Object);
-            FilterFacadeMock.Setup(x => x.CreatePagination()).Returns(paginationMock.Object);
-            FilterFacadeMock.Setup(x => x.CreateSorter()).Returns(sorterMock.Object);
+            FilterFacadeMock.Setup(x => x.CreateModelFilter()).Returns(FilterMock.Object);
+            FilterFacadeMock.Setup(x => x.CreateSorter()).Returns(SorterMock.Object);
+            FilterFacadeMock.Setup(x => x.CreatePagination()).Returns(PaginationMock.Object);
 
             ServiceMock.Setup(x => x.FindAsync(It.IsAny<IModelFilter>(), It.IsAny<ISorter>(), It.IsAny<IPagination>())).ReturnsAsync((ResponseCollection<IVehicleModel>)null);
 
