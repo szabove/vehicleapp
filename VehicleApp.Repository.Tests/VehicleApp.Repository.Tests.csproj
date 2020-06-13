@@ -102,6 +102,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utility\TestDbAsyncEnumerable.cs" />
+    <Compile Include="Utility\TestDbAsyncEnumerator.cs" />
+    <Compile Include="Utility\TestDbAsyncQueryProvider.cs" />
     <Compile Include="VehicleMakeRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VehicleModelRepositoryTest.cs" />

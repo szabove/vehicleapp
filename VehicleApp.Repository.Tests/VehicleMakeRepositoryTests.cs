@@ -1,30 +1,25 @@
-﻿using Autofac.Extras.Moq;
-using AutoMapper;
-using AutoMapper.Configuration;
+﻿using AutoMapper;
 using FluentAssertions;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
-using VehicleApp.Common;
 using VehicleApp.Common.Filters;
 using VehicleApp.DAL;
-using VehicleApp.Model;
 using VehicleApp.Model.Common;
-using VehicleApp.Repository.AutoMapperConfiguration;
 using VehicleApp.Repository.Common;
 using Xunit;
-using Moq.Protected;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using VehicleApp.Repository.Tests.Utility;
 
 namespace VehicleApp.Repository.Tests
 {
     public class VehicleMakeRepositoryTests
     {
         private readonly VehicleMakeRepository VehicleMakeRepository;
-        private readonly Mock<IVehicleContext> DatabaseContext = new Mock<IVehicleContext>();
+        private readonly Mock<IVehicleContext> DatabaseContextMock = new Mock<IVehicleContext>();
         private readonly Mock<IUnitOfWork> UnitOfWorkMock = new Mock<IUnitOfWork>();
         private readonly IMapper Mapper;
         private readonly Mock<IMakeFilter> FilterMock = new Mock<IMakeFilter>();
@@ -34,7 +29,7 @@ namespace VehicleApp.Repository.Tests
         public VehicleMakeRepositoryTests()
         {
             Mapper = SetupAutomapper();
-            VehicleMakeRepository = new VehicleMakeRepository(Mapper, DatabaseContext.Object, UnitOfWorkMock.Object);
+            VehicleMakeRepository = new VehicleMakeRepository(Mapper, DatabaseContextMock.Object, UnitOfWorkMock.Object);
         }
 
         public IMapper SetupAutomapper()
@@ -162,7 +157,7 @@ namespace VehicleApp.Repository.Tests
 
             var vehicleMake = Mapper.Map<IVehicleMake>(vehicleMakeEntity);
 
-            DatabaseContext.Setup(x => x.Set<VehicleMakeEntity>().FindAsync(It.IsAny<Guid>())).ReturnsAsync(vehicleMakeEntity);
+            DatabaseContextMock.Setup(x => x.Set<VehicleMakeEntity>().FindAsync(It.IsAny<Guid>())).ReturnsAsync(vehicleMakeEntity);
             UnitOfWorkMock.Setup(x=>x.UpdateUoWAsync(It.IsAny<VehicleMakeEntity>())).ReturnsAsync(1);
             UnitOfWorkMock.Setup(x => x.CommitAsync()).ReturnsAsync(1);
 
@@ -191,7 +186,7 @@ namespace VehicleApp.Repository.Tests
 
             var vehicleMake = Mapper.Map<IVehicleMake>(vehicleMakeEntity);
 
-            DatabaseContext.Setup(x => x.Set<VehicleMakeEntity>().FindAsync(It.IsAny<Guid>())).ReturnsAsync(vehicleMakeEntity);
+            DatabaseContextMock.Setup(x => x.Set<VehicleMakeEntity>().FindAsync(It.IsAny<Guid>())).ReturnsAsync(vehicleMakeEntity);
             UnitOfWorkMock.Setup(x => x.UpdateUoWAsync(It.IsAny<VehicleMakeEntity>())).ReturnsAsync(0);
             UnitOfWorkMock.Setup(x => x.CommitAsync()).ReturnsAsync(1);
 
@@ -205,82 +200,139 @@ namespace VehicleApp.Repository.Tests
             UnitOfWorkMock.Verify(x => x.CommitAsync(), Times.Never);
         }
 
-        //        [Fact]
-        //        public async Task FindAsync_ReturnFilteredByNamePaginatedSortedByNameOrderedByAscending()
-        //        {
-        //            //Arrange
+        [Fact]
+        public async Task FindAsync_ReturnFilteredByNamePaginatedSortedByNameOrderedByAscending()
+        {
+            //Arrange
+            
+            List<VehicleMakeEntity> vehicleMakesFromDB = new List<VehicleMakeEntity>()
+            {
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Opel"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Audi"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "BMW"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Toyota"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Ford"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Suzuki"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Nissan"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Hyundai"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Mazda"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "VolksWagen"}
+            };
 
-        //            List<VehicleMakeEntity> vehicleMakesFromDB = new List<VehicleMakeEntity>()
-        //            {
-        //                new VehicleMakeEntity() { Id = Guid.NewGuid(), Name = "Opel"},
-        //                new VehicleMakeEntity() { Id = Guid.NewGuid(), Name = "Audi"},
-        //                new VehicleMakeEntity() { Id = Guid.NewGuid(), Name = "BMW"},
-        //                new VehicleMakeEntity() { Id = Guid.NewGuid(), Name = "Toyota"},
-        //                new VehicleMakeEntity() { Id = Guid.NewGuid(), Name = "Ford"},
-        //                new VehicleMakeEntity() { Id = Guid.NewGuid(), Name = "Suzuki"},
-        //                new VehicleMakeEntity() { Id = Guid.NewGuid(), Name = "Nissan"},
-        //                new VehicleMakeEntity() { Id = Guid.NewGuid(), Name = "Hyundai"},
-        //                new VehicleMakeEntity() { Id = Guid.NewGuid(), Name = "Mazda"},
-        //                new VehicleMakeEntity() { Id = Guid.NewGuid(), Name = "VolksWagen"}
-        //            };
+            var queryList = vehicleMakesFromDB.AsQueryable();
+            queryList = queryList.Where(x => x.Name.Contains(FilterMock.Object.Search.ToLower()));
+            queryList = queryList.OrderBy(x => x.Name);
 
-        //            IEnumerable<IVehicleMake> vehicleMakes = _mapper.Map<IEnumerable<IVehicleMake>>(vehicleMakesFromDB);
+            Mock<DbSet<VehicleMakeEntity>> DbSetMock = new Mock<DbSet<VehicleMakeEntity>>();
+            DbSetMock.As<IDbAsyncEnumerable<VehicleMakeEntity>>()
+                .Setup(x => x.GetAsyncEnumerator())
+                .Returns(new TestDbAsyncEnumerator<VehicleMakeEntity>(queryList.GetEnumerator()));
 
-        //            _filterMock.SetupAllProperties();
-        //            _paginationMock.SetupAllProperties();
-        //            _sorterMock.SetupAllProperties();
+            DbSetMock.As<IQueryable<VehicleMakeEntity>>()
+                .Setup(x => x.Provider)
+                .Returns(new TestDbAsyncQueryProvider<VehicleMakeEntity>(queryList.Provider));
 
-        //            _filterMock.Object.Search = "A";
-        //            _paginationMock.Object.PageNumber = 1;
-        //            _paginationMock.Object.PageSize = 10;
-        //            _sorterMock.Object.sortBy = "name";
-        //            _sorterMock.Object.sortDirection = "asc";
+            DbSetMock.As<IQueryable<VehicleMakeEntity>>().Setup(x => x.Expression).Returns(queryList.Expression);
+            DbSetMock.As<IQueryable<VehicleMakeEntity>>().Setup(x => x.ElementType).Returns(queryList.ElementType);
+            DbSetMock.As<IQueryable<VehicleMakeEntity>>().Setup(x => x.GetEnumerator()).Returns(queryList.GetEnumerator());
 
-        //            //Filter query
-        //            Expression<Func<IVehicleMake, bool>> filterQuery = x => x.Name.Contains(_filterMock.Object.Search.ToLower());
+            DatabaseContextMock.Setup(x => x.Set<VehicleMakeEntity>()).Returns(DbSetMock.Object);
+                        
+            SorterMock.Setup(x => x.GetSortedData(It.IsAny<IEnumerable<VehicleMakeEntity>>(), It.IsAny<string>(), It.IsAny<string>())).Returns(queryList);
 
-        //            //Sort query by name
-        //            Expression<Func<IVehicleMake, dynamic>> sortQuery = x => x.Name;
+            PaginationMock.Setup(x => x.GetPaginatedData(It.IsAny<IEnumerable<VehicleMakeEntity>>(), It.IsAny<int>(), It.IsAny<int>())).Returns(queryList);
 
-        //            //Applying filter query to data from DB
-        //            vehicleMakes = vehicleMakes.AsQueryable().Where(filterQuery).ToList();
+            FilterMock.SetupAllProperties();
+            PaginationMock.SetupAllProperties();
+            SorterMock.SetupAllProperties();
 
-        //            //Applying sorting query to data from DB
-        //            switch (_sorterMock.Object.sortDirection)
-        //            {
-        //                case "asc":
-        //                    vehicleMakes = vehicleMakes.AsQueryable().OrderBy(sortQuery).ToList();
-        //                    break;
-        //                case "desc":
-        //                    vehicleMakes = vehicleMakes.AsQueryable().OrderByDescending(sortQuery).ToList();
-        //                    break;
-        //                default:
-        //                    break;
-        //            }
+            FilterMock.Object.Search = "A";
+            PaginationMock.Object.PageNumber = 1;
+            PaginationMock.Object.RecordsPerPage = 10;
+            SorterMock.Object.SortBy= "name";
+            SorterMock.Object.SortDirection = "asc";
 
-        //            _filterMock.Setup(X => X.GetFilterQuery()).Returns(filterQuery);
 
-        //            _repositoryMock.Setup(x => x.WhereQueryAsync(It.IsAny<Expression<Func<VehicleMakeEntity, bool>>>())).ReturnsAsync(_mapper.Map<IEnumerable<VehicleMakeEntity>>(vehicleMakes));
+            //Act
+            var response = await VehicleMakeRepository.FindAsync(FilterMock.Object, SorterMock.Object, PaginationMock.Object);
 
-        //            _sorterMock.Setup(x => x.GetSortQuery()).Returns(sortQuery);
-        //            _sorterMock.Setup(x => x.SortData(It.IsAny<ICollection<IVehicleMake>>(), It.IsAny<Expression<Func<IVehicleMake, dynamic>>>())).Returns(vehicleMakes.ToList());
+            //Assert
+            response.Should().NotBeNull();
+            response.Data.Should().BeInAscendingOrder(x=>x.Name);
+            response.Data.Should().HaveCount(5);
+            response.PageNumber.Should().Be(1);
+            response.PageSize.Should().Be(10);
+            DatabaseContextMock.Verify(x => x.Set<VehicleMakeEntity>(), Times.Once);
+            SorterMock.Verify(x=>x.GetSortedData(It.IsAny<IEnumerable<VehicleMakeEntity>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            PaginationMock.Verify(x=>x.GetPaginatedData(It.IsAny<IEnumerable<VehicleMakeEntity>>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+        }
 
-        //            _paginationMock.Setup(x => x.PaginatedResult(It.IsAny<ICollection<IVehicleMake>>(), It.IsAny<int>(), It.IsAny<int>())).Returns(vehicleMakes.ToList());
+        [Fact]
+        public async Task FindAsync_ReturnFilteredByNamePaginatedSortedByNameOrderedByDescending()
+        {
+            //Arrange
 
-        //            //Act
-        //            var response = await _sut.FindAsync(_filterMock.Object, _paginationMock.Object, _sorterMock.Object);
+            List<VehicleMakeEntity> vehicleMakesFromDB = new List<VehicleMakeEntity>()
+            {
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Opel"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Audi"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "BMW"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Toyota"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Ford"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Suzuki"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Nissan"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Hyundai"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "Mazda"},
+                        new VehicleMakeEntity { Id = Guid.NewGuid(), Name = "VolksWagen"}
+            };
 
-        //            //Assert
-        //            response.Should().NotBeNull();
-        //            response.Data.Should().BeInAscendingOrder(sortQuery);
-        //            response.Data.Should().HaveCount(5);
-        //            response.PageNumber.Should().Be(1);
-        //            response.PageSize.Should().Be(10);
-        //            _filterMock.Verify(X => X.GetFilterQuery(), Times.Once);
-        //            _repositoryMock.Verify(x => x.WhereQueryAsync(It.IsAny<Expression<Func<VehicleMakeEntity, bool>>>()), Times.Once);
-        //            _sorterMock.Verify(X => X.GetSortQuery(), Times.Once);
-        //            _sorterMock.Verify(x => x.SortData(It.IsAny<ICollection<IVehicleMake>>(), It.IsAny<Expression<Func<IVehicleMake, dynamic>>>()), Times.Once);
-        //            _paginationMock.Verify(x => x.PaginatedResult(It.IsAny<ICollection<IVehicleMake>>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
-        //        }
+            var queryList = vehicleMakesFromDB.AsQueryable();
+            queryList = queryList.Where(x => x.Name.Contains(FilterMock.Object.Search.ToLower()));
+            queryList = queryList.OrderByDescending(x => x.Name);
+
+            Mock<DbSet<VehicleMakeEntity>> DbSetMock = new Mock<DbSet<VehicleMakeEntity>>();
+            DbSetMock.As<IDbAsyncEnumerable<VehicleMakeEntity>>()
+                .Setup(x => x.GetAsyncEnumerator())
+                .Returns(new TestDbAsyncEnumerator<VehicleMakeEntity>(queryList.GetEnumerator()));
+
+            DbSetMock.As<IQueryable<VehicleMakeEntity>>()
+                .Setup(x => x.Provider)
+                .Returns(new TestDbAsyncQueryProvider<VehicleMakeEntity>(queryList.Provider));
+
+            DbSetMock.As<IQueryable<VehicleMakeEntity>>().Setup(x => x.Expression).Returns(queryList.Expression);
+            DbSetMock.As<IQueryable<VehicleMakeEntity>>().Setup(x => x.ElementType).Returns(queryList.ElementType);
+            DbSetMock.As<IQueryable<VehicleMakeEntity>>().Setup(x => x.GetEnumerator()).Returns(queryList.GetEnumerator());
+
+            DatabaseContextMock.Setup(x => x.Set<VehicleMakeEntity>()).Returns(DbSetMock.Object);
+
+            SorterMock.Setup(x => x.GetSortedData(It.IsAny<IEnumerable<VehicleMakeEntity>>(), It.IsAny<string>(), It.IsAny<string>())).Returns(queryList);
+
+            PaginationMock.Setup(x => x.GetPaginatedData(It.IsAny<IEnumerable<VehicleMakeEntity>>(), It.IsAny<int>(), It.IsAny<int>())).Returns(queryList);
+
+            FilterMock.SetupAllProperties();
+            PaginationMock.SetupAllProperties();
+            SorterMock.SetupAllProperties();
+
+            FilterMock.Object.Search = "A";
+            PaginationMock.Object.PageNumber = 1;
+            PaginationMock.Object.RecordsPerPage = 10;
+            SorterMock.Object.SortBy = "name";
+            SorterMock.Object.SortDirection = "asc";
+
+
+            //Act
+            var response = await VehicleMakeRepository.FindAsync(FilterMock.Object, SorterMock.Object, PaginationMock.Object);
+
+            //Assert
+            response.Should().NotBeNull();
+            response.Data.Should().BeInDescendingOrder(x => x.Name);
+            response.Data.Should().HaveCount(5);
+            response.PageNumber.Should().Be(1);
+            response.PageSize.Should().Be(10);
+            DatabaseContextMock.Verify(x => x.Set<VehicleMakeEntity>(), Times.Once);
+            SorterMock.Verify(x => x.GetSortedData(It.IsAny<IEnumerable<VehicleMakeEntity>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            PaginationMock.Verify(x => x.GetPaginatedData(It.IsAny<IEnumerable<VehicleMakeEntity>>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+        }
+
     }
 }

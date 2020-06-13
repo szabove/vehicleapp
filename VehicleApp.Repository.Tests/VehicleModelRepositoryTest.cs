@@ -4,32 +4,32 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
-using VehicleApp.Common;
 using VehicleApp.Common.Filters;
 using VehicleApp.DAL;
 using VehicleApp.Model.Common;
 using VehicleApp.Repository.Common;
 using Xunit;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using VehicleApp.Repository.Tests.Utility;
 
 namespace VehicleApp.Repository.Tests
 {
     public class VehicleModelRepositoryTests
     {
         private readonly VehicleModelRepository VehicleModelRepository;
-        private readonly Mock<IVehicleContext> DatabaseContext = new Mock<IVehicleContext>();
+        private readonly Mock<IVehicleContext> DatabaseContextMock = new Mock<IVehicleContext>();
         private readonly Mock<IUnitOfWork> UnitOfWorkMock = new Mock<IUnitOfWork>();
         private readonly IMapper Mapper;
-        private readonly Mock<IMakeFilter> FilterMock = new Mock<IMakeFilter>();
+        private readonly Mock<IModelFilter> FilterMock = new Mock<IModelFilter>();
         private readonly Mock<IPagination> PaginationMock = new Mock<IPagination>();
         private readonly Mock<ISorter> SorterMock = new Mock<ISorter>();
 
         public VehicleModelRepositoryTests()
         {
             Mapper = SetupAutomapper();
-            VehicleModelRepository = new VehicleModelRepository(Mapper, DatabaseContext.Object, UnitOfWorkMock.Object);
+            VehicleModelRepository = new VehicleModelRepository(Mapper, DatabaseContextMock.Object, UnitOfWorkMock.Object);
         }
 
         public IMapper SetupAutomapper()
@@ -161,7 +161,7 @@ namespace VehicleApp.Repository.Tests
 
             var vehicleModel = Mapper.Map<IVehicleModel>(vehicleModelEntity);
 
-            DatabaseContext.Setup(x => x.Set<VehicleModelEntity>().FindAsync(It.IsAny<Guid>())).ReturnsAsync(vehicleModelEntity);
+            DatabaseContextMock.Setup(x => x.Set<VehicleModelEntity>().FindAsync(It.IsAny<Guid>())).ReturnsAsync(vehicleModelEntity);
             UnitOfWorkMock.Setup(x => x.UpdateUoWAsync(It.IsAny<VehicleModelEntity>())).ReturnsAsync(1);
             UnitOfWorkMock.Setup(x => x.CommitAsync()).ReturnsAsync(1);
 
@@ -191,7 +191,7 @@ namespace VehicleApp.Repository.Tests
 
             var vehicleModel = Mapper.Map<IVehicleModel>(vehicleModelEntity);
 
-            DatabaseContext.Setup(x => x.Set<VehicleModelEntity>().FindAsync(It.IsAny<Guid>())).ReturnsAsync(vehicleModelEntity);
+            DatabaseContextMock.Setup(x => x.Set<VehicleModelEntity>().FindAsync(It.IsAny<Guid>())).ReturnsAsync(vehicleModelEntity);
             UnitOfWorkMock.Setup(x => x.UpdateUoWAsync(It.IsAny<VehicleModelEntity>())).ReturnsAsync(0);
             UnitOfWorkMock.Setup(x => x.CommitAsync()).ReturnsAsync(1);
 
@@ -204,283 +204,76 @@ namespace VehicleApp.Repository.Tests
             UnitOfWorkMock.Verify(x => x.UpdateUoWAsync(It.IsAny<VehicleModelEntity>()), Times.Once);
             UnitOfWorkMock.Verify(x => x.CommitAsync(), Times.Never);
         }
-        
+
+        [Fact]
+        public async Task FindAsync_ReturnFilteredByVehicleMakeIdPaginatedSortedByNameOrderedByAscending()
+        {
+            //Arrange
+
+            var bmwGuid = Guid.NewGuid();
+
+            List<VehicleModelEntity> vehicleModelsFromDB = new List<VehicleModelEntity>()
+            {
+                        new VehicleModelEntity { Id = Guid.NewGuid(), Name = "E 520", VehicleMakeId = bmwGuid},
+                        new VehicleModelEntity { Id = Guid.NewGuid(), Name = "M3 GTR", VehicleMakeId = bmwGuid},
+                        new VehicleModelEntity { Id = Guid.NewGuid(), Name = "Corsa", VehicleMakeId = Guid.NewGuid()},
+                        new VehicleModelEntity { Id = Guid.NewGuid(), Name = "Felicia", VehicleMakeId = Guid.NewGuid()},
+                        new VehicleModelEntity { Id = Guid.NewGuid(), Name = "Celica", VehicleMakeId = Guid.NewGuid()},
+                        new VehicleModelEntity { Id = Guid.NewGuid(), Name = "A4", VehicleMakeId = Guid.NewGuid()},
+                        new VehicleModelEntity { Id = Guid.NewGuid(), Name = "E 220", VehicleMakeId = bmwGuid},
+                        new VehicleModelEntity { Id = Guid.NewGuid(), Name = "i30", VehicleMakeId = Guid.NewGuid()},
+                        new VehicleModelEntity { Id = Guid.NewGuid(), Name = "CX-5", VehicleMakeId = Guid.NewGuid()},
+                        new VehicleModelEntity { Id = Guid.NewGuid(), Name = "159", VehicleMakeId = Guid.NewGuid()}
+            };
+
+            var queryList = vehicleModelsFromDB.AsQueryable();
+
+            FilterMock.SetupAllProperties();
+            PaginationMock.SetupAllProperties();
+            SorterMock.SetupAllProperties();
+
+            FilterMock.Object.Search = "E";
+            FilterMock.Object.VehicleMakeId = bmwGuid;
+            PaginationMock.Object.PageNumber = 1;
+            PaginationMock.Object.RecordsPerPage = 10;
+            SorterMock.Object.SortBy = "name";
+            SorterMock.Object.SortDirection = "asc";
+
+            queryList = queryList.Where(x => x.VehicleMakeId == FilterMock.Object.VehicleMakeId);
+            queryList = queryList.OrderBy(x => x.Name);
+
+            Mock<DbSet<VehicleModelEntity>> DbSetMock = new Mock<DbSet<VehicleModelEntity>>();
+            DbSetMock.As<IDbAsyncEnumerable<VehicleModelEntity>>()
+                .Setup(x => x.GetAsyncEnumerator())
+                .Returns(new TestDbAsyncEnumerator<VehicleModelEntity>(queryList.GetEnumerator()));
+
+            DbSetMock.As<IQueryable<VehicleModelEntity>>()
+                .Setup(x => x.Provider)
+                .Returns(new TestDbAsyncQueryProvider<VehicleModelEntity>(queryList.Provider));
+
+            DbSetMock.As<IQueryable<VehicleModelEntity>>().Setup(x => x.Expression).Returns(queryList.Expression);
+            DbSetMock.As<IQueryable<VehicleModelEntity>>().Setup(x => x.ElementType).Returns(queryList.ElementType);
+            DbSetMock.As<IQueryable<VehicleModelEntity>>().Setup(x => x.GetEnumerator()).Returns(queryList.GetEnumerator());
+
+            DatabaseContextMock.Setup(x => x.Set<VehicleModelEntity>()).Returns(DbSetMock.Object);
+
+            SorterMock.Setup(x => x.GetSortedData(It.IsAny<IEnumerable<VehicleModelEntity>>(), It.IsAny<string>(), It.IsAny<string>())).Returns(queryList);
+
+            PaginationMock.Setup(x => x.GetPaginatedData(It.IsAny<IEnumerable<VehicleModelEntity>>(), It.IsAny<int>(), It.IsAny<int>())).Returns(queryList);
+
+            //Act
+            var response = await VehicleModelRepository.FindAsync(FilterMock.Object, SorterMock.Object, PaginationMock.Object);
+
+            //Assert
+            response.Should().NotBeNull();
+            response.Data.Should().BeInAscendingOrder(x => x.Name);
+            response.Data.Should().HaveCount(3);
+            response.PageNumber.Should().Be(1);
+            response.PageSize.Should().Be(10);
+            DatabaseContextMock.Verify(x => x.Set<VehicleModelEntity>(), Times.Once);
+            SorterMock.Verify(x => x.GetSortedData(It.IsAny<IEnumerable<VehicleModelEntity>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            PaginationMock.Verify(x => x.GetPaginatedData(It.IsAny<IEnumerable<VehicleModelEntity>>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+        }
+
     }
-    }
-//    public class VehicleModelRepositoryTest
-//    {
-//        private readonly VehicleModelRepository _sut;
-//        private readonly Mock<IRepository<VehicleModelEntity>> _repositoryMock = new Mock<IRepository<VehicleModelEntity>>();
-//        private readonly IMapper _mapper;
-
-//        private readonly Mock<IModelFilter> _filterMock = new Mock<IModelFilter>();
-//        private readonly Mock<IPagination<IVehicleModel>> _paginationMock = new Mock<IPagination<IVehicleModel>>();
-//        private readonly Mock<ISorter<IVehicleModel>> _sorterMock = new Mock<ISorter<IVehicleModel>>();
-
-//        public VehicleModelRepositoryTest()
-//        {
-//            _mapper = SetupAutomapper();
-//            _sut = new VehicleModelRepository(_repositoryMock.Object, _mapper);
-//        }
-
-//        public IMapper SetupAutomapper()
-//        {
-//            var config = new MapperConfiguration(
-//                cfg => cfg.AddMaps(new[] {
-//                    typeof(VehicleApp.Repository.AutoMapperConfiguration.DomainToEntityModelMapping)
-//                }));
-
-//            var mapper = config.CreateMapper();
-//            return mapper;
-//        }
-
-//        [Fact]
-//        public async Task Add_ShouldAddVehicleModel()
-//        {
-//            //Arrange
-
-//            VehicleModelEntity vehicleModelEntity = new VehicleModelEntity()
-//            {
-//                Id = Guid.NewGuid(),
-//                VehicleMakeId = Guid.NewGuid(),
-//                Name = "Corsa "
-//            };
-
-//            var vehicleModel = _mapper.Map<IVehicleModel>(vehicleModelEntity);
-
-//            _repositoryMock.Setup(x => x.AddAsync(It.IsAny<VehicleModelEntity>())).ReturnsAsync(1);
-
-//            //Act
-
-//            var result = await _sut.Add(vehicleModel);
-
-//            //Assert
-
-//            result.Should().Be(1);
-//            _repositoryMock.Verify(x => x.AddAsync(It.IsAny<VehicleModelEntity>()), Times.Once);
-//        }
-
-//        [Fact]
-//        public async Task Add_ShouldNotAddVehicleModel()
-//        {
-//            //Arrange
-
-//            VehicleModelEntity vehicleModelEntity = new VehicleModelEntity()
-//            {
-//                Id = Guid.NewGuid(),
-//                VehicleMakeId = Guid.Empty,
-//                Name = "Corsa "
-//            };
-
-//            var vehicleModel = _mapper.Map<IVehicleModel>(vehicleModelEntity);
-
-//            _repositoryMock.Setup(x => x.AddAsync(It.IsAny<VehicleModelEntity>())).ReturnsAsync(0);
-
-//            //Act
-
-//            var result = await _sut.Add(vehicleModel);
-
-//            //Assert
-
-//            result.Should().Be(0);
-//            _repositoryMock.Verify(x => x.AddAsync(It.IsAny<VehicleModelEntity>()), Times.Never);
-//        }
-
-//        [Fact]
-//        public async Task Delete_ShouldDeleteVehicleModel()
-//        {
-//            //Arrange
-
-//            var generatedGuid = Guid.NewGuid();
-
-//            VehicleModelEntity vehicleModelEntity = new VehicleModelEntity
-//            {
-//                Id = generatedGuid,
-//                Name = "Corsa"
-//            };
-
-//            _repositoryMock.Setup(x => x.GetAsync(It.IsAny<Guid>())).ReturnsAsync(vehicleModelEntity);
-//            _repositoryMock.Setup(x => x.DeleteAsync(It.IsAny<Guid>())).ReturnsAsync(1);
-
-//            //Act
-
-//            var result = await _sut.Delete(generatedGuid);
-
-//            //Assert
-
-//            result.Should().Be(1);
-//            generatedGuid.Should().NotBeEmpty();
-//            _repositoryMock.Verify(x => x.DeleteAsync(It.IsAny<Guid>()), Times.Once);
-//            _repositoryMock.Verify(x => x.GetAsync(It.IsAny<Guid>()), Times.Once);
-//        }
-
-//        [Fact]
-//        public async Task Delete_ShouldNotDeleteVehicleModelBecauseNotFoundInDatabase()
-//        {
-//            //Arrange
-
-//            var generatedGuid = Guid.NewGuid();
-
-//            VehicleModelEntity vehicleModelEntity = new VehicleModelEntity
-//            {
-//                Id = generatedGuid,
-//                Name = "Corsa"
-//            };
-
-//            _repositoryMock.Setup(x => x.GetAsync(It.IsAny<Guid>())).ReturnsAsync((VehicleModelEntity)null);
-//            _repositoryMock.Setup(x => x.DeleteAsync(It.IsAny<Guid>())).ReturnsAsync(0);
-
-//            //Act
-
-//            var result = await _sut.Delete(generatedGuid);
-
-//            //Assert
-
-//            result.Should().Be(0);
-//            generatedGuid.Should().NotBeEmpty();
-//            _repositoryMock.Verify(x => x.DeleteAsync(It.IsAny<Guid>()), Times.Never);
-//            _repositoryMock.Verify(x => x.GetAsync(It.IsAny<Guid>()), Times.Once);
-//        }
-
-//        [Fact]
-//        public async Task Update_ShouldUpdateVehicleModel()
-//        {
-//            //Arrange
-
-//            var generatedGuid = Guid.NewGuid();
-
-//            VehicleModelEntity vehicleModelEntity = new VehicleModelEntity()
-//            {
-//                Id = generatedGuid,
-//                VehicleMakeId  = Guid.NewGuid(),
-//                Name = "Corsa edited"
-//            };
-
-//            var vehicleModel = _mapper.Map<IVehicleModel>(vehicleModelEntity);
-
-//            _repositoryMock.Setup(x => x.UpdateAsync(It.IsAny<Guid>(), It.IsAny<VehicleModelEntity>())).ReturnsAsync(1);
-
-//            //Act
-
-//            var result = await _sut.Update(generatedGuid, vehicleModel);
-
-//            //Assert
-
-//            result.Should().Be(1);
-//            generatedGuid.Should().NotBeEmpty();
-//            _repositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Guid>(), It.IsAny<VehicleModelEntity>()), Times.Once);
-//        }
-
-//        [Fact]
-//        public async Task Update_ShouldNotUpdateVehicleModelBecauseNotFoundInDatabase()
-//        {
-//            //Arrange
-
-//            var generatedGuid = Guid.NewGuid();
-
-//            VehicleModelEntity vehicleModelEntity = new VehicleModelEntity()
-//            {
-//                Id = generatedGuid,
-//                VehicleMakeId = Guid.NewGuid(),
-//                Name = "Corsa edited"
-//            };
-
-//            var vehicleModel = _mapper.Map<IVehicleModel>(vehicleModelEntity);
-
-//            _repositoryMock.Setup(x => x.UpdateAsync(It.IsAny<Guid>(), It.IsAny<VehicleModelEntity>())).ReturnsAsync(0);
-
-//            //Act
-
-//            var result = await _sut.Update(generatedGuid, vehicleModel);
-
-//            //Assert
-
-//            result.Should().Be(0);
-//            generatedGuid.Should().NotBeEmpty();
-//            _repositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Guid>(), It.IsAny<VehicleModelEntity>()), Times.Once);
-//        }
-
-//        [Fact]
-//        public async Task FindAsync_ReturnFilteredByMakePaginatedSortedByNameOrderedByAscending()
-//        {
-//            //Arrange
-
-//            var generatedGuid = Guid.NewGuid();
-
-//            List<VehicleModelEntity> vehicleModelFromDB = new List<VehicleModelEntity>()
-//            {
-//                new VehicleModelEntity() { Id = Guid.NewGuid(), VehicleMakeId = generatedGuid, Name = "Corsa"},
-//                new VehicleModelEntity() { Id = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "X3"},
-//                new VehicleModelEntity() { Id = Guid.NewGuid(), VehicleMakeId = generatedGuid, Name = "Astra"},
-//                new VehicleModelEntity() { Id = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Auris"},
-//                new VehicleModelEntity() { Id = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Corvette"},
-//                new VehicleModelEntity() { Id = Guid.NewGuid(), VehicleMakeId = generatedGuid, Name = "Zafira"},
-//                new VehicleModelEntity() { Id = Guid.NewGuid(), VehicleMakeId = generatedGuid, Name = "Insignia"},
-//                new VehicleModelEntity() { Id = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "C3"},
-//                new VehicleModelEntity() { Id = Guid.NewGuid(), VehicleMakeId = Guid.NewGuid(), Name = "Golf VI"},
-//                new VehicleModelEntity() { Id = Guid.NewGuid(), VehicleMakeId = generatedGuid, Name = "Meriva"}
-//            };
-
-//            IEnumerable<IVehicleModel> vehicleModels = _mapper.Map<IEnumerable<IVehicleModel>>(vehicleModelFromDB);
-
-//            _filterMock.SetupAllProperties();
-//            _paginationMock.SetupAllProperties();
-//            _sorterMock.SetupAllProperties();
-
-//            _filterMock.Object.VehicleMakeID = generatedGuid;
-//            _paginationMock.Object.PageNumber = 1;
-//            _paginationMock.Object.PageSize = 10;
-//            _sorterMock.Object.sortBy = "name";
-//            _sorterMock.Object.sortDirection = "asc";
-
-//            //Filter query
-//            Expression<Func<IVehicleModel, bool>> filterQuery = x => x.VehicleMakeId == _filterMock.Object.VehicleMakeID;
-
-//            //Sort query by name
-//            Expression<Func<IVehicleModel, dynamic>> sortQuery = x => x.Name;
-
-//            //Applying filter query to data from DB
-//            vehicleModels = vehicleModels.AsQueryable().Where(filterQuery).ToList();
-
-//            //Applying sorting query to data from DB
-//            switch (_sorterMock.Object.sortDirection)
-//            {
-//                case "asc":
-//                    vehicleModels = vehicleModels.AsQueryable().OrderBy(sortQuery).ToList();
-//                    break;
-//                case "desc":
-//                    vehicleModels = vehicleModels.AsQueryable().OrderByDescending(sortQuery).ToList();
-//                    break;
-//                default:
-//                    break;
-//            }
-
-//            _filterMock.Setup(X => X.GetFilterQuery()).Returns(filterQuery);
-
-//            _repositoryMock.Setup(x => x.WhereQueryAsync(It.IsAny<Expression<Func<VehicleModelEntity, bool>>>())).ReturnsAsync(_mapper.Map<IEnumerable<VehicleModelEntity>>(vehicleModels));
-
-//            _sorterMock.Setup(x => x.GetSortQuery()).Returns(sortQuery);
-//            _sorterMock.Setup(x => x.SortData(It.IsAny<ICollection<IVehicleModel>>(), It.IsAny<Expression<Func<IVehicleModel, dynamic>>>())).Returns(vehicleModels.ToList());
-
-//            _paginationMock.Setup(x => x.PaginatedResult(It.IsAny<ICollection<IVehicleModel>>(), It.IsAny<int>(), It.IsAny<int>())).Returns(vehicleModels.ToList());
-
-//            //Act
-
-//            var response = await _sut.FindAsync(_filterMock.Object, _paginationMock.Object, _sorterMock.Object);
-
-//            //Assert
-
-//            response.Should().NotBeNull();
-//            response.Data.Should().BeInAscendingOrder(sortQuery);
-//            response.Data.Should().HaveCount(5);
-//            response.PageNumber.Should().Be(1);
-//            response.PageSize.Should().Be(10);
-//            _filterMock.Verify(X => X.GetFilterQuery(), Times.Once);
-//            _repositoryMock.Verify(x => x.WhereQueryAsync(It.IsAny<Expression<Func<VehicleModelEntity, bool>>>()), Times.Once);
-//            _sorterMock.Verify(X => X.GetSortQuery(), Times.Once);
-//            _sorterMock.Verify(x => x.SortData(It.IsAny<ICollection<IVehicleModel>>(), It.IsAny<Expression<Func<IVehicleModel, dynamic>>>()), Times.Once);
-//            _paginationMock.Verify(x => x.PaginatedResult(It.IsAny<ICollection<IVehicleModel>>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
-//        }
-
-//    }
-//}
+}
