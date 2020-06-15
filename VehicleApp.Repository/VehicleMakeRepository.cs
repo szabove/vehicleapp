@@ -87,7 +87,7 @@ namespace VehicleApp.Repository
 
             if (!(string.IsNullOrEmpty(filter.Search) && string.IsNullOrWhiteSpace(filter.Search)))
             {
-                query = query.Where(x => x.Name.Contains(filter.Search.ToLower()));
+                query = query.Where(x => x.Name.ToLower().Contains(filter.Search.ToLower()));
                 querySteps++;
             }
 
