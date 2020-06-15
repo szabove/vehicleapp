@@ -206,7 +206,7 @@ namespace VehicleApp.Repository.Tests
         }
 
         [Fact]
-        public async Task FindAsync_ReturnFilteredByVehicleMakeIdPaginatedSortedByNameOrderedByAscending()
+        public async Task FindAsync_ReturnFilteredBySearchAndVehicleMakeIdPaginatedSortedByNameOrderedByAscending()
         {
             //Arrange
 
@@ -239,6 +239,7 @@ namespace VehicleApp.Repository.Tests
             SorterMock.Object.SortBy = "name";
             SorterMock.Object.SortDirection = "asc";
 
+            queryList = queryList.Where(x => x.Name.ToLower().Contains(FilterMock.Object.Search.ToLower()));
             queryList = queryList.Where(x => x.VehicleMakeId == FilterMock.Object.VehicleMakeId);
             queryList = queryList.OrderBy(x => x.Name);
 
@@ -267,7 +268,7 @@ namespace VehicleApp.Repository.Tests
             //Assert
             response.Should().NotBeNull();
             response.Data.Should().BeInAscendingOrder(x => x.Name);
-            response.Data.Should().HaveCount(3);
+            response.Data.Should().HaveCount(2);
             response.PageNumber.Should().Be(1);
             response.PageSize.Should().Be(10);
             DatabaseContextMock.Verify(x => x.Set<VehicleModelEntity>(), Times.Once);
