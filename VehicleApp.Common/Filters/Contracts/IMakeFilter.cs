@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VehicleApp.Common.Filters
+namespace VehicleApp.Common.Filters.Contracts
 {
-    public interface IModelFilter :IBaseFilter
+    public interface IMakeFilter: IBaseFilter
     {
-        Guid VehicleMakeId { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VehicleApp.Common.Filters.Contracts;
 
 namespace VehicleApp.Common.Filters
 {
@@ -11,7 +12,7 @@ namespace VehicleApp.Common.Filters
         public int RecordsPerPage { get; set; }
         public int PageNumber { get; set; }
 
-        public IEnumerable<T> GetPaginatedData<T>(IEnumerable<T> data, int pageSize, int pageNumber) where T : class
+        public IQueryable<T> GetPaginationQuery<T>(IQueryable<T> data, int pageSize, int pageNumber) where T : class
         {
             var itemsToSkip = (pageNumber - 1) * pageSize;
 

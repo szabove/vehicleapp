@@ -79,21 +79,21 @@
   <ItemGroup>
     <Compile Include="CommonLayerDIModule.cs" />
     <Compile Include="Filters\FilterFacade.cs" />
-    <Compile Include="Filters\IBaseFilter.cs" />
-    <Compile Include="Filters\IFilterAggregateService.cs" />
-    <Compile Include="Filters\IFilterFacade.cs" />
-    <Compile Include="Filters\IMakeFilter.cs" />
-    <Compile Include="Filters\IModelFilter.cs" />
-    <Compile Include="Filters\IPagination.cs" />
-    <Compile Include="Filters\ISorter.cs" />
+    <Compile Include="Filters\Contracts\IBaseFilter.cs" />
+    <Compile Include="Filters\Contracts\IFilterAggregateService.cs" />
+    <Compile Include="Filters\Contracts\IFilterFacade.cs" />
+    <Compile Include="Filters\Contracts\IMakeFilter.cs" />
+    <Compile Include="Filters\Contracts\IModelFilter.cs" />
+    <Compile Include="Filters\Contracts\IPagination.cs" />
+    <Compile Include="Filters\Contracts\ISorter.cs" />
     <Compile Include="Filters\MakeFilter.cs" />
-    <Compile Include="Filters\MakeFilterParams.cs" />
+    <Compile Include="Filters\Parameters\MakeFilterParams.cs" />
     <Compile Include="Filters\ModelFilter.cs" />
-    <Compile Include="Filters\ModelFilterParams.cs" />
+    <Compile Include="Filters\Parameters\ModelFilterParams.cs" />
     <Compile Include="Filters\Pagination.cs" />
     <Compile Include="ResponseCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Filters\BaseFilterParams.cs" />
+    <Compile Include="Filters\Parameters\BaseFilterParams.cs" />
     <Compile Include="Filters\Sorter.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -110,9 +110,7 @@
       <Name>VehicleApp.Model</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Temp\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

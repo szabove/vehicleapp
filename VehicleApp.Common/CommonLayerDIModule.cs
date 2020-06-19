@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using VehicleApp.Common.Filters;
 using VehicleApp.Model.Common;
 using Autofac.Extras.AggregateService;
+using VehicleApp.Common.Filters.Contracts;
 
 namespace VehicleApp.Common
 {

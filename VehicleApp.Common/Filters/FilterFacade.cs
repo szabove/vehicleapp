@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VehicleApp.Common.Filters.Contracts;
 
 namespace VehicleApp.Common.Filters
 {
@@ -12,17 +13,6 @@ namespace VehicleApp.Common.Filters
         IModelFilter ModelFilter;
         IPagination Pagination;
         ISorter Sorter;
-        //public FilterFacade(IMakeFilter makeFilter,
-        //                    IModelFilter modelFilter,
-        //                    IPagination pagination,
-        //                    ISorter sorter
-        //                    )
-        //{
-        //    MakeFilter = makeFilter;
-        //    ModelFilter = modelFilter;
-        //    Pagination = pagination;
-        //    Sorter = sorter;
-        //}
 
         public FilterFacade(IFilterAggregateService filterService)
         {

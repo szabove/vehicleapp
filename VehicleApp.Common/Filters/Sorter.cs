@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Reflection;
+using VehicleApp.Common.Filters.Contracts;
 
 namespace VehicleApp.Common.Filters
 {
@@ -13,21 +14,22 @@ namespace VehicleApp.Common.Filters
         public string SortBy { get; set; }
         public string SortDirection { get; set; }
 
-        public IEnumerable<T> SortDataAscending<T>(IEnumerable<T> data, Expression<Func<T, object>> expression) where T : class
+        public IQueryable<T> SortDataAscending<T>(IQueryable<T> data, Expression<Func<T, object>> expression) where T : class
         {
-            return data.AsQueryable().OrderBy(expression).AsEnumerable();
+            return data.OrderBy(expression); 
         }
 
-        public IEnumerable<T> SortDataDescending<T>(IEnumerable<T> data, Expression<Func<T, object>> expression) where T : class
+        public IQueryable<T> SortDataDescending<T>(IQueryable<T> data, Expression<Func<T, object>> expression) where T : class
         {
-            return data.AsQueryable().OrderByDescending(expression).AsEnumerable();
+            return data.OrderByDescending(expression);
         }
 
         public Expression<Func<T, object>> GetExpressionToSortBy<T>(string sortByProperty) where T : class
         {
-            PropertyInfo prop = typeof(T).GetProperty(ConvertParameterToProperty<T>(sortByProperty));
-
-            return x => prop.GetValue(x, null);
+            var arg = Expression.Parameter(typeof(T), "x");
+            var property = Expression.Property(arg, sortByProperty);
+            var expression = Expression.Lambda<Func<T, object>>(property, new ParameterExpression[] { arg });
+            return expression;
         }
 
 
@@ -46,21 +48,19 @@ namespace VehicleApp.Common.Filters
                     return item.Name;
                 }
             }
-
             return null;
-
         }
 
-        public IEnumerable<T> GetSortedData<T>(IEnumerable<T> data, string SortByParameter, string sortByDirection) where T : class
+        public IQueryable<T> GetSortingQuery<T>(IQueryable<T> data, string SortByParameter, string sortByDirection) where T : class
         {
             switch (sortByDirection)
             {
                 case "asc":
                     return SortDataAscending<T>(data, GetExpressionToSortBy<T>(ConvertParameterToProperty<T>(SortByParameter)));
                 case "desc":
-                    return SortDataDescending<T>(data, GetExpressionToSortBy<T>(SortByParameter));
+                    return SortDataDescending<T>(data, GetExpressionToSortBy<T>(ConvertParameterToProperty<T>(SortByParameter)));
                 default:
-                    return data;
+                    return null;
             }
         }
 

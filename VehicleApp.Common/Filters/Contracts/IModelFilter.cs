@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VehicleApp.Common.Filters
+namespace VehicleApp.Common.Filters.Contracts
 {
-    public interface IBaseFilter
+    public interface IModelFilter :IBaseFilter
     {
-        string Search { get; set; }
+        Guid VehicleMakeId { get; set; }
     }
 }
