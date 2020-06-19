@@ -1,16 +1,18 @@
 ﻿using AutoMapper;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using VehicleApp.Common;
 using VehicleApp.Common.Filters;
+using VehicleApp.Common.Filters.Contracts;
+using VehicleApp.Common.Filters.Parameters;
 using VehicleApp.Model;
 using VehicleApp.Model.Common;
 using VehicleApp.Services.Common;
 using VehicleApp.WebApi.ActionFilters;
-using VehicleApp.WebApi.ViewModels;
 
 namespace VehicleApp.WebApi.Controllers
 {
@@ -178,5 +180,16 @@ namespace VehicleApp.WebApi.Controllers
             }
         }
 
+    }
+    public class ModelRest
+    {
+        [Required]
+        public Guid VehicleMakeId { get; set; }
+        [Required]
+        public Guid Id { get; set; }
+        [Required]
+        public string Name { get; set; }
+        public string Abrv { get; set; }
+        //public VehicleMakeViewModel VehicleMake { get; set; }
     }
 }
