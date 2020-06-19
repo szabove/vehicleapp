@@ -5,6 +5,7 @@ using VehicleApp.Repository.Common;
 using VehicleApp.Model.Common;
 using VehicleApp.Common;
 using VehicleApp.Common.Filters;
+using VehicleApp.Common.Filters.Contracts;
 
 namespace VehicleApp.Services
 {
@@ -59,13 +60,6 @@ namespace VehicleApp.Services
 
         public async Task<ResponseCollection<IVehicleMake>> FindAsync(IMakeFilter filter, ISorter sorter, IPagination pagination)
         {
-            if (filter == null || 
-                sorter == null || 
-                pagination == null)
-            {
-                return null;
-            }
-
             return await VehicleMakeRepository.FindAsync(filter, sorter, pagination);
         }
     }

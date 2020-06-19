@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using VehicleApp.Common;
 using VehicleApp.Common.Filters;
+using VehicleApp.Common.Filters.Contracts;
 using VehicleApp.Model.Common;
 using VehicleApp.Repository.Common;
 using VehicleApp.Services.Common;
@@ -49,13 +50,6 @@ namespace VehicleApp.Services
 
         public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, ISorter sorter, IPagination pagination)
         {
-            if (filter == null ||
-                sorter == null ||
-                pagination == null)
-            {
-                return null;
-            }
-
             return await VehicleModelRepository.FindAsync(filter, sorter, pagination);
         }
 
