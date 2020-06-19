@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VehicleApp.Common;
 using VehicleApp.Common.Filters;
+using VehicleApp.Common.Filters.Contracts;
 using VehicleApp.DAL;
 using VehicleApp.Model.Common;
 using VehicleApp.Repository.Common;
@@ -48,7 +49,14 @@ namespace VehicleApp.Repository
                 return 0;
             }
 
-            return await DeleteEntityAsync(id);
+            var vehicleModel = await GetAsync(id);
+
+            if (vehicleModel == null)
+            {
+                return 0;
+            }
+
+            return await DeleteEntityAsync(Mapper.Map<VehicleModelEntity>(vehicleModel));
         }
 
         public async Task<IVehicleModel> GetAsync(Guid id)
@@ -68,39 +76,27 @@ namespace VehicleApp.Repository
 
         public async Task<ResponseCollection<IVehicleModel>> FindAsync(IModelFilter filter, ISorter sorter, IPagination pagination)
         {
-            IEnumerable<VehicleModelEntity> filteredData = null;
+            ICollection<VehicleModelEntity> filteredData = null;
 
             IQueryable<VehicleModelEntity> query = DatabaseContext.Set<VehicleModelEntity>();
 
-            int querySteps = 0;
-
             if (!(string.IsNullOrEmpty(filter.Search) && string.IsNullOrWhiteSpace(filter.Search)))
             {
-                query = query.Where(x => x.Name.ToLower().Contains(filter.Search.ToLower()));
-                querySteps++;
+                query = query.Where(x => x.Name.Contains(filter.Search.ToLower()));
             }
 
             if (filter.VehicleMakeId != Guid.Empty)
             {
                 query = query.Where(x => x.VehicleMakeId == filter.VehicleMakeId);
-                querySteps++;
-            }
-            
-            if (querySteps > 0)
-            {
-                filteredData = await query.ToListAsync(); 
             }
 
-            if (filteredData == null)
-            {
-                return null;
-            }
+            var sortingQuery = sorter.GetSortingQuery(query, sorter.SortBy, sorter.SortDirection);
 
-            var sortedData = sorter.GetSortedData(filteredData, sorter.SortBy, sorter.SortDirection);
+            var paginationQuery = pagination.GetPaginationQuery(sortingQuery, pagination.RecordsPerPage, pagination.PageNumber);
 
-            var paginatedData = pagination.GetPaginatedData(sortedData, pagination.RecordsPerPage, pagination.PageNumber);
+            filteredData = await paginationQuery.ToListAsync();
 
-            return new ResponseCollection<IVehicleModel>(Mapper.Map<IEnumerable<IVehicleModel>>(paginatedData), pagination.PageNumber, pagination.RecordsPerPage);
+            return new ResponseCollection<IVehicleModel>(Mapper.Map<ICollection<IVehicleModel>>(filteredData), pagination.PageNumber, pagination.RecordsPerPage);
 
         }
 

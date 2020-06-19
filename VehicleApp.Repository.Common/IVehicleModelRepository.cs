@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VehicleApp.Common;
 using VehicleApp.Common.Filters;
+using VehicleApp.Common.Filters.Contracts;
 using VehicleApp.DAL;
 using VehicleApp.Model;
 using VehicleApp.Model.Common;
